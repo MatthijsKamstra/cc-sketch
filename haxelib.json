@@ -1,0 +1,11 @@
+{
+	"name": "cc-sketch",
+	"url" : "https://github.com/MatthijsKamstra",
+	"license": "MIT",
+	"tags": ["haxe", "creativecoding", "creative", "javascript"],
+	"description": "Haxe creative coding library in javascript",
+	"version": "1.0.0",
+	"classPath": "src",
+	"releasenote": "",
+	"contributors": ["Matthijs Kamstra aka [mck]"]
+}

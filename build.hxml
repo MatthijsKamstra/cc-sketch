@@ -1,0 +1,15 @@
+-lib hxquicksettings
+-lib thx.color
+-lib hxColorToolkit
+-lib msignal
+-lib mloader
+-lib uglifyjs
+-cp src
+-main Main
+-js docs/cc_example.js
+-D source-map-content
+-D state=debug
+-debug
+# -dce full
+# -dce no
+
