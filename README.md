@@ -2,9 +2,9 @@
 
 Creative coding library
 
-<span style="display:block;text-align:center">
-![](icon.jpg)
-</span>
+<p align="center">
+  <img src="icon.jpg" />
+</p>
 
 ## How?
 
