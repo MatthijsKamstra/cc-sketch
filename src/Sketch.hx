@@ -102,22 +102,13 @@ class Sketch {
 			var _c = c[i];
 			if (Sketch.option.scale) {
 				var padding = Sketch.option.padding;
-
-				trace(Sketch.option);
-
-				trace('innerWidth: '+window.innerWidth);
-				trace('innerHeight: '+window.innerHeight);
-
-				var maxValue = Math.max(window.innerWidth - (2 * padding), window.innerHeight - (2 * padding));
-				var minValue = Math.min(window.innerWidth - (2 * padding), window.innerHeight - (2 * padding));
-				var scale = minValue  / maxValue;
-
-				trace(scale);
+				var scaleX = (window.innerWidth- (2 * padding)) / w;
+				var scaleY = (window.innerHeight- (2 * padding)) / h;
+				var scale = Math.min(scaleX, scaleY) ;
 				_c.style.width = '${Sketch.option.width * scale}px';
 				_c.style.height = '${Sketch.option.height * scale}px';
 			}
 			if (_c.id.indexOf('hiddencanvas-') != -1) {
-				// trace(_c.id);
 				continue;
 			}
 			_c.width = w;
@@ -156,7 +147,7 @@ class Sketch {
 	}
 
 	private function init(?ctx:CanvasRenderingContext2D) {
-		trace('init');
+		// trace('init');
 
 		window.addEventListener(MOUSE_MOVE, function(e:MouseEvent) {
 			mouseX = e.clientX;
