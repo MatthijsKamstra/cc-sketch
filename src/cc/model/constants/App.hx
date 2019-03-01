@@ -4,7 +4,7 @@ import haxe.macro.Context;
 
 class App {
 
-	public static var NAME : String = "Creative Code [mck]";
+	public static var NAME : String = "[cc-sketch]";
 
 	public static var BUILD : String = getBuildDate();
 
