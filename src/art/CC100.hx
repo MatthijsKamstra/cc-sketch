@@ -24,8 +24,8 @@ class CC100 extends SketchBase {
 	public function new() {
 		// setup Sketch
 		var option = new SketchOption();
-		option.width = 2000; // 1080
-		option.height = 1000;
+		option.width = 1080; // 1080
+		// option.height = 1000;
 		option.autostart = true;
 		option.padding = 10;
 		option.scale = true;
@@ -58,6 +58,8 @@ class CC100 extends SketchBase {
 
 			.addTextArea('Quote', 'text', function(value) trace(value))
 			.addBoolean('All Caps', false, function(value) trace(value))
+
+			.setKey('h') // use `h` to toggle menu
 
 			.saveInLocalStorage('store-data-${toString()}');
 	}
