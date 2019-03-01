@@ -277,13 +277,9 @@ Sketch.prototype = {
 			var _c = c[i];
 			if(Sketch.option.get_scale()) {
 				var padding = Sketch.option.get_padding();
-				console.log(Sketch.option);
-				console.log("innerWidth: " + Std.string(this.window.innerWidth));
-				console.log("innerHeight: " + Std.string(this.window.innerHeight));
-				var maxValue = Math.max(this.window.innerWidth - 2 * padding,this.window.innerHeight - 2 * padding);
-				var minValue = Math.min(this.window.innerWidth - 2 * padding,this.window.innerHeight - 2 * padding);
-				var scale = minValue / maxValue;
-				console.log(scale);
+				var scaleX = (this.window.innerWidth - 2 * padding) / Global.w;
+				var scaleY = (this.window.innerHeight - 2 * padding) / Global.h;
+				var scale = Math.min(scaleX,scaleY);
 				var tmp = "" + Sketch.option.get_width() * scale;
 				_c.style.width = tmp + "px";
 				var tmp1 = "" + Sketch.option.get_height() * scale;
@@ -299,7 +295,6 @@ Sketch.prototype = {
 	}
 	,init: function(ctx) {
 		var _gthis = this;
-		console.log("init");
 		this.window.addEventListener(Global.MOUSE_MOVE,function(e) {
 			Global.mouseX = e.clientX;
 			Global.mouseY = e.clientY;
@@ -427,9 +422,6 @@ var Global = function() { };
 Global.__name__ = ["Global"];
 var Std = function() { };
 Std.__name__ = ["Std"];
-Std.string = function(s) {
-	return js_Boot.__string_rec(s,"");
-};
 Std.parseInt = function(x) {
 	var v = parseInt(x,10);
 	if(v == 0 && (HxOverrides.cca(x,1) == 120 || HxOverrides.cca(x,1) == 88)) {
@@ -465,8 +457,7 @@ var art_CC100 = function() {
 	this.grid = new cc_util_GridUtil();
 	this.shapeArray = [];
 	var option = new SketchOption();
-	option.set_width(2000);
-	option.set_height(1000);
+	option.set_width(1080);
 	option.set_autostart(true);
 	option.set_padding(10);
 	option.set_scale(true);
@@ -492,7 +483,7 @@ art_CC100.prototype = $extend(SketchBase.prototype,{
 			console.log(value);
 		}).addBoolean("All Caps",false,function(value1) {
 			console.log(value1);
-		}).saveInLocalStorage("store-data-" + this.toString());
+		}).setKey("h").saveInLocalStorage("store-data-" + this.toString());
 	}
 	,createShape: function(i,point) {
 		var shape = { _id : "" + i, _type : "circle", x : point.x, y : point.y, radius : this._radius};
@@ -2105,90 +2096,6 @@ js_Boot.getClass = function(o) {
 			return js_Boot.__resolveNativeClass(name);
 		}
 		return null;
-	}
-};
-js_Boot.__string_rec = function(o,s) {
-	if(o == null) {
-		return "null";
-	}
-	if(s.length >= 5) {
-		return "<...>";
-	}
-	var t = typeof(o);
-	if(t == "function" && (o.__name__ || o.__ename__)) {
-		t = "object";
-	}
-	switch(t) {
-	case "function":
-		return "<function>";
-	case "object":
-		if(o instanceof Array) {
-			if(o.__enum__) {
-				if(o.length == 2) {
-					return o[0];
-				}
-				var str = o[0] + "(";
-				s += "\t";
-				var _g1 = 2;
-				var _g = o.length;
-				while(_g1 < _g) {
-					var i = _g1++;
-					if(i != 2) {
-						str += "," + js_Boot.__string_rec(o[i],s);
-					} else {
-						str += js_Boot.__string_rec(o[i],s);
-					}
-				}
-				return str + ")";
-			}
-			var l = o.length;
-			var i1;
-			var str1 = "[";
-			s += "\t";
-			var _g11 = 0;
-			var _g2 = l;
-			while(_g11 < _g2) {
-				var i2 = _g11++;
-				str1 += (i2 > 0 ? "," : "") + js_Boot.__string_rec(o[i2],s);
-			}
-			str1 += "]";
-			return str1;
-		}
-		var tostr;
-		try {
-			tostr = o.toString;
-		} catch( e ) {
-			return "???";
-		}
-		if(tostr != null && tostr != Object.toString && typeof(tostr) == "function") {
-			var s2 = o.toString();
-			if(s2 != "[object Object]") {
-				return s2;
-			}
-		}
-		var k = null;
-		var str2 = "{\n";
-		s += "\t";
-		var hasp = o.hasOwnProperty != null;
-		for( var k in o ) {
-		if(hasp && !o.hasOwnProperty(k)) {
-			continue;
-		}
-		if(k == "prototype" || k == "__class__" || k == "__super__" || k == "__interfaces__" || k == "__properties__") {
-			continue;
-		}
-		if(str2.length != 2) {
-			str2 += ", \n";
-		}
-		str2 += s + k + " : " + js_Boot.__string_rec(o[k],s);
-		}
-		s = s.substring(1);
-		str2 += "\n" + s + "}";
-		return str2;
-	case "string":
-		return o;
-	default:
-		return String(o);
 	}
 };
 js_Boot.__nativeClassName = function(o) {
