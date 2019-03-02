@@ -317,7 +317,7 @@ class SketchOption {
 	// fullscreen Default: true; when false, you can pass width: 500, height: 500 to specify a size.
 	public var fullscreen(get_fullscreen, set_fullscreen):Bool;
 
-	private var _fullscreen:Bool = false;
+	private var _fullscreen:Bool = true;
 
 	function get_fullscreen():Bool {
 		return _fullscreen;
