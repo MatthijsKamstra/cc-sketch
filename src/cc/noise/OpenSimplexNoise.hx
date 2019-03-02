@@ -1,4 +1,4 @@
-package noise;
+package cc.noise;
 
 /*
  * OpenSimplex Noise in Java.
