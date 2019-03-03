@@ -43,7 +43,8 @@ class Sketch {
 		var body = document.querySelector('body');
 
 		var container = document.createDivElement();
-		container.className = 'container';
+		// container.className = 'container';
+		container.setAttribute("id", 'canvas-wrapper');
 
 		canvas = document.createCanvasElement();
 		canvas.setAttribute("id", name);

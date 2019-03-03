@@ -59,7 +59,8 @@ Lambda.has = function(it,elt) {
 };
 var Main = function() {
 	console.log("START :: main");
-	var cc = new art_CC100();
+	window.console.log("" + cc_model_constants_App.NAME + " Dom ready :: build: " + cc_model_constants_App.BUILD + " ");
+	var cc1 = new art_CC100();
 };
 Main.__name__ = ["Main"];
 Main.main = function() {
@@ -120,7 +121,7 @@ var SketchOption = function() {
 	this._autopause = true;
 	this._autostart = true;
 	this._autoclear = true;
-	this._fullscreen = false;
+	this._fullscreen = true;
 };
 SketchOption.__name__ = ["SketchOption"];
 SketchOption.prototype = {
@@ -239,7 +240,7 @@ Sketch.prototype = {
 	createCanvas: function(name) {
 		var body = this.document.querySelector("body");
 		var container = this.document.createElement("div");
-		container.className = "container";
+		container.setAttribute("id","canvas-wrapper");
 		this.canvas = this.document.createElement("canvas");
 		this.canvas.setAttribute("id",name);
 		body.appendChild(container);
@@ -1353,6 +1354,8 @@ cc_lets_easing_SineEaseOut.prototype = {
 	}
 	,__class__: cc_lets_easing_SineEaseOut
 };
+var cc_model_constants_App = function() { };
+cc_model_constants_App.__name__ = ["cc","model","constants","App"];
 var cc_util_AnimateUtil = function() {
 };
 cc_util_AnimateUtil.__name__ = ["cc","util","AnimateUtil"];
@@ -2129,6 +2132,8 @@ Global.mouseReleased = 0;
 Global.isFullscreen = false;
 Global.TWO_PI = Math.PI * 2;
 cc_lets_Go._tweens = [];
+cc_model_constants_App.NAME = "[cc-sketch]";
+cc_model_constants_App.BUILD = "2019-03-03 20:32:40";
 cc_util_ColorUtil.NAVY = { r : Math.round(0), g : Math.round(31), b : Math.round(63)};
 cc_util_ColorUtil.BLUE = { r : Math.round(0), g : Math.round(116), b : Math.round(217)};
 cc_util_ColorUtil.AQUA = { r : Math.round(127), g : Math.round(219), b : Math.round(255)};
