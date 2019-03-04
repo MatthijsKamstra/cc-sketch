@@ -33,6 +33,7 @@ typedef Appearance = {
 	@:optional var colour:String;
 	@:optional var alpha:Float;
 	@:optional var rgb:RGB;
+	@:optional var rgba:RGBA;
 };
 
 typedef Rotation = {
@@ -56,6 +57,11 @@ typedef PointInt = {
 
 // ____________________________________ shape typedef  ____________________________________
 
+typedef Pixel = {
+	> Base,
+	> Position,
+	> Appearance,
+}
 typedef Polygon = {
 	> Base,
 	> Position,
