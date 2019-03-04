@@ -59,7 +59,7 @@ Lambda.has = function(it,elt) {
 };
 var Main = function() {
 	console.log("START :: main");
-	window.console.log("" + cc_model_constants_App.NAME + " Dom ready :: build: " + cc_model_constants_App.BUILD + " ");
+	window.console.log("" + cc_model_constants_App.NAME + " :: build: " + cc_model_constants_App.BUILD + " ");
 	var cc1 = new art_CC100();
 };
 Main.__name__ = ["Main"];
@@ -241,6 +241,7 @@ Sketch.prototype = {
 		var body = this.document.querySelector("body");
 		var container = this.document.createElement("div");
 		container.setAttribute("id","canvas-wrapper");
+		container.className = "canvas-wrapper-container";
 		this.canvas = this.document.createElement("canvas");
 		this.canvas.setAttribute("id",name);
 		body.appendChild(container);
@@ -2133,7 +2134,7 @@ Global.isFullscreen = false;
 Global.TWO_PI = Math.PI * 2;
 cc_lets_Go._tweens = [];
 cc_model_constants_App.NAME = "[cc-sketch]";
-cc_model_constants_App.BUILD = "2019-03-03 20:32:40";
+cc_model_constants_App.BUILD = "2019-03-04 16:24:59";
 cc_util_ColorUtil.NAVY = { r : Math.round(0), g : Math.round(31), b : Math.round(63)};
 cc_util_ColorUtil.BLUE = { r : Math.round(0), g : Math.round(116), b : Math.round(217)};
 cc_util_ColorUtil.AQUA = { r : Math.round(127), g : Math.round(219), b : Math.round(255)};
