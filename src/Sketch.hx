@@ -43,8 +43,8 @@ class Sketch {
 		var body = document.querySelector('body');
 
 		var container = document.createDivElement();
-		// container.className = 'container';
-		container.setAttribute("id", 'canvas-wrapper');
+		container.setAttribute("id", 'canvas-wrapper'); // might be a bit agressive
+		container.className = 'canvas-wrapper-container'; // this is a more friendly solution
 
 		canvas = document.createCanvasElement();
 		canvas.setAttribute("id", name);
@@ -132,12 +132,14 @@ class Sketch {
 		var canvas = document.createCanvasElement();
 		body.appendChild(canvas);
 
+		var __w = Math.min(w*0.50, option.width);
+
 		canvas.setAttribute("id", 'hiddencanvas-${name}');
 		canvas.style.position = "absolute";
 		canvas.style.left = "0px";
 		canvas.style.top = "0px";
 		canvas.style.border = "1px solid pink";
-		canvas.style.width = "50%";
+		canvas.style.width = '${__w}px';
 		canvas.width = option.width;
 		canvas.height = option.height;
 		if (!isDebug)
@@ -315,7 +317,11 @@ class SketchOption {
 		return _height = value;
 	}
 
-	// fullscreen Default: true; when false, you can pass width: 500, height: 500 to specify a size.
+	/**
+	 * fullscreen
+	 *
+	 * default true, when width or height is set, this will be automaticly false
+	 */
 	public var fullscreen(get_fullscreen, set_fullscreen):Bool;
 
 	private var _fullscreen:Bool = true;
@@ -329,6 +335,9 @@ class SketchOption {
 	}
 
 	// autoclear Default: true Whether to clear the context before each call to draw. Otherwise call clear()
+	/**
+	 * TODO: [mck] doesn't work yet
+	 */
 	public var autoclear(get_autoclear, set_autoclear):Bool;
 
 	private var _autoclear:Bool = true;
@@ -342,6 +351,9 @@ class SketchOption {
 	}
 
 	// autostart Default: true Otherwise call start()
+	/**
+	 * TODO: [mck] doesn't work yet
+	 */
 	public var autostart(get_autostart, set_autostart):Bool;
 
 	private var _autostart:Bool = true;
@@ -356,6 +368,9 @@ class SketchOption {
 
 	// ?????????????????
 	// autopause Default: true Whether to pause the animation on window blur and resume on focus
+	/**
+	 * TODO: [mck] doesn't work yet
+	 */
 	public var autopause(get_autopause, set_autopause):Bool;
 
 	private var _autopause:Bool = true;
@@ -369,6 +384,9 @@ class SketchOption {
 	}
 
 	// container Default: document.body Where to put the sketch context
+	/**
+	 * TODO: [mck] doesn't work yet
+	 */
 	public var container(get_container, set_container):js.html.Element;
 
 	private var _container:js.html.Element = document.body;
@@ -382,6 +400,9 @@ class SketchOption {
 	}
 
 	// type Default Sketch.CANVAS Possible values: Sketch.CANVAS, Sketch.WEB_GL and Sketch.DOM
+	/**
+	 *
+	 */
 	public var type(get_type, set_type):SketchType;
 
 	private var _type:SketchType = SketchType.CANVAS;
@@ -427,6 +448,9 @@ class SketchOption {
 	public function new() {}
 }
 
+/**
+ * Use extends SketchBase to create a quick base to work with
+ */
 class SketchBase {
 	public var ctx:CanvasRenderingContext2D;
 	public var isDrawActive:Bool = true;
@@ -549,6 +573,11 @@ class SketchBase {
 }
 
 /**
+ * Sketch.Global has values you can access easily
+ *
+ * @usage:
+ * 		import Sketch.Global.*;
+ *
  * @source
  * 			https://groups.google.com/forum/#!topic/haxelang/CPbyE3WCvnc
  * 			https://gist.github.com/nadako/5913724
