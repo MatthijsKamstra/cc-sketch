@@ -1,6 +1,7 @@
 # cc-sketch
 
-Creative coding library
+CC-Sketch is a creative coding library written in Javascript via [Haxe](http://www.haxe.org).
+This project started when I did a [30-days-challenge](https://matthijskamstra.github.io/creative-coding) and I decided it should be open-source.
 
 <p align="center">
   <img src="icon.jpg" />
