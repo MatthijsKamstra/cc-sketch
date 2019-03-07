@@ -5,6 +5,8 @@ import haxe.macro.Context;
 class App {
 
 	public static var NAME : String = "[cc-sketch]";
+	public static var PORT : String = "5000";
+
 
 	public static var BUILD : String = getBuildDate();
 
