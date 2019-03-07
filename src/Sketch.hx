@@ -462,7 +462,16 @@ class SketchBase {
 	 */
 	public function new(ctx:CanvasRenderingContext2D) {
 		trace('START :: ${toString()}');
-
+		if(ctx == null){
+			// setup Sketch
+			var option = new SketchOption();
+			option.width = 1080; // 1080
+			// option.height = 1000;
+			option.autostart = true;
+			option.padding = 10;
+			option.scale = true;
+			ctx = Sketch.create("creative_code_mck", option);
+		}
 		this.ctx = ctx;
 		window.addEventListener(RESIZE, _reset, false);
 		window.addEventListener(KEY_DOWN, _keyDown, false);

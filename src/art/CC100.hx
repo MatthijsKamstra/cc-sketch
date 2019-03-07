@@ -4,6 +4,8 @@ import js.Browser.*;
 import js.html.*;
 import Sketch;
 
+import cc.model.constants.App;
+
 class CC100 extends SketchBase {
 	var shapeArray:Array<Circle> = [];
 	var grid:GridUtil = new GridUtil();
@@ -22,21 +24,12 @@ class CC100 extends SketchBase {
 	var dot:Circle;
 
 	public function new() {
-		// setup Sketch
-		var option = new SketchOption();
-		option.width = 1080; // 1080
-		// option.height = 1000;
-		option.autostart = true;
-		option.padding = 10;
-		option.scale = true;
-		var ctx:CanvasRenderingContext2D = Sketch.create("creative_code_mck", option);
-
 		init();
-
-		super(ctx);
+		super(null);
 	}
 
 	function init() {
+		var socket = new SocketUtil(ctx, App.PORT);
 		dot = createShape(100, {x: w / 2, y: h / 2});
 		// <link href="https://fonts.googleapis.com/css?family=Oswald:200,300,400,500,600,700" rel="stylesheet">
 		FontUtil.embedGoogleFont('Oswald:200,300,400,500,600,700', onEmbedHandler);
