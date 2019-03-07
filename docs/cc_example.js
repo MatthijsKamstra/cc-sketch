@@ -221,12 +221,13 @@ Sketch.createHiddenCanvas = function(name,option,isDebug) {
 	var body = window.document.querySelector("body");
 	var canvas = window.document.createElement("canvas");
 	body.appendChild(canvas);
+	var __w = Math.min(Global.w * 0.50,option.get_width());
 	canvas.setAttribute("id","hiddencanvas-" + name);
 	canvas.style.position = "absolute";
 	canvas.style.left = "0px";
 	canvas.style.top = "0px";
 	canvas.style.border = "1px solid pink";
-	canvas.style.width = "50%";
+	canvas.style.width = "" + __w + "px";
 	canvas.width = option.get_width();
 	canvas.height = option.get_height();
 	if(!isDebug) {
@@ -371,6 +372,14 @@ var SketchBase = function(ctx) {
 	this.isDebug = false;
 	this.isDrawActive = true;
 	console.log("START :: " + this.toString());
+	if(ctx == null) {
+		var option = new SketchOption();
+		option.set_width(1080);
+		option.set_autostart(true);
+		option.set_padding(10);
+		option.set_scale(true);
+		ctx = Sketch.create("creative_code_mck",option);
+	}
 	this.ctx = ctx;
 	window.addEventListener(Global.RESIZE,$bind(this,this._reset),false);
 	window.addEventListener(Global.KEY_DOWN,$bind(this,this._keyDown),false);
@@ -424,6 +433,9 @@ var Global = function() { };
 Global.__name__ = ["Global"];
 var Std = function() { };
 Std.__name__ = ["Std"];
+Std.string = function(s) {
+	return js_Boot.__string_rec(s,"");
+};
 Std.parseInt = function(x) {
 	var v = parseInt(x,10);
 	if(v == 0 && (HxOverrides.cca(x,1) == 120 || HxOverrides.cca(x,1) == 88)) {
@@ -458,19 +470,14 @@ var art_CC100 = function() {
 	this._radius = 150;
 	this.grid = new cc_util_GridUtil();
 	this.shapeArray = [];
-	var option = new SketchOption();
-	option.set_width(1080);
-	option.set_autostart(true);
-	option.set_padding(10);
-	option.set_scale(true);
-	var ctx = Sketch.create("creative_code_mck",option);
 	this.init();
-	SketchBase.call(this,ctx);
+	SketchBase.call(this,null);
 };
 art_CC100.__name__ = ["art","CC100"];
 art_CC100.__super__ = SketchBase;
 art_CC100.prototype = $extend(SketchBase.prototype,{
 	init: function() {
+		var socket = new cc_util_SocketUtil(this.ctx,cc_model_constants_App.PORT);
 		this.dot = this.createShape(100,{ x : Global.w / 2, y : Global.h / 2});
 		cc_util_FontUtil.embedGoogleFont("Oswald:200,300,400,500,600,700",$bind(this,this.onEmbedHandler));
 		this.createQuickSettings();
@@ -798,6 +805,9 @@ cc_CanvasTools.colourObj = function(ctx,rgb,a) {
 	ctx.fillStyle = c;
 };
 cc_CanvasTools.strokeColourObj = function(ctx,rgb,a) {
+	cc_CanvasTools.lineColour(ctx,rgb.r,rgb.g,rgb.b,a);
+};
+cc_CanvasTools.lineColourRGB = function(ctx,rgb,a) {
 	cc_CanvasTools.lineColour(ctx,rgb.r,rgb.g,rgb.b,a);
 };
 cc_CanvasTools.strokeColourRGB = function(ctx,rgb,a) {
@@ -1980,6 +1990,88 @@ cc_util_ShapeUtil.gridDots = function(ctx,grid) {
 	cc_CanvasTools.lineColour(ctx,cc_util_ColorUtil.GRAY.r,cc_util_ColorUtil.GRAY.g,cc_util_ColorUtil.GRAY.b,0.5);
 	ctx.strokeRect(grid.x,grid.y,grid.width,grid.height);
 };
+var cc_util_SocketUtil = function(ctx,port) {
+	if(port == null) {
+		port = "5000";
+	}
+	this.isEmbedded = false;
+	this.ctx = ctx;
+	this.port = port;
+	if(this.checkScript()) {
+		this.initSocket();
+	} else {
+		cc_util_SocketUtil.embedScript($bind(this,this.onEmbedHandler));
+	}
+};
+cc_util_SocketUtil.__name__ = ["cc","util","SocketUtil"];
+cc_util_SocketUtil.embedScript = function(callback,callbackArray) {
+	console.log("embedScript");
+	var el = window.document.createElement("script");
+	el.id = "embedSocketIO";
+	el.src = "https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js";
+	el.crossOrigin = "anonymous";
+	el.onload = function() {
+		if(callback != null) {
+			if(callbackArray == null) {
+				callback.apply(callback,["socketio"]);
+			} else {
+				callback.apply(callback,callbackArray);
+			}
+		}
+	};
+	window.document.body.appendChild(el);
+};
+cc_util_SocketUtil.prototype = {
+	onEmbedHandler: function(a) {
+		console.log("onEmbedHandler: " + a);
+		this.checkScript();
+		this.initSocket();
+	}
+	,initSocket: function() {
+		var _gthis = this;
+		console.log("initSocket");
+		this.socket = io.connect("http://localhost:" + this.port);
+		this.socket.on("connect_error",function(err) {
+			console.log("Error connecting to server \"" + err + "\", closing connection");
+			_gthis.socket.close();
+		});
+		this.socket.on("connect",function(err1) {
+			console.log("connect: " + err1);
+		});
+		this.socket.on("disconnect",function(err2) {
+			console.log("disconnect: " + err2);
+		});
+		this.socket.on("connect_failed",function(err3) {
+			console.log("connect_failed: " + err3);
+		});
+		this.socket.on("error",function(err4) {
+			console.log("error: " + err4);
+		});
+		this.socket.emit("message","checkin");
+		this.socket.on("message",function(data) {
+			if(data.message != null) {
+				console.log("data: " + Std.string(data));
+			} else {
+				console.log("There is a problem: " + Std.string(data));
+			}
+		});
+	}
+	,checkScript: function() {
+		var arr = window.document.getElementsByTagName("script");
+		var _g1 = 0;
+		var _g = arr.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			var _script = arr[i];
+			if(_script.src.indexOf("socket.io.js") != -1) {
+				console.log("Current page has socket.io script!");
+				this.isEmbedded = true;
+			}
+		}
+		return this.isEmbedded;
+	}
+	,__class__: cc_util_SocketUtil
+};
 var cc_util_TextUtil = function() {
 };
 cc_util_TextUtil.__name__ = ["cc","util","TextUtil"];
@@ -2102,6 +2194,90 @@ js_Boot.getClass = function(o) {
 		return null;
 	}
 };
+js_Boot.__string_rec = function(o,s) {
+	if(o == null) {
+		return "null";
+	}
+	if(s.length >= 5) {
+		return "<...>";
+	}
+	var t = typeof(o);
+	if(t == "function" && (o.__name__ || o.__ename__)) {
+		t = "object";
+	}
+	switch(t) {
+	case "function":
+		return "<function>";
+	case "object":
+		if(o instanceof Array) {
+			if(o.__enum__) {
+				if(o.length == 2) {
+					return o[0];
+				}
+				var str = o[0] + "(";
+				s += "\t";
+				var _g1 = 2;
+				var _g = o.length;
+				while(_g1 < _g) {
+					var i = _g1++;
+					if(i != 2) {
+						str += "," + js_Boot.__string_rec(o[i],s);
+					} else {
+						str += js_Boot.__string_rec(o[i],s);
+					}
+				}
+				return str + ")";
+			}
+			var l = o.length;
+			var i1;
+			var str1 = "[";
+			s += "\t";
+			var _g11 = 0;
+			var _g2 = l;
+			while(_g11 < _g2) {
+				var i2 = _g11++;
+				str1 += (i2 > 0 ? "," : "") + js_Boot.__string_rec(o[i2],s);
+			}
+			str1 += "]";
+			return str1;
+		}
+		var tostr;
+		try {
+			tostr = o.toString;
+		} catch( e ) {
+			return "???";
+		}
+		if(tostr != null && tostr != Object.toString && typeof(tostr) == "function") {
+			var s2 = o.toString();
+			if(s2 != "[object Object]") {
+				return s2;
+			}
+		}
+		var k = null;
+		var str2 = "{\n";
+		s += "\t";
+		var hasp = o.hasOwnProperty != null;
+		for( var k in o ) {
+		if(hasp && !o.hasOwnProperty(k)) {
+			continue;
+		}
+		if(k == "prototype" || k == "__class__" || k == "__super__" || k == "__interfaces__" || k == "__properties__") {
+			continue;
+		}
+		if(str2.length != 2) {
+			str2 += ", \n";
+		}
+		str2 += s + k + " : " + js_Boot.__string_rec(o[k],s);
+		}
+		s = s.substring(1);
+		str2 += "\n" + s + "}";
+		return str2;
+	case "string":
+		return o;
+	default:
+		return String(o);
+	}
+};
 js_Boot.__nativeClassName = function(o) {
 	var name = js_Boot.__toStr.call(o).slice(8,-1);
 	if(name == "Object" || name == "Function" || name == "Math" || name == "JSON") {
@@ -2134,7 +2310,8 @@ Global.isFullscreen = false;
 Global.TWO_PI = Math.PI * 2;
 cc_lets_Go._tweens = [];
 cc_model_constants_App.NAME = "[cc-sketch]";
-cc_model_constants_App.BUILD = "2019-03-04 16:24:59";
+cc_model_constants_App.PORT = "5000";
+cc_model_constants_App.BUILD = "2019-03-06 12:01:07";
 cc_util_ColorUtil.NAVY = { r : Math.round(0), g : Math.round(31), b : Math.round(63)};
 cc_util_ColorUtil.BLUE = { r : Math.round(0), g : Math.round(116), b : Math.round(217)};
 cc_util_ColorUtil.AQUA = { r : Math.round(127), g : Math.round(219), b : Math.round(255)};
