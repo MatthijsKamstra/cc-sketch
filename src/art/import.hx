@@ -11,6 +11,7 @@ import cc.util.ColorUtil.*;
 import cc.util.AnimateUtil.*;
 
 // utils
+import cc.util.*;
 import cc.util.ColorUtil;
 import cc.util.FontUtil;
 import cc.util.GridUtil;
