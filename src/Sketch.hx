@@ -42,6 +42,24 @@ class Sketch {
 	public function createCanvas(name:String):CanvasRenderingContext2D {
 		var body = document.querySelector('body');
 
+		// [mck] check if `name` already exists
+		if(document.getElementById('canvas-wrapper') != null){
+			// [mck] remove the previous one
+			var element = document.getElementById('canvas-wrapper');
+			element.parentNode.removeChild(element);
+			// reset?
+			window.addEventListener(RESIZE, null, false);
+			window.addEventListener(MOUSE_MOVE, null, false);
+			window.addEventListener(MOUSE_DOWN, null, false);
+			window.addEventListener(MOUSE_UP, null, false);
+			window.addEventListener(KEY_DOWN, null, false);
+		}
+		// if(document.getElementById(name) != null){
+		// 	// [mck] remove the previous one
+		// 	var element = document.getElementById(name);
+		// 	element.parentNode.removeChild(element);
+		// }
+
 		var container = document.createDivElement();
 		container.setAttribute("id", 'canvas-wrapper'); // might be a bit agressive
 		container.className = 'canvas-wrapper-container'; // this is a more friendly solution
@@ -441,6 +459,26 @@ class SketchOption {
 		return _padding = value;
 	}
 
+	/**
+	 * set the dpi, default 72
+	 *
+	 * be carefull, this is a heavy feature, not recommended for video
+	 *
+	 * common values
+	 * 72 (internet values)
+	 * 150 (home printers)
+	 * 300 (books printing)
+	 */
+	public var dpi ( get_dpi , set_dpi ) : Int;
+	private var _dpi : Int = 72; // default 72
+
+	function get_dpi () : Int {
+		return _dpi;
+	}
+	function set_dpi(value : Int) : Int {
+		return _dpi = value;
+	}
+
 	// interval Default: 1 The update / draw interval (2 will update every 2 frames, etc)
 	// globals Default: true Add global properties and methods to the window
 	// retina Default: false Resize for best appearance on retina displays. Can be slow due to so many pixels!
@@ -455,7 +493,7 @@ class SketchBase {
 	public var ctx:CanvasRenderingContext2D;
 	public var isDrawActive:Bool = true;
 	public var isDebug:Bool = false;
-
+	public var dpiScale:Float = 1;
 	/**
 	 * constructor
 	 * @param ctx
@@ -472,6 +510,12 @@ class SketchBase {
 			option.scale = true;
 			ctx = Sketch.create("creative_code_mck", option);
 		}
+		/**
+		 * default is 72 dpi, if you design based on that
+		 * and use dpiScaling to correct that value,
+		 * you will be just fine
+		 */
+		dpiScale =  Sketch.option.dpi / 72;
 		this.ctx = ctx;
 		window.addEventListener(RESIZE, _reset, false);
 		window.addEventListener(KEY_DOWN, _keyDown, false);
