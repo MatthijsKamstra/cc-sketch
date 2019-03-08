@@ -14,8 +14,8 @@ class FontUtil {
 	private var _ctx:CanvasRenderingContext2D;
 	private var _text:String;
 	// defaults
-	private var _x:Int = 100;
-	private var _y:Int = 100;
+	private var _x:Float = 100;
+	private var _y:Float = 100;
 	private var _size:Int = 100;
 	private var _font:String = 'Arial'; // italic small-caps bold 12px aria
 	// https://www.w3schools.com/tags/canvas_textalign.asp
@@ -46,11 +46,16 @@ class FontUtil {
 		this._text = text;
 		return this;
 	}
-	inline public function x(x:Int):FontUtil {
+	inline public function x(x:Float):FontUtil {
 		this._x = x;
 		return this;
 	}
-	inline public function y(y:Int):FontUtil {
+	inline public function y(y:Float):FontUtil {
+		this._y = y;
+		return this;
+	}
+	inline public function pos(x:Float,y:Float):FontUtil {
+		this._x = x;
 		this._y = y;
 		return this;
 	}
@@ -66,13 +71,37 @@ class FontUtil {
 		this._textAlign = pos; // left/right/center
 		return this;
 	}
+	inline public function leftAlign():FontUtil {
+		this._textAlign = 'left'; // left/right/center
+		return this;
+	}
+	inline public function rightAlign():FontUtil {
+		this._textAlign = 'right'; // left/right/center
+		return this;
+	}
+	inline public function centerAlign():FontUtil {
+		this._textAlign = 'center'; // left/right/center
+		return this;
+	}
+	inline public function topBaseline():FontUtil {
+		this._textBaseline = 'top'; // top/middle/bottom
+		return this;
+	}
+	inline public function middleBaseline():FontUtil {
+		this._textBaseline = 'middle'; // top/middle/bottom
+		return this;
+	}
+	inline public function bottomBaseline():FontUtil {
+		this._textBaseline = 'bottom'; // top/middle/bottom
+		return this;
+	}
 	inline public function textBaseline(pos:String):FontUtil {
 		this._textBaseline = pos; // top/middle/bottom
 		return this;
 	}
 	inline public function draw():FontUtil {
 		// draw to convast
-		_ctx.font = '${size}px ${_font}';
+		_ctx.font = '${_size}px ${_font}';
 		_ctx.textAlign = _textAlign;
 		_ctx.textBaseline = _textBaseline;
 		_ctx.fillText(_text, _x, _y);
