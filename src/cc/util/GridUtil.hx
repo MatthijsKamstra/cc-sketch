@@ -161,6 +161,10 @@ class GridUtil {
 		calculate();
 	}
 
+	public function reset(){
+		array = []; // reset array
+	}
+
 	function calculate() {
 		if (_isDebug)
 			console.log('GridUtil.calculate');
@@ -243,9 +247,11 @@ class GridUtil {
 			// because we can't have half a row, we need to recalculate the width/heigth
 			width = numHor * cellWidth;
 			height = numVer * cellHeight;
-			// centered everything
-			x = (w - width) / 2;
-			y = (h - height) / 2;
+			if(	!this._isPosition) {
+				// centered everything
+				x = (w - width) / 2;
+				y = (h - height) / 2;
+			}
 		}
 
 		/**
