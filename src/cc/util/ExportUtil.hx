@@ -12,6 +12,7 @@ class ExportUtil {
 		if (fileName == null){
 			var hash = js.Browser.location.hash;
 			hash = hash.replace('#', '').toLowerCase();
+			if(hash == '') hash = 'image';
 			fileName = '${hash}-${Date.now().getTime()}';
 			// fileName = 'cc-art-${Date.now().getTime()}';
 		}
