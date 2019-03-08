@@ -18,6 +18,11 @@ class CanvasTools {
 		ctx.fillRect(x, y, width, height);
 	};
 
+	static public function leftStrokeRect(ctx:CanvasRenderingContext2D, x:Float, y:Float, width:Float, ?height:Float) {
+		if (height == null)
+			height = width;
+		ctx.strokeRect(x , y , width, height);
+	};
 	static public function centreStrokeRect(ctx:CanvasRenderingContext2D, x:Float, y:Float, width:Float, ?height:Float) {
 		if (height == null)
 			height = width;
