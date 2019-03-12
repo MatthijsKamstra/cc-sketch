@@ -73,7 +73,22 @@ class ColorUtil {
 		}
 	};
 
-	public static function rgb2hex(r:Int, g:Int, b:Int, a:Int = 255):Int {
+	/**
+	 * [Description]
+	 * @param r
+	 * @param g
+	 * @param b
+	 * @return String
+	 */
+	public static function rgbToHex(r:Int, g:Int, b:Int):String{
+		// r = MathUtil.clamp(Math.round(r), 0, 255);
+		// g = MathUtil.clamp(Math.round(g), 0, 255);
+		// b = MathUtil.clamp(Math.round(b), 0, 255);
+		// var hex = StringTools.hex(r,2)
+		return StringTools.hex(r,2) + StringTools.hex(g,2) + StringTools.hex(b,2);
+	}
+
+	public static function rgb2hex(r:Int, g:Int, b:Int, ?a:Int = 255):Int {
 		return (a << 24) | (r << 16) | (g << 8) | b;
 	}
 
