@@ -205,6 +205,16 @@ class MathUtil {
 			return returnvalue;
 	};
 
+	/**
+	 * sent a value, and check if it is in the correct range
+	 *
+	 * @example
+	 * 	 MathUtil.clamp(Math.round(r), 0, 255) // a value r should be between 0 and 255
+	 *
+	 * @param value		value to check
+	 * @param min		minimum value
+	 * @param max		maximum value
+	 */
 	static public function clamp(value, min, max) {
 		return Math.min(Math.max(value, Math.min(min, max)), Math.max(min, max));
 	}
