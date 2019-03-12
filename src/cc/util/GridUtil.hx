@@ -3,6 +3,8 @@ package cc.util;
 import Sketch.Global.*;
 import cc.AST;
 import js.Browser.*;
+import js.html.CanvasRenderingContext2D;
+import cc.util.ColorUtil.RGB;
 
 class GridUtil {
 	public var array:Array<Point> = [];
@@ -58,7 +60,111 @@ class GridUtil {
 	var _isPosition:Bool = false;
 	var _isDebug:Bool = false; // fix ugly grid bugs
 
-	public function new() {}
+	// ____________________________________ chaining ____________________________________
+	// are always set
+	private var _ctx:CanvasRenderingContext2D;
+	// new private vars
+
+
+	private var _x:Dynamic; //
+	private var _y:Dynamic; //
+	private var _w:Dynamic; //
+	private var _h:Dynamic; //
+	private var _hor:Dynamic; //
+	private var _ver:Dynamic; //
+	private var _cellw:Dynamic; //
+	private var _cellh:Dynamic; //
+	private var _center:Dynamic; //
+	private var _debug:Dynamic; // (Suggestion: debug)
+	private var _fullscreen:Dynamic; // (Suggestions: fullscreen, isFullscreen)
+	private var _color:Dynamic; // (Suggestion: color)
+
+
+
+
+
+	public function new(?ctx:CanvasRenderingContext2D) {
+		if(ctx != null) this._ctx = ctx;
+	}
+
+
+	/**
+	 * var grid = GridUtil.create (ctx).draw();
+	 *
+	 * @param ctx
+	 * @param text
+	 * @return GridUtil
+	 */
+	static inline public function create(ctx:CanvasRenderingContext2D):GridUtil {
+		var GridUtil = new GridUtil(ctx);
+		return GridUtil;
+	}
+
+
+
+	// ____________________________________ properties ____________________________________
+
+	/**
+	 * [mck] prefer to have this x, and y
+	 */
+	inline public function xpos(x:Float):GridUtil {
+		this._x = x;
+		return this;
+	}
+	inline public function ypos(y:Float):GridUtil {
+		this._y = y;
+		return this;
+	}
+	inline public function pos(x:Float,y:Float):GridUtil {
+		this._x = x;
+		this._y = y;
+		return this;
+	}
+	inline public function dimension(w:Float,h:Float):GridUtil {
+		this._w = w;
+		this._h = h;
+		return this;
+	}
+	inline public function grid(hor:Int,ver:Int):GridUtil {
+		this._hor = hor;
+		this._ver = ver;
+		return this;
+	}
+	inline public function size(w:Float,h:Float):GridUtil {
+		this._cellw = w;
+		this._cellh = h;
+		return this;
+	}
+	inline public function centered():GridUtil {
+		this._center = true;
+		return this;
+	}
+	inline public function debug():GridUtil {
+		this._debug = true;
+		return this;
+	}
+	inline public function fullscreen():GridUtil {
+		this._fullscreen = true;
+		return this;
+	}
+	inline public function color(value:RGB):GridUtil {
+		this._color = value;
+		return this;
+	}
+	inline public function calc():GridUtil {
+		trace('WIP');
+		return this;
+	}
+	inline public function draw(?isDebug:Bool = false):GridUtil {
+		// draw on canvas
+		if(isDebug){
+			// _ctx
+		}
+		return this;
+	}
+
+
+
 
 	/**
 	 * [Description]
@@ -326,7 +432,8 @@ class GridUtil {
 	}
 
 	/**
-	 * [Description]
+	 * old gridtools, renamed it from GridUtil.create to GridUtil.createGrid
+	 *
 	 * @param x			start position x
 	 * @param y			start postion y
 	 * @param width		width of grid
@@ -334,7 +441,7 @@ class GridUtil {
 	 * @param numHor	number of items horizontal
 	 * @param numVer	number of itmes vertical
 	 */
-	static public function create(x:Float, y:Float, width:Float, height:Float, numHor:Int = 1, numVer:Int = 1):Array<Point> {
+	static public function createGrid(x:Float, y:Float, width:Float, height:Float, numHor:Int = 1, numVer:Int = 1):Array<Point> {
 		// trace( x, y, width, height, numHor, numVer);
 		var gridW = width / (numHor - 1);
 		var gridH = height / (numVer - 1);
@@ -369,7 +476,7 @@ class GridUtil {
 	 * @param numVer
 	 * @return GridUtil
 	 */
-	static public function calc(?x:Float = -1, ?y:Float = -1, ?width:Float = -1, ?height:Float = -1, ?gridX:Float = 1, ?gridY:Float = 1, ?numHor:Int = 1,
+	static public function calcGrid(?x:Float = -1, ?y:Float = -1, ?width:Float = -1, ?height:Float = -1, ?gridX:Float = 1, ?gridY:Float = 1, ?numHor:Int = 1,
 			?numVer:Int = 1):GridUtil {
 		var grid = new GridUtil();
 		grid.array = [];
