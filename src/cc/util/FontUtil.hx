@@ -4,8 +4,12 @@ import js.html.CanvasRenderingContext2D;
 import js.html.*;
 import js.Browser.document;
 import js.Browser.window;
-// import cc.Global.*;
 
+// import cc.Global.*;
+import cc.util.ColorUtil.RGB;
+import cc.util.MathUtil.*;
+
+using cc.CanvasTools;
 using StringTools;
 
 class FontUtil {
@@ -17,6 +21,8 @@ class FontUtil {
 	private var _x:Float = 100;
 	private var _y:Float = 100;
 	private var _size:Int = 100;
+	private var _color:RGB;
+	private var _rotate:Int = 0;
 	private var _font:String = 'Arial'; // italic small-caps bold 12px aria
 	// https://www.w3schools.com/tags/canvas_textalign.asp
 	private var _textAlign:String = 'left'; // center|end|left|right|start"
@@ -60,7 +66,7 @@ class FontUtil {
 		return this;
 	}
 	inline public function font(font:String):FontUtil {
-		this._font = font;
+		this._font = font.replace(';','');
 		return this;
 	}
 	inline public function size(px:Int):FontUtil {
@@ -99,12 +105,51 @@ class FontUtil {
 		this._textBaseline = pos; // top/middle/bottom
 		return this;
 	}
+	inline public function rotate(degree:Int):FontUtil {
+		this._rotate = degree;
+		return this;
+	}
+	inline public function rotateLeft():FontUtil {
+		this._rotate = -90;
+		return this;
+	}
+	inline public function rotateRight():FontUtil {
+		this._rotate = 90;
+		return this;
+	}
+	inline public function rotateDown():FontUtil {
+		this._rotate = 180;
+		return this;
+	}
+	inline public function color(value:RGB):FontUtil {
+		this._color = value;
+		return this;
+	}
 	inline public function draw():FontUtil {
 		// draw to convast
+		_ctx.save(); // save current state
+
+		var previousColor = _ctx.fillStyle;
+		// check if color is set
+		if(_color != null){
+			_ctx.fillColourRGB(_color);
+		}
 		_ctx.font = '${_size}px ${_font}';
 		_ctx.textAlign = _textAlign;
 		_ctx.textBaseline = _textBaseline;
-		_ctx.fillText(_text, _x, _y);
+
+		// move canvas and rotate
+		_ctx.translate(_x, _y);
+		_ctx.rotate(radians(_rotate) );
+		// print text
+		_ctx.fillText(_text, 0, 0);
+
+		// restore canvas to previous position
+		_ctx.restore();
+
+		// restore previous color?
+		_ctx.fillStyle = previousColor;
+
 		return this;
 	}
 
