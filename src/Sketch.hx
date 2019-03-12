@@ -615,6 +615,50 @@ class SketchBase {
 	}
 
 	/**
+	 * shorthand to get half `w` (width of canvas)
+	 */
+	@:isVar public var w2(get, null):Float;
+	function get_w2() {
+		return w/2;
+	}
+	/**
+	 * shorthand to get half `h` (height of canvas)
+	 */
+	@:isVar public var h2(get, null):Float;
+	function get_h2() {
+		return h/2;
+	}
+	/**
+	 * shorthand to get quarter `w` (width of canvas)
+	 */
+	@:isVar public var w4(get, null):Float;
+	function get_w4() {
+		return w/4;
+	}
+	/**
+	 * shorthand to get quarter `h` (height of canvas)
+	 */
+	@:isVar public var h4(get, null):Float;
+	function get_h4() {
+		return h/4;
+	}
+	/**
+	 * shorthand to get third `w` (width of canvas)
+	 */
+	@:isVar public var w3(get, null):Float;
+	function get_w3() {
+		return w/3;
+	}
+	/**
+	 * shorthand to get third `h` (height of canvas)
+	 */
+	@:isVar public var h3(get, null):Float;
+	function get_h3() {
+		return h/3;
+	}
+
+
+	/**
 	 * Get className, with package
 	 * @example:
 	 * 		trace(toString()); // this file would be "art.CCBase"
