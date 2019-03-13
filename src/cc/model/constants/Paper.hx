@@ -23,6 +23,8 @@ class Paper {
 	public static inline var A1 : String = 'a1';
 
 
+
+
 	public static var ARR : Array<String> = [
 		A6,
 		A5,
