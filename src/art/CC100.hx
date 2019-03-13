@@ -5,6 +5,7 @@ import js.html.*;
 import Sketch;
 
 import cc.model.constants.App;
+import cc.tool.Export;
 
 class CC100 extends SketchBase {
 	var shapeArray:Array<Circle> = [];
@@ -26,10 +27,12 @@ class CC100 extends SketchBase {
 	public function new() {
 		init();
 		super(null);
+
+		trace(new cc.model.constants.Sizes().ARR);
 	}
 
 	function init() {
-		var socket = new SocketUtil(ctx, App.PORT);
+		var socket = new Export(ctx, App.PORT);
 		dot = createShape(100, {x: w / 2, y: h / 2});
 		// <link href="https://fonts.googleapis.com/css?family=Oswald:200,300,400,500,600,700" rel="stylesheet">
 		FontUtil.embedGoogleFont('Oswald:200,300,400,500,600,700', onEmbedHandler);

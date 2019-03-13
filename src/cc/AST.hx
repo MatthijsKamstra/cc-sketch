@@ -170,3 +170,49 @@ typedef AnimateObj = {
 	@:optional var alpha:Float;
 	@:optional var type:String; // make possible to switch draw
 };
+
+// ____________________________________ export typedef ____________________________________
+
+typedef EXPORT_MESSAGE = {
+	> Base,
+	var message:String;
+};
+
+typedef EXPORT_FRAME = {
+	> Base,
+	var file:String;
+	@:optional var frame:Int;
+	@:optional var name:String;
+	@:optional var folder:String;
+};
+
+typedef EXPORT_IMAGE = {
+	> Base,
+	var file:String;
+	var name:String;
+	var folder:String;
+	@:optional var exportFolder:String;
+	// @:optional var name:String;
+	// @:optional var folder:String;
+	// @:optional var exportFolder:String;
+};
+
+typedef EXPORT_MD = {
+	> Base,
+	var name:String;
+	var content:String;
+	@:optional var folder:String;
+	@:optional var exportFolder:String;
+};
+
+typedef EXPORT_CONVERT_VIDEO = {
+	> Base,
+	var name:String;
+	var folder:String;
+	@:optional var exportFolder:String;
+	@:optional var clear:Bool;
+	@:optional var description:String;
+	@:optional var fps:Int; // 60 default
+
+};
+

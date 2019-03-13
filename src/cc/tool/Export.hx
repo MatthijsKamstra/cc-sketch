@@ -1,11 +1,9 @@
-package cc.util;
+package cc.tool;
 
 import js.html.CanvasRenderingContext2D;
-import js.html.*;
-import js.Browser.document;
 import js.Browser.*;
 import js.Browser.window;
-import model.constants.SocketName.*;
+import cc.util.MathUtil;
 
 using StringTools;
 
@@ -13,14 +11,29 @@ using StringTools;
  * connect to the export server with this socket
  *
  * @example
- * 		import cc.util.SocketUtil;
+ * 		import cc.tool.Export;
  *
- * 		var export = new SocketUtil ();
- * 		export.time(15, 2); // minimum 3 maximum 60 (instagram settings)
- * 		export.start();
- * 		export.stop();
+ * 		export = new Export(ctx);			//
+ * 		export.time(15, 2); 				// minimum 3 maximum 60 (instagram settings)
+ * 		export.name('${toString()}');		// name of the file used for export (default: `frame`)
+ * 		export.folder('_test');				// in `export` folder, will be a new folder with this name (default: `sequence`)
+ * 		export.debug(true); 				// activate logs
+ * 		export.clear(true);					// clear folder before creating new export
  */
-class SocketUtil {
+class Export {
+	public static var SEND:String = "send";
+	public static var MESSAGE:String = "message";
+	public static var IMAGE:String = "image";
+	public static var SEQUENCE:String = "sequence";
+	public static var COMBINE:String = "combine";
+	public static var MARKDOWN:String = "md";
+	public static var CHECKIN:String = "checkin";
+	public static var SERVER_CHECKIN:String = "server-checkin";
+	public static var RENDER_CLEAR:String = "render-clear";
+	public static var RENDER_FRAME:String = "render-frame";
+	public static var RENDER_DONE:String = "render-done";
+	public static var TEST:String = "test";
+
 	var _ctx:CanvasRenderingContext2D;
 	var _canvas:js.html.CanvasElement;
 	var _port:String;
@@ -69,6 +82,9 @@ class SocketUtil {
 
 	// ____________________________________ export settings ____________________________________
 
+	/**
+	 * [Description]
+	 */
 	public function start() {
 		this._isStart = true;
 		if (_isExportServerReady) {
@@ -95,6 +111,9 @@ class SocketUtil {
 		}
 	}
 
+	/**
+	 * [Description]
+	 */
 	public function stop() {
 		this._isStart = false;
 		this._isRecording = false;
@@ -111,9 +130,12 @@ class SocketUtil {
 	}
 
 	/**
-	 * [time description]
-	 * @param  duration 	(in seconds) minimum 3 maximum 60 (instagram settings)
-	 * @param  delay 		(in seconds) wait before the recording starts
+	 * timed recording instead of start and stop recording
+	 *
+	 * minimum 3 maximum 60 (instagram settings)
+	 *
+	 * @param  duration 	(in seconds) minimum 3 sec, maximum 60 sec (Instagram settings) (default: `3`)
+	 * @param  delay 		(in seconds) wait before the recording starts (default: `0`)
 	 */
 	public function time(duration:Float, ?delay:Float = 0) {
 		trace('${toString()} time($duration, $delay)');
@@ -123,18 +145,40 @@ class SocketUtil {
 		this._delay = delay;
 	}
 
+
+	/**
+	 * [Description]
+// name of the file used for export (default: `frame`)
+	 * @param name
+	 */
 	public function name(name:String) {
 		this._name = name;
 	}
 
+	/**
+	 * ]
+// in `export` folder, will be a new folder with this name (default: `sequence`)
+	 *
+	 * @param folder
+	 */
 	public function folder(folder:String) {
 		this._folder = folder;
 	}
 
+	/**
+	 * [Description]
+// activate logs
+	 * @param isDebug
+	 */
 	public function debug(isDebug:Bool = true) {
 		this._isDebug = isDebug;
 	}
 
+	/**
+	 * [Description]
+// clear folder before creating new export
+	 * @param isClear
+	 */
 	public function clear(isClear:Bool = true) {
 		this._isClear = isClear;
 	}
@@ -144,13 +188,14 @@ class SocketUtil {
 	function renderSequence(?timestamp:Float) {
 		var dataString = _canvas.toDataURL(); // default png
 		var id = Std.string(Date.now().getTime());
-		var data:AST.IMAGE = {
+		var data:AST.EXPORT_IMAGE = {
 			_id: id,
 			file: dataString,
 			name: '${_name}-${Std.string(_frameCounter).lpad('0', 4)}',
 			folder: '${_folder}',
 		}
-		if (_isDebug) trace('${toString()} renderSequence : ${data._id}');
+		if (_isDebug)
+			trace('${toString()} renderSequence : ${data._id}');
 
 		_socket.emit(SEQUENCE, data);
 
@@ -172,17 +217,17 @@ class SocketUtil {
 	// ____________________________________ convert to video ____________________________________
 
 	function convertRecording() {
-		var data:AST.ConvertVideo = {
+		var data:AST.EXPORT_CONVERT_VIDEO = {
 			name: '${_name}',
 			clear: _isClear,
 			folder: '${_folder}',
-			description:'export this file '
+			description: 'export this file '
 		};
 		_socket.emit(COMBINE, data);
 	}
 
 	function deleteFolder() {
-		var data:AST.ConvertVideo = {
+		var data:AST.EXPORT_CONVERT_VIDEO = {
 			name: '${_name}',
 			clear: _isClear,
 			folder: '${_folder}',
@@ -199,7 +244,10 @@ class SocketUtil {
 		// check possible ways to make sure the server is acitve
 		_socket.on('connect_error', function(err) {
 			// handle server error here
+			console.group('Connection error export server');
 			console.warn('${toString()} Error connecting to server "${err}", closing connection');
+			console.info('this probably means that cc-export project isn\'t running');
+			console.groupEnd();
 			_socket.close();
 			_isRecording = false;
 			_isExportServerReady = false;
@@ -293,27 +341,24 @@ class SocketUtil {
 	}
 
 	// ____________________________________ getter/setter ____________________________________
-	@:isVar public var count(get, null):Int;
 
+	@:isVar public var count(get, null):Int;
 	function get_count():Int {
 		count = _frameCounter;
 		return count;
 	}
 
 	@:isVar public var delay(get, null):Float;
-
 	function get_delay():Float {
 		return _delay;
 	}
 
 	@:isVar public var frames(get, null):Int;
-
 	function get_frames():Int {
 		return _durationFrames;
 	}
 
 	@:isVar public var duration(get, null):Float;
-
 	function get_duration():Float {
 		return _duration;
 	}
@@ -321,6 +366,6 @@ class SocketUtil {
 	// ____________________________________ misc ____________________________________
 
 	function toString():String {
-		return '[SocketUtil]';
+		return '[Export]';
 	}
 }
