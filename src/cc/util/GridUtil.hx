@@ -173,7 +173,7 @@ class GridUtil {
 	 */
 	public function setPosition(x, y) {
 		if (_isDebug)
-			console.log('GridUtil :: setPostion');
+			console.log('${toString ()} setPostion');
 		this.x = x;
 		this.y = y;
 		this._isPosition = true;
@@ -187,7 +187,7 @@ class GridUtil {
 	 */
 	public function setIsCenterPoint(isCentered:Bool = true) {
 		if (_isDebug)
-			console.log('GridUtil :: setCenterPoint');
+			console.log('${toString ()} setCenterPoint');
 		this.isCentered = isCentered;
 		calculate();
 	}
@@ -200,7 +200,7 @@ class GridUtil {
 	public function setDebug(isDebug:Bool = true){
 		this._isDebug = isDebug;
 		if (_isDebug)
-			console.log('GridUtil :: setCenterPoint');
+			console.log('${toString ()} setDebug');
 	}
 
 	/**
@@ -213,7 +213,7 @@ class GridUtil {
 	 */
 	public function setIsFullscreen(isFullscreen:Bool = true) {
 		if (_isDebug)
-			console.log('GridUtil :: setIsFullscreen');
+			console.log('${toString ()} setIsFullscreen');
 		this.isFullscreen = isFullscreen;
 		calculate();
 	}
@@ -224,9 +224,9 @@ class GridUtil {
 	 * @param width		total width of grid
 	 * @param height	total height of grid
 	 */
-	public function setDimension(width, height) {
+	public function setDimension(width:Float, height:Float) {
 		if (_isDebug)
-			console.log('GridUtil :: setDimension');
+			console.log('${toString ()} setDimension (width: ${width}, height: ${height})');
 		this.width = width;
 		this.height = height;
 		this._isDimension = true;
@@ -240,7 +240,7 @@ class GridUtil {
 	 */
 	public function setNumbered(numHor:Float, numVer:Float) {
 		if (_isDebug)
-			console.log('GridUtil :: setNumbers');
+			console.log('${toString ()} setNumbers (numHor: ${numHor}, numVer: ${numVer})');
 		this.numHor = numHor;
 		this.numVer = numVer;
 		this._isNumbered = true;
@@ -260,7 +260,7 @@ class GridUtil {
 		if (cellHeight == null)
 			cellHeight = cellWidth;
 		if (_isDebug)
-			console.log('GridUtil :: setCellSize');
+			console.log('${toString ()} setCellSize (cellWidth: ${cellWidth}, cellHeight: ${cellHeight})');
 		this.cellWidth = cellWidth;
 		this.cellHeight = cellHeight;
 		this._isCellSize = true;
@@ -273,7 +273,7 @@ class GridUtil {
 
 	function calculate() {
 		if (_isDebug)
-			console.log('GridUtil.calculate');
+			console.log('${toString ()} calculate()');
 		/**
 		 * solution #1:
 		 * grid is fixed via `cellWidth` and `cellHeight`
@@ -283,7 +283,7 @@ class GridUtil {
 		 */
 		if (_isCellSize && !_isDimension) {
 			if (_isDebug)
-				console.info('GridUtil solution #1: cellSize is set');
+				console.info('${toString ()} solution #1: cellSize is set');
 			numHor = Math.floor(w / cellWidth);
 			numVer = Math.floor(h / cellHeight);
 			width = numHor * cellWidth;
@@ -299,7 +299,7 @@ class GridUtil {
 		 */
 		if (_isNumbered && !_isDimension) {
 			if (_isDebug)
-				console.info('GridUtil solution #2: numbered cells set');
+				console.info('${toString ()} solution #2: numbered cells set');
 			var _w = (width != null) ? width : w;
 			var _h = (height != null) ? height : h;
 			// numHor = Math.floor(_w / cellWidth);
@@ -310,6 +310,8 @@ class GridUtil {
 			height = numVer * cellHeight;
 			x = (w - width) / 2;
 			y = (h - height) / 2;
+
+			console.info('cellWidth: $cellWidth, cellHeight: $cellHeight, width: $width, height: $height, x: $x, y: $y');
 		}
 
 		/**
@@ -319,7 +321,7 @@ class GridUtil {
 		 */
 		if (_isDimension && !_isNumbered && !_isCellSize) {
 			if (_isDebug)
-				console.info('GridUtil solution #3: width/height set ($width, $height)');
+				console.info('${toString ()} solution #3: width/height set ($width, $height)');
 
 			// is not set
 			var _cellWidth = (cellWidth != null) ? cellWidth : 50;
@@ -343,9 +345,9 @@ class GridUtil {
 		 * use a grid with set `width`, `height` AND `numHor`, `numVer`
 		 * calculate: `x`, `y`, `cellWidth`, `cellHeight`
 		 */
-		if (_isDimension && _isNumbered && !_isCellSize) {
+		if (_isDimension && !_isCellSize) {
 			if (_isDebug)
-				console.info('GridUtil solution #3a: width/height set ($width, $height) AND number row/cols ($numHor, $numVer)');
+				console.info('${toString ()} solution #3a: width/height set ($width, $height) AND number row/cols ($numHor, $numVer)');
 
 			// is not set, calculate
 			cellWidth = Math.floor(width / numHor); // make it round numbers
@@ -361,13 +363,38 @@ class GridUtil {
 		}
 
 		/**
+		 * solution #3b:
+		 * use a grid with set `width`, `height` AND `numHor`, `numVer`
+		 * calculate: `x`, `y`, `cellWidth`, `cellHeight`
+		 */
+		if (_isDimension && _isNumbered && !_isCellSize) {
+			if (_isDebug){
+
+				console.info('${toString ()} solution #3b: w/h set ($width, $height) AND number row/cols ($numHor, $numVer)');
+				console.info('${toString ()}  ($w, $h)');
+			}
+
+			// is not set, calculate
+			cellWidth = Math.floor(width / numHor); // make it round numbers
+			cellHeight = Math.floor(height / numVer); // make it round numbers
+			// because we can't have half a row, we need to recalculate the width/heigth
+			width = numHor * cellWidth;
+			height = numVer * cellHeight;
+			// if(	!this._isPosition) {
+			// 	// centered everything
+			// 	x = (w - width) / 2;
+			// 	y = (h - height) / 2;
+			// }
+		}
+
+		/**
 		 * solution #4:
 		 * size of the cell is known, and width and height
 		 * calculate: `x`, `y`, `width`, `height`, `cellWidth`, `cellHeight`
 		 */
 		if (_isCellSize && _isDimension) {
 			if (_isDebug)
-				console.info('GridUtil solution #4: cellSize is set and width/height');
+				console.info('${toString ()} solution #4: cellSize is set and width/height');
 			numHor = Math.floor(width / cellWidth);
 			numVer = Math.floor(height / cellHeight);
 
@@ -383,7 +410,7 @@ class GridUtil {
 
 		if(isFullscreen && _isCellSize){
 			if (_isDebug)
-				console.info('GridUtil solution #5: fullscreen and cellSize is set');
+				console.info('${toString ()} solution #5: fullscreen and cellSize is set');
 
 			width = w;
 			height = h;
@@ -426,9 +453,12 @@ class GridUtil {
 		}
 
 		total = array.length; // just to have easy access to the array lentth
-		if (_isDebug)
-			console
-				.warn('x: $x, y: $y, width: $width, height: $height, cellWidth: $cellWidth, cellHeight: $cellHeight, numHor: $numHor, numVer: $numVer, array: ${array.length}');
+		if (_isDebug){
+			console.groupCollapsed('${toString()} Sata');
+			console.log('x: $x, y: $y, width: $width, height: $height, cellWidth: $cellWidth, cellHeight: $cellHeight, numHor: $numHor, numVer: $numVer, array: ${array.length}');
+			console.table(array);
+			console.groupEnd();
+		}
 	}
 
 	/**
@@ -487,5 +517,9 @@ class GridUtil {
 		grid.gridX = 0;
 		grid.gridY = 0;
 		return grid;
+	}
+
+	function toString ():String{
+		return '[GridUtil]';
 	}
 }
