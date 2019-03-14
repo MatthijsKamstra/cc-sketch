@@ -37,6 +37,7 @@ class Export {
 	var _ctx:CanvasRenderingContext2D;
 	var _canvas:js.html.CanvasElement;
 	var _port:String;
+	var _host:String;
 	var _socket:Dynamic;
 	//
 	var _isEmbedded:Bool = false;
@@ -55,6 +56,7 @@ class Export {
 	var _name:String = 'frame'; // default file name
 	var _folder:String = 'sequence'; // default folder name in the export folder
 	var _frameCounter = 0;
+	var _currentFrame = 0;
 	var _durationFrames = 0;
 	var _isRecording:Bool = false;
 	var FPS:Int = 60;
@@ -68,9 +70,10 @@ class Export {
 	 * @param ctx	canvas that needs to be rendered
 	 * @param port	server port
 	 */
-	public function new(ctx:CanvasRenderingContext2D, ?port:String = '5000') {
+	public function new(ctx:CanvasRenderingContext2D, ?host:String= 'http://localhost', ?port:String = '5000') {
 		this._ctx = ctx;
 		this._canvas = ctx.canvas;
+		this._host = host;
 		this._port = port;
 		if (checkScript()) {
 			// trace('${toString()} start socket');
@@ -92,8 +95,7 @@ class Export {
 			reset();
 			if (_isTimer) {
 				startTime = haxe.Timer.stamp();
-				console.log('${toString()} TIMER');
-				console.log('START time base recording (delay: ${_delay}second, frames: ${_durationFrames})');
+				console.log('${toString()} START time base recording (delay: ${_delay}second, frames: ${_durationFrames})');
 				haxe.Timer.delay(function() {
 					trace('delay time ${haxe.Timer.stamp() - startTime}');
 					this._isRecording = true;
@@ -112,18 +114,22 @@ class Export {
 	}
 
 	/**
-	 * [Description]
+	 * stop recording
 	 */
 	public function stop() {
 		this._isStart = false;
 		this._isRecording = false;
 	}
 
+	/**
+	 * reset everything
+	 */
 	public function reset() {
 		trace('${toString()} reset : make sure everything starts from the beginning');
 		this._currentDuration = 0;
 		this._currentDelay = 0;
 		this._frameCounter = 0;
+		this._currentFrame = 0;
 		if (_isClear) {
 			deleteFolder();
 		}
@@ -138,7 +144,7 @@ class Export {
 	 * @param  delay 		(in seconds) wait before the recording starts (default: `0`)
 	 */
 	public function time(duration:Float, ?delay:Float = 0) {
-		trace('${toString()} time($duration, $delay)');
+		trace('${toString()} Set time: duration:$duration seconds, delay: $delay seconds');
 		this._isTimer = true;
 		this._duration = MathUtil.clamp(duration, 3.0, 60.0);
 		this._durationFrames = Math.round(this._duration * FPS);
@@ -147,39 +153,36 @@ class Export {
 
 
 	/**
-	 * [Description]
-// name of the file used for export (default: `frame`)
-	 * @param name
+	 * ame of the file used for export (default: `frame`)
+
+	 * @param name (default is 'frame') name of the files (example: `cc100` would generate `cc100-0157.png`)
 	 */
-	public function name(name:String) {
+	public function name(?name:String = 'frame') {
 		this._name = name;
 	}
 
 	/**
-	 * ]
-// in `export` folder, will be a new folder with this name (default: `sequence`)
+	 * `export` folder, will be a new folder with this name (default: `sequence`)
 	 *
 	 * @param folder
 	 */
-	public function folder(folder:String) {
+	public function folder(?folder:String = 'sequence') {
 		this._folder = folder;
 	}
 
 	/**
-	 * [Description]
-// activate logs
-	 * @param isDebug
+	 * ctivate logs
+	 * @param isDebug (default is `false`)
 	 */
-	public function debug(isDebug:Bool = true) {
+	public function debug(?isDebug:Bool = false) {
 		this._isDebug = isDebug;
 	}
 
 	/**
-	 * [Description]
-// clear folder before creating new export
+	 * clear folder before creating new export
 	 * @param isClear
 	 */
-	public function clear(isClear:Bool = true) {
+	public function clear(?isClear:Bool = true) {
 		this._isClear = isClear;
 	}
 
@@ -199,12 +202,16 @@ class Export {
 
 		_socket.emit(SEQUENCE, data);
 
+		// per 60 frames a mention in the browser
+		if (_frameCounter % 60 == 1){
+			trace('current frame render: $_frameCounter/${_durationFrames}');
+		}
+
 		if (_frameCounter >= _durationFrames) {
 			_isRecording = false;
 			trace('${toString()} STOP recording base on frames');
-			trace('_framecounter: ${_frameCounter}');
-			trace('_name: ${_name}');
-			trace('_folder: ${_folder}');
+			trace(settings());
+
 			convertRecording();
 			_frameCounter--;
 		}
@@ -238,9 +245,9 @@ class Export {
 	// ____________________________________ init socket (script is embedded) ____________________________________
 
 	function initSocket() {
-		trace('${toString()} initSocket');
+		trace('${toString()} Init Socket');
 		// socket = untyped io();
-		_socket = untyped __js__('io.connect({0});', 'http://localhost:${_port}');
+		_socket = untyped __js__('io.connect({0},{upgradeTimeout: 30000});', '${_host}:${_port}');
 		// check possible ways to make sure the server is acitve
 		_socket.on('connect_error', function(err) {
 			// handle server error here
@@ -253,13 +260,22 @@ class Export {
 			_isExportServerReady = false;
 		});
 		_socket.on("connect", function(err) {
-			trace('${toString()} connect: $err');
+			if(err == 'undefined'){
+				trace('${toString()} connect: $err');
+			} else {
+				trace('${toString()} connect');
+			}
+
+			trace('_currentFrame : $_currentFrame');
+
 			if (err == null) {
 				_isSocketReady = true;
 			}
 		});
 		_socket.on("disconnect", function(err) {
 			trace('${toString()} disconnect: $err');
+			_currentFrame = _frameCounter;
+			trace('_currentFrame : $_currentFrame');
 		});
 		_socket.on("connect_failed", function(err) {
 			trace('${toString()} connect_failed: $err');
@@ -364,6 +380,21 @@ class Export {
 	}
 
 	// ____________________________________ misc ____________________________________
+
+	function settings():String{
+
+		var str = '';
+
+		str += ('_name: ${_name}\n');
+		str += ('_folder: ${_folder}\n');
+		str += ('count: ${count}\n');
+		str += ('_framecounter: ${_frameCounter}\n');
+		str += ('frames: ${frames}\n');
+		str += ('delay: ${delay} sec\n');
+		str += ('duration: ${duration} sec\n');
+
+		return str;
+	}
 
 	function toString():String {
 		return '[Export]';
