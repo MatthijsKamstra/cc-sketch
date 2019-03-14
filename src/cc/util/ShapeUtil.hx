@@ -23,6 +23,7 @@ class ShapeUtil {
 	 * @param height
 	 */
 	static public function cross(ctx:CanvasRenderingContext2D, x:Float, y:Float, ?width:Float = 20, ?height:Float = 60) {
+		ctx.colour(PINK.r, PINK.g, PINK.b, 1);
 		ctx.fillRect(x - width / 2, y - height / 2, width, height);
 		ctx.fillRect(x - height / 2, y - width / 2, height, width);
 	}
@@ -67,6 +68,12 @@ class ShapeUtil {
 		for (i in 0...arr.length) {
 			var point:Point = arr[i];
 			registerPoint(ctx, point.x, point.y);
+		}
+	}
+	public static function gridRegisters(ctx:CanvasRenderingContext2D, grid:GridUtil) {
+		for (i in 0...grid.array.length) {
+			var point:Point = grid.array[i];
+			cross(ctx, point.x, point.y, 5, 20);
 		}
 	}
 
