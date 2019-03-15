@@ -334,19 +334,19 @@ Sketch.prototype = {
 				e3.preventDefault();
 				e3.stopPropagation();
 				console.log("cmd + s");
-				cc_util_ExportUtil.downloadImage(ctx,true);
+				cc_tool_Export.downloadImage(ctx,true);
 			}
 			if(e3.metaKey == true && e3.key == "s" && e3.shiftKey == true) {
 				e3.preventDefault();
 				e3.stopPropagation();
 				console.log("cmd + shift + s");
-				cc_util_ExportUtil.downloadImage(ctx,false);
+				cc_tool_Export.downloadImage(ctx,false);
 			}
 			if(e3.metaKey == true && (e3.code == "KeyS" && e3.altKey == true)) {
 				e3.preventDefault();
 				e3.stopPropagation();
 				console.log("cmd + alt + s");
-				cc_util_ExportUtil.onBase64Handler(ctx,true);
+				cc_tool_Export.onBase64Handler(ctx,true);
 			}
 			if(e3.metaKey == true && e3.key == "f") {
 				if(!Global.isFullscreen) {
@@ -531,14 +531,15 @@ var art_CC100 = function() {
 	this.shapeArray = [];
 	this.init();
 	SketchBase.call(this,null);
+	var $export = new cc_tool_Export(this.ctx,cc_model_constants_App.PORT);
+	console.log(new cc_model_constants_Sizes().INSTAGRAM);
 };
 art_CC100.__name__ = ["art","CC100"];
 art_CC100.__super__ = SketchBase;
 art_CC100.prototype = $extend(SketchBase.prototype,{
 	init: function() {
-		var socket = new cc_tool_Export(this.ctx,cc_model_constants_App.PORT);
 		this.dot = this.createShape(100,{ x : Global.w / 2, y : Global.h / 2});
-		cc_util_FontUtil.embedGoogleFont("Oswald:200,300,400,500,600,700",$bind(this,this.onEmbedHandler));
+		cc_draw_Text.embedGoogleFont("Oswald:200,300,400,500,600,700",$bind(this,this.onEmbedHandler));
 		this.createQuickSettings();
 		this.onAnimateHandler(this.dot);
 	}
@@ -603,7 +604,7 @@ art_CC100.prototype = $extend(SketchBase.prototype,{
 			var sh = this.shapeArray[i];
 		}
 		this.ctx.fillStyle = cc_util_ColorUtil.getColourObj(this._color4);
-		cc_util_FontUtil.centerFillText(this.ctx,"text",Global.w / 2,Global.h / 2,"'Oswald', sans-serif;",160);
+		cc_draw_Text.fillText(this.ctx,"text",Global.w / 2,Global.h / 2,"'Oswald', sans-serif;",160);
 		cc_CanvasTools.strokeColourRGB(this.ctx,this._color3);
 		cc_CanvasTools.strokeWeight(this.ctx,2);
 		cc_CanvasTools.circleStroke(this.ctx,this.dot.x,this.dot.y,20);
@@ -904,6 +905,157 @@ cc_CanvasTools.backgroundObj = function(ctx,rgb) {
 };
 cc_CanvasTools.backgroundRGB = function(ctx,rgb) {
 	cc_CanvasTools.background(ctx,rgb.r,rgb.g,rgb.b);
+};
+var cc_draw_Text = function(ctx,text) {
+	this._textBaseline = "alphabetic";
+	this._textAlign = "left";
+	this._font = "Arial";
+	this._rotate = 0;
+	this._size = 100;
+	this._y = 100;
+	this._x = 100;
+	this._ctx = ctx;
+	this._text = text;
+};
+cc_draw_Text.__name__ = ["cc","draw","Text"];
+cc_draw_Text.create = function(ctx,text) {
+	var Text = new cc_draw_Text(ctx,text);
+	return Text;
+};
+cc_draw_Text.fillText = function(ctx,text,x,y,css,size) {
+	if(size == null) {
+		size = 20;
+	}
+	ctx.font = "" + size + "px " + StringTools.replace(css,";","");
+	ctx.textAlign = "left";
+	ctx.fillText(text,x,y);
+};
+cc_draw_Text.centerFillText = function(ctx,text,x,y,css,size) {
+	if(size == null) {
+		size = 20;
+	}
+	ctx.font = "" + size + "px " + StringTools.replace(css,";","");
+	ctx.textAlign = "center";
+	ctx.fillText(text,x,y);
+};
+cc_draw_Text.embedGoogleFont = function(family,callback,callbackArray) {
+	var _id = "embededGoogleFonts";
+	var _url = "https://fonts.googleapis.com/css?family=";
+	var link = window.document.getElementById(_id);
+	if(link != null) {
+		var temp = StringTools.replace(link.href,_url,"");
+		family = temp + "|" + family;
+	} else {
+		link = window.document.createElement("link");
+	}
+	if(callbackArray == null) {
+		callbackArray = [family];
+	}
+	link.href = "" + _url + family;
+	link.rel = "stylesheet";
+	link.id = _id;
+	link.onload = function() {
+		if(callback != null) {
+			callback.apply(callback,callbackArray);
+		}
+	};
+	window.document.head.appendChild(link);
+};
+cc_draw_Text.prototype = {
+	text: function(text) {
+		this._text = text;
+		return this;
+	}
+	,x: function(x) {
+		this._x = x;
+		return this;
+	}
+	,y: function(y) {
+		this._y = y;
+		return this;
+	}
+	,pos: function(x,y) {
+		this._x = x;
+		this._y = y;
+		return this;
+	}
+	,font: function(font) {
+		this._font = StringTools.replace(font,";","");
+		return this;
+	}
+	,size: function(px) {
+		this._size = px;
+		return this;
+	}
+	,textAlign: function(pos) {
+		this._textAlign = pos;
+		return this;
+	}
+	,leftAlign: function() {
+		this._textAlign = "left";
+		return this;
+	}
+	,rightAlign: function() {
+		this._textAlign = "right";
+		return this;
+	}
+	,centerAlign: function() {
+		this._textAlign = "center";
+		return this;
+	}
+	,topBaseline: function() {
+		this._textBaseline = "top";
+		return this;
+	}
+	,middleBaseline: function() {
+		this._textBaseline = "middle";
+		return this;
+	}
+	,bottomBaseline: function() {
+		this._textBaseline = "bottom";
+		return this;
+	}
+	,textBaseline: function(pos) {
+		this._textBaseline = pos;
+		return this;
+	}
+	,rotate: function(degree) {
+		this._rotate = degree;
+		return this;
+	}
+	,rotateLeft: function() {
+		this._rotate = -90;
+		return this;
+	}
+	,rotateRight: function() {
+		this._rotate = 90;
+		return this;
+	}
+	,rotateDown: function() {
+		this._rotate = 180;
+		return this;
+	}
+	,color: function(value) {
+		this._color = value;
+		return this;
+	}
+	,draw: function() {
+		this._ctx.save();
+		var previousColor = this._ctx.fillStyle;
+		if(this._color != null) {
+			cc_CanvasTools.fillColourRGB(this._ctx,this._color);
+		}
+		this._ctx.font = "" + this._size + "px " + this._font;
+		this._ctx.textAlign = this._textAlign;
+		this._ctx.textBaseline = this._textBaseline;
+		this._ctx.translate(this._x,this._y);
+		this._ctx.rotate(cc_util_MathUtil.radians(this._rotate));
+		this._ctx.fillText(this._text,0,0);
+		this._ctx.restore();
+		this._ctx.fillStyle = previousColor;
+		return this;
+	}
+	,__class__: cc_draw_Text
 };
 var cc_lets_Easing = function() { };
 cc_lets_Easing.__name__ = ["cc","lets","Easing"];
@@ -1432,13 +1584,27 @@ cc_lets_easing_SineEaseOut.prototype = {
 };
 var cc_model_constants_App = function() { };
 cc_model_constants_App.__name__ = ["cc","model","constants","App"];
-var cc_tool_Export = function(ctx,port) {
+var cc_model_constants_Sizes = function() {
+	this.APAPER = [];
+	this.INSTAGRAM = [];
+	this.INSTA_SQUARE_VIDEO = { width : 1080, height : 1080, dpi : 72, description : "Instagram square video"};
+	this.INSTAGRAM = [this.INSTA_SQUARE_VIDEO];
+};
+cc_model_constants_Sizes.__name__ = ["cc","model","constants","Sizes"];
+cc_model_constants_Sizes.prototype = {
+	__class__: cc_model_constants_Sizes
+};
+var cc_tool_Export = function(ctx,host,port) {
 	if(port == null) {
 		port = "5000";
+	}
+	if(host == null) {
+		host = "http://localhost";
 	}
 	this.FPS = 60;
 	this._isRecording = false;
 	this._durationFrames = 0;
+	this._currentFrame = 0;
 	this._frameCounter = 0;
 	this._folder = "sequence";
 	this._name = "frame";
@@ -1455,6 +1621,7 @@ var cc_tool_Export = function(ctx,port) {
 	this._isEmbedded = false;
 	this._ctx = ctx;
 	this._canvas = ctx.canvas;
+	this._host = host;
 	this._port = port;
 	if(this.checkScript()) {
 		this.initSocket();
@@ -1465,6 +1632,54 @@ var cc_tool_Export = function(ctx,port) {
 cc_tool_Export.__name__ = ["cc","tool","Export"];
 cc_tool_Export.embedScript = function(callback,callbackArray) {
 };
+cc_tool_Export.downloadImage = function(ctx,isJpg,fileName) {
+	if(isJpg == null) {
+		isJpg = false;
+	}
+	if(fileName == null) {
+		var hash = window.location.hash;
+		hash = StringTools.replace(hash,"#","").toLowerCase();
+		if(hash == "") {
+			hash = "image";
+		}
+		fileName = "" + hash + "-" + new Date().getTime();
+	}
+	var link = window.document.createElement("a");
+	link.href = ctx.canvas.toDataURL(isJpg ? "image/jpeg" : "",1);
+	link.download = fileName;
+	link.click();
+};
+cc_tool_Export.onBase64Handler = function(ctx,isJpg) {
+	if(isJpg == null) {
+		isJpg = false;
+	}
+	var base64 = ctx.canvas.toDataURL(isJpg ? "image/jpeg" : "",1);
+	cc_tool_Export.clipboard(base64);
+};
+cc_tool_Export.downloadTextFile = function(text,fileName) {
+	if(fileName == null) {
+		fileName = "CC-txt-" + new Date().getTime() + ".txt";
+	}
+	var element = window.document.createElement("a");
+	element.setAttribute("href","data:text/plain;charset=utf-8," + encodeURIComponent(text));
+	element.setAttribute("download",fileName);
+	element.style.display = "none";
+	window.document.body.appendChild(element);
+	element.click();
+	window.document.body.removeChild(element);
+};
+cc_tool_Export.clipboard = function(text) {
+	var win = "Ctrl+C";
+	var mac = "Cmd+C";
+	var copyCombo = win;
+	var userAgent = window.navigator.userAgent;
+	var ereg = new EReg("iPhone|iPod|iPad|Android|BlackBerry","i");
+	var ismac = ereg.match(userAgent);
+	if(ismac) {
+		copyCombo = mac;
+	}
+	window.prompt("Copy to clipboard: " + copyCombo + ", Enter",text);
+};
 cc_tool_Export.prototype = {
 	start: function() {
 		var _gthis = this;
@@ -1474,8 +1689,7 @@ cc_tool_Export.prototype = {
 			this.reset();
 			if(this._isTimer) {
 				this.startTime = new Date().getTime() / 1000;
-				window.console.log("" + this.toString() + " TIMER");
-				window.console.log("START time base recording (delay: " + this._delay + "second, frames: " + this._durationFrames + ")");
+				window.console.log("" + this.toString() + " START time base recording (delay: " + this._delay + "second, frames: " + this._durationFrames + ")");
 				haxe_Timer.delay(function() {
 					console.log("delay time " + (new Date().getTime() / 1000 - _gthis.startTime));
 					_gthis._isRecording = true;
@@ -1499,6 +1713,7 @@ cc_tool_Export.prototype = {
 		this._currentDuration = 0;
 		this._currentDelay = 0;
 		this._frameCounter = 0;
+		this._currentFrame = 0;
 		if(this._isClear) {
 			this.deleteFolder();
 		}
@@ -1507,21 +1722,27 @@ cc_tool_Export.prototype = {
 		if(delay == null) {
 			delay = 0;
 		}
-		console.log("" + this.toString() + " time(" + duration + ", " + delay + ")");
+		console.log("" + this.toString() + " Set time: duration:" + duration + " seconds, delay: " + delay + " seconds");
 		this._isTimer = true;
 		this._duration = cc_util_MathUtil.clamp(duration,3.0,60.0);
 		this._durationFrames = Math.round(this._duration * this.FPS);
 		this._delay = delay;
 	}
 	,name: function(name) {
+		if(name == null) {
+			name = "frame";
+		}
 		this._name = name;
 	}
 	,folder: function(folder) {
+		if(folder == null) {
+			folder = "sequence";
+		}
 		this._folder = folder;
 	}
 	,debug: function(isDebug) {
 		if(isDebug == null) {
-			isDebug = true;
+			isDebug = false;
 		}
 		this._isDebug = isDebug;
 	}
@@ -1539,12 +1760,13 @@ cc_tool_Export.prototype = {
 			console.log("" + this.toString() + " renderSequence : " + data._id);
 		}
 		this._socket.emit(cc_tool_Export.SEQUENCE,data);
+		if(this._frameCounter % 60 == 1) {
+			console.log("current frame render: " + this._frameCounter + "/" + this._durationFrames);
+		}
 		if(this._frameCounter >= this._durationFrames) {
 			this._isRecording = false;
 			console.log("" + this.toString() + " STOP recording base on frames");
-			console.log("_framecounter: " + this._frameCounter);
-			console.log("_name: " + this._name);
-			console.log("_folder: " + this._folder);
+			console.log(this.settings());
 			this.convertRecording();
 			this._frameCounter--;
 		}
@@ -1563,22 +1785,32 @@ cc_tool_Export.prototype = {
 	}
 	,initSocket: function() {
 		var _gthis = this;
-		console.log("" + this.toString() + " initSocket");
-		this._socket = io.connect("http://localhost:" + this._port);
+		console.log("" + this.toString() + " Init Socket");
+		this._socket = io.connect("" + this._host + ":" + this._port,{upgradeTimeout: 30000});
 		this._socket.on("connect_error",function(err) {
+			window.console.group("Connection error export server");
 			window.console.warn("" + _gthis.toString() + " Error connecting to server \"" + err + "\", closing connection");
+			window.console.info("this probably means that cc-export project isn't running");
+			window.console.groupEnd();
 			_gthis._socket.close();
 			_gthis._isRecording = false;
 			_gthis._isExportServerReady = false;
 		});
 		this._socket.on("connect",function(err1) {
-			console.log("" + _gthis.toString() + " connect: " + err1);
+			if(err1 == "undefined") {
+				console.log("" + _gthis.toString() + " connect: " + err1);
+			} else {
+				console.log("" + _gthis.toString() + " connect");
+			}
+			console.log("_currentFrame : " + _gthis._currentFrame);
 			if(err1 == null) {
 				_gthis._isSocketReady = true;
 			}
 		});
 		this._socket.on("disconnect",function(err2) {
 			console.log("" + _gthis.toString() + " disconnect: " + err2);
+			_gthis._currentFrame = _gthis._frameCounter;
+			console.log("_currentFrame : " + _gthis._currentFrame);
 		});
 		this._socket.on("connect_failed",function(err3) {
 			console.log("" + _gthis.toString() + " connect_failed: " + err3);
@@ -1659,6 +1891,17 @@ cc_tool_Export.prototype = {
 	}
 	,get_duration: function() {
 		return this._duration;
+	}
+	,settings: function() {
+		var str = "";
+		str += "_name: " + this._name + "\n";
+		str += "_folder: " + this._folder + "\n";
+		str += "count: " + this.get_count() + "\n";
+		str += "_framecounter: " + this._frameCounter + "\n";
+		str += "frames: " + this.get_frames() + "\n";
+		str += "delay: " + this.get_delay() + " sec\n";
+		str += "duration: " + this.get_duration() + " sec\n";
+		return str;
 	}
 	,toString: function() {
 		return "[Export]";
@@ -1761,211 +2004,6 @@ cc_util_ColorUtil.hex2RGB = function(hex) {
 };
 cc_util_ColorUtil.prototype = {
 	__class__: cc_util_ColorUtil
-};
-var cc_util_ExportUtil = function() {
-};
-cc_util_ExportUtil.__name__ = ["cc","util","ExportUtil"];
-cc_util_ExportUtil.downloadImage = function(ctx,isJpg,fileName) {
-	if(isJpg == null) {
-		isJpg = false;
-	}
-	if(fileName == null) {
-		var hash = window.location.hash;
-		hash = StringTools.replace(hash,"#","").toLowerCase();
-		if(hash == "") {
-			hash = "image";
-		}
-		fileName = "" + hash + "-" + new Date().getTime();
-	}
-	var link = window.document.createElement("a");
-	link.href = ctx.canvas.toDataURL(isJpg ? "image/jpeg" : "",1);
-	link.download = fileName;
-	link.click();
-};
-cc_util_ExportUtil.onBase64Handler = function(ctx,isJpg) {
-	if(isJpg == null) {
-		isJpg = false;
-	}
-	var base64 = ctx.canvas.toDataURL(isJpg ? "image/jpeg" : "",1);
-	cc_util_ExportUtil.clipboard(base64);
-};
-cc_util_ExportUtil.downloadTextFile = function(text,fileName) {
-	if(fileName == null) {
-		fileName = "CC-txt-" + new Date().getTime() + ".txt";
-	}
-	var element = window.document.createElement("a");
-	element.setAttribute("href","data:text/plain;charset=utf-8," + encodeURIComponent(text));
-	element.setAttribute("download",fileName);
-	element.style.display = "none";
-	window.document.body.appendChild(element);
-	element.click();
-	window.document.body.removeChild(element);
-};
-cc_util_ExportUtil.clipboard = function(text) {
-	var win = "Ctrl+C";
-	var mac = "Cmd+C";
-	var copyCombo = win;
-	var userAgent = window.navigator.userAgent;
-	var ereg = new EReg("iPhone|iPod|iPad|Android|BlackBerry","i");
-	var ismac = ereg.match(userAgent);
-	if(ismac) {
-		copyCombo = mac;
-	}
-	window.prompt("Copy to clipboard: " + copyCombo + ", Enter",text);
-};
-cc_util_ExportUtil.prototype = {
-	__class__: cc_util_ExportUtil
-};
-var cc_util_FontUtil = function(ctx,text) {
-	this._textBaseline = "alphabetic";
-	this._textAlign = "left";
-	this._font = "Arial";
-	this._rotate = 0;
-	this._size = 100;
-	this._y = 100;
-	this._x = 100;
-	this._ctx = ctx;
-	this._text = text;
-};
-cc_util_FontUtil.__name__ = ["cc","util","FontUtil"];
-cc_util_FontUtil.create = function(ctx,text) {
-	var FontUtil = new cc_util_FontUtil(ctx,text);
-	return FontUtil;
-};
-cc_util_FontUtil.fillText = function(ctx,text,x,y,css,size) {
-	if(size == null) {
-		size = 20;
-	}
-	ctx.font = "" + size + "px " + StringTools.replace(css,";","");
-	ctx.textAlign = "left";
-	ctx.fillText(text,x,y);
-};
-cc_util_FontUtil.centerFillText = function(ctx,text,x,y,css,size) {
-	if(size == null) {
-		size = 20;
-	}
-	ctx.font = "" + size + "px " + StringTools.replace(css,";","");
-	ctx.textAlign = "center";
-	ctx.fillText(text,x,y);
-};
-cc_util_FontUtil.embedGoogleFont = function(family,callback,callbackArray) {
-	var _id = "embededGoogleFonts";
-	var _url = "https://fonts.googleapis.com/css?family=";
-	var link = window.document.getElementById(_id);
-	if(link != null) {
-		var temp = StringTools.replace(link.href,_url,"");
-		family = temp + "|" + family;
-	} else {
-		link = window.document.createElement("link");
-	}
-	if(callbackArray == null) {
-		callbackArray = [family];
-	}
-	link.href = "" + _url + family;
-	link.rel = "stylesheet";
-	link.id = _id;
-	link.onload = function() {
-		if(callback != null) {
-			callback.apply(callback,callbackArray);
-		}
-	};
-	window.document.head.appendChild(link);
-};
-cc_util_FontUtil.prototype = {
-	text: function(text) {
-		this._text = text;
-		return this;
-	}
-	,x: function(x) {
-		this._x = x;
-		return this;
-	}
-	,y: function(y) {
-		this._y = y;
-		return this;
-	}
-	,pos: function(x,y) {
-		this._x = x;
-		this._y = y;
-		return this;
-	}
-	,font: function(font) {
-		this._font = StringTools.replace(font,";","");
-		return this;
-	}
-	,size: function(px) {
-		this._size = px;
-		return this;
-	}
-	,textAlign: function(pos) {
-		this._textAlign = pos;
-		return this;
-	}
-	,leftAlign: function() {
-		this._textAlign = "left";
-		return this;
-	}
-	,rightAlign: function() {
-		this._textAlign = "right";
-		return this;
-	}
-	,centerAlign: function() {
-		this._textAlign = "center";
-		return this;
-	}
-	,topBaseline: function() {
-		this._textBaseline = "top";
-		return this;
-	}
-	,middleBaseline: function() {
-		this._textBaseline = "middle";
-		return this;
-	}
-	,bottomBaseline: function() {
-		this._textBaseline = "bottom";
-		return this;
-	}
-	,textBaseline: function(pos) {
-		this._textBaseline = pos;
-		return this;
-	}
-	,rotate: function(degree) {
-		this._rotate = degree;
-		return this;
-	}
-	,rotateLeft: function() {
-		this._rotate = -90;
-		return this;
-	}
-	,rotateRight: function() {
-		this._rotate = 90;
-		return this;
-	}
-	,rotateDown: function() {
-		this._rotate = 180;
-		return this;
-	}
-	,color: function(value) {
-		this._color = value;
-		return this;
-	}
-	,draw: function() {
-		this._ctx.save();
-		var previousColor = this._ctx.fillStyle;
-		if(this._color != null) {
-			cc_CanvasTools.fillColourRGB(this._ctx,this._color);
-		}
-		this._ctx.font = "" + this._size + "px " + this._font;
-		this._ctx.textAlign = this._textAlign;
-		this._ctx.textBaseline = this._textBaseline;
-		this._ctx.translate(this._x,this._y);
-		this._ctx.rotate(cc_util_MathUtil.radians(this._rotate));
-		this._ctx.fillText(this._text,0,0);
-		this._ctx.restore();
-		this._ctx.fillStyle = previousColor;
-		return this;
-	}
-	,__class__: cc_util_FontUtil
 };
 var cc_util_GridUtil = function(ctx) {
 	this._isDebug = false;
@@ -2116,7 +2154,7 @@ cc_util_GridUtil.prototype = {
 	}
 	,setPosition: function(x,y) {
 		if(this._isDebug) {
-			window.console.log("GridUtil :: setPostion");
+			window.console.log("" + this.toString() + " setPostion");
 		}
 		this.x = x;
 		this.y = y;
@@ -2128,7 +2166,7 @@ cc_util_GridUtil.prototype = {
 			isCentered = true;
 		}
 		if(this._isDebug) {
-			window.console.log("GridUtil :: setCenterPoint");
+			window.console.log("" + this.toString() + " setCenterPoint");
 		}
 		this.isCentered = isCentered;
 		this.calculate();
@@ -2139,7 +2177,7 @@ cc_util_GridUtil.prototype = {
 		}
 		this._isDebug = isDebug;
 		if(this._isDebug) {
-			window.console.log("GridUtil :: setCenterPoint");
+			window.console.log("" + this.toString() + " setDebug");
 		}
 	}
 	,setIsFullscreen: function(isFullscreen) {
@@ -2147,14 +2185,14 @@ cc_util_GridUtil.prototype = {
 			isFullscreen = true;
 		}
 		if(this._isDebug) {
-			window.console.log("GridUtil :: setIsFullscreen");
+			window.console.log("" + this.toString() + " setIsFullscreen");
 		}
 		this.isFullscreen = isFullscreen;
 		this.calculate();
 	}
 	,setDimension: function(width,height) {
 		if(this._isDebug) {
-			window.console.log("GridUtil :: setDimension");
+			window.console.log("" + this.toString() + " setDimension (width: " + width + ", height: " + height + ")");
 		}
 		this.width = width;
 		this.height = height;
@@ -2163,7 +2201,7 @@ cc_util_GridUtil.prototype = {
 	}
 	,setNumbered: function(numHor,numVer) {
 		if(this._isDebug) {
-			window.console.log("GridUtil :: setNumbers");
+			window.console.log("" + this.toString() + " setNumbers (numHor: " + numHor + ", numVer: " + numVer + ")");
 		}
 		this.numHor = numHor;
 		this.numVer = numVer;
@@ -2175,7 +2213,7 @@ cc_util_GridUtil.prototype = {
 			cellHeight = cellWidth;
 		}
 		if(this._isDebug) {
-			window.console.log("GridUtil :: setCellSize");
+			window.console.log("" + this.toString() + " setCellSize (cellWidth: " + cellWidth + ", cellHeight: " + cellHeight + ")");
 		}
 		this.cellWidth = cellWidth;
 		this.cellHeight = cellHeight;
@@ -2187,11 +2225,11 @@ cc_util_GridUtil.prototype = {
 	}
 	,calculate: function() {
 		if(this._isDebug) {
-			window.console.log("GridUtil.calculate");
+			window.console.log("" + this.toString() + " calculate()");
 		}
 		if(this._isCellSize && !this._isDimension) {
 			if(this._isDebug) {
-				window.console.info("GridUtil solution #1: cellSize is set");
+				window.console.info("" + this.toString() + " solution #1: cellSize is set");
 			}
 			this.numHor = Math.floor(Global.w / this.cellWidth);
 			this.numVer = Math.floor(Global.h / this.cellHeight);
@@ -2202,7 +2240,7 @@ cc_util_GridUtil.prototype = {
 		}
 		if(this._isNumbered && !this._isDimension) {
 			if(this._isDebug) {
-				window.console.info("GridUtil solution #2: numbered cells set");
+				window.console.info("" + this.toString() + " solution #2: numbered cells set");
 			}
 			var _w = this.width != null ? this.width : Global.w;
 			var _h = this.height != null ? this.height : Global.h;
@@ -2212,10 +2250,11 @@ cc_util_GridUtil.prototype = {
 			this.height = this.numVer * this.cellHeight;
 			this.x = (Global.w - this.width) / 2;
 			this.y = (Global.h - this.height) / 2;
+			window.console.info("cellWidth: " + this.cellWidth + ", cellHeight: " + this.cellHeight + ", width: " + this.width + ", height: " + this.height + ", x: " + this.x + ", y: " + this.y);
 		}
 		if(this._isDimension && !this._isNumbered && !this._isCellSize) {
 			if(this._isDebug) {
-				window.console.info("GridUtil solution #3: width/height set (" + this.width + ", " + this.height + ")");
+				window.console.info("" + this.toString() + " solution #3: width/height set (" + this.width + ", " + this.height + ")");
 			}
 			var _cellWidth = this.cellWidth != null ? this.cellWidth : 50;
 			var _cellHeight = this.cellHeight != null ? this.cellHeight : 50;
@@ -2228,9 +2267,9 @@ cc_util_GridUtil.prototype = {
 			this.x = (Global.w - this.width) / 2;
 			this.y = (Global.h - this.height) / 2;
 		}
-		if(this._isDimension && this._isNumbered && !this._isCellSize) {
+		if(this._isDimension && !this._isCellSize) {
 			if(this._isDebug) {
-				window.console.info("GridUtil solution #3a: width/height set (" + this.width + ", " + this.height + ") AND number row/cols (" + this.numHor + ", " + this.numVer + ")");
+				window.console.info("" + this.toString() + " solution #3a: width/height set (" + this.width + ", " + this.height + ") AND number row/cols (" + this.numHor + ", " + this.numVer + ")");
 			}
 			this.cellWidth = Math.floor(this.width / this.numHor);
 			this.cellHeight = Math.floor(this.height / this.numVer);
@@ -2241,9 +2280,19 @@ cc_util_GridUtil.prototype = {
 				this.y = (Global.h - this.height) / 2;
 			}
 		}
+		if(this._isDimension && this._isNumbered && !this._isCellSize) {
+			if(this._isDebug) {
+				window.console.info("" + this.toString() + " solution #3b: w/h set (" + this.width + ", " + this.height + ") AND number row/cols (" + this.numHor + ", " + this.numVer + ")");
+				window.console.info("" + this.toString() + "  (" + Global.w + ", " + Global.h + ")");
+			}
+			this.cellWidth = Math.floor(this.width / this.numHor);
+			this.cellHeight = Math.floor(this.height / this.numVer);
+			this.width = this.numHor * this.cellWidth;
+			this.height = this.numVer * this.cellHeight;
+		}
 		if(this._isCellSize && this._isDimension) {
 			if(this._isDebug) {
-				window.console.info("GridUtil solution #4: cellSize is set and width/height");
+				window.console.info("" + this.toString() + " solution #4: cellSize is set and width/height");
 			}
 			this.numHor = Math.floor(this.width / this.cellWidth);
 			this.numVer = Math.floor(this.height / this.cellHeight);
@@ -2256,7 +2305,7 @@ cc_util_GridUtil.prototype = {
 		}
 		if(this.isFullscreen && this._isCellSize) {
 			if(this._isDebug) {
-				window.console.info("GridUtil solution #5: fullscreen and cellSize is set");
+				window.console.info("" + this.toString() + " solution #5: fullscreen and cellSize is set");
 			}
 			this.width = Global.w;
 			this.height = Global.h;
@@ -2291,8 +2340,14 @@ cc_util_GridUtil.prototype = {
 		}
 		total = this.array.length;
 		if(this._isDebug) {
-			window.console.warn("x: " + this.x + ", y: " + this.y + ", width: " + this.width + ", height: " + this.height + ", cellWidth: " + this.cellWidth + ", cellHeight: " + this.cellHeight + ", numHor: " + this.numHor + ", numVer: " + this.numVer + ", array: " + this.array.length);
+			window.console.groupCollapsed("" + this.toString() + " Sata");
+			window.console.log("x: " + this.x + ", y: " + this.y + ", width: " + this.width + ", height: " + this.height + ", cellWidth: " + this.cellWidth + ", cellHeight: " + this.cellHeight + ", numHor: " + this.numHor + ", numVer: " + this.numVer + ", array: " + this.array.length);
+			window.console.table(this.array);
+			window.console.groupEnd();
 		}
+	}
+	,toString: function() {
+		return "[GridUtil]";
 	}
 	,__class__: cc_util_GridUtil
 };
@@ -2412,6 +2467,7 @@ cc_util_ShapeUtil.cross = function(ctx,x,y,width,height) {
 	if(width == null) {
 		width = 20;
 	}
+	cc_CanvasTools.colour(ctx,cc_util_ColorUtil.PINK.r,cc_util_ColorUtil.PINK.g,cc_util_ColorUtil.PINK.b,1);
 	ctx.fillRect(x - width / 2,y - height / 2,width,height);
 	ctx.fillRect(x - height / 2,y - width / 2,height,width);
 };
@@ -2441,6 +2497,15 @@ cc_util_ShapeUtil.gridRegister = function(ctx,arr) {
 		var i = _g1++;
 		var point = arr[i];
 		cc_util_ShapeUtil.registerPoint(ctx,point.x,point.y);
+	}
+};
+cc_util_ShapeUtil.gridRegisters = function(ctx,grid) {
+	var _g1 = 0;
+	var _g = grid.array.length;
+	while(_g1 < _g) {
+		var i = _g1++;
+		var point = grid.array[i];
+		cc_util_ShapeUtil.cross(ctx,point.x,point.y,5,20);
 	}
 };
 cc_util_ShapeUtil.gridField = function(ctx,grid) {
@@ -2707,7 +2772,7 @@ Global.TWO_PI = Math.PI * 2;
 cc_lets_Go._tweens = [];
 cc_model_constants_App.NAME = "[cc-sketch]";
 cc_model_constants_App.PORT = "5000";
-cc_model_constants_App.BUILD = "2019-03-13 14:00:03";
+cc_model_constants_App.BUILD = "2019-03-15 01:03:40";
 cc_tool_Export.SEND = "send";
 cc_tool_Export.MESSAGE = "message";
 cc_tool_Export.IMAGE = "image";
