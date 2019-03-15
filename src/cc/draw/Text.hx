@@ -4,7 +4,6 @@ import js.html.CanvasRenderingContext2D;
 import js.html.*;
 import js.Browser.document;
 import js.Browser.window;
-
 // import cc.Global.*;
 import cc.util.ColorUtil.RGB;
 import cc.util.MathUtil.*;
@@ -13,13 +12,13 @@ using cc.CanvasTools;
 using StringTools;
 
 class Text {
-
 	// are always set
 	private var _ctx:CanvasRenderingContext2D;
 	private var _text:String;
 	// defaults
 	private var _x:Float = 100;
 	private var _y:Float = 100;
+	private var _alpha:Float = 1;
 	private var _size:Int = 100;
 	private var _color:RGB;
 	private var _rotate:Int = 0;
@@ -52,87 +51,113 @@ class Text {
 		this._text = text;
 		return this;
 	}
+
 	inline public function x(x:Float):Text {
 		this._x = x;
 		return this;
 	}
+
 	inline public function y(y:Float):Text {
 		this._y = y;
 		return this;
 	}
-	inline public function pos(x:Float,y:Float):Text {
+
+	inline public function pos(x:Float, y:Float):Text {
 		this._x = x;
 		this._y = y;
 		return this;
 	}
+
 	inline public function font(font:String):Text {
-		this._font = font.replace(';','');
+		this._font = font.replace(';', '');
 		return this;
 	}
+
 	inline public function size(px:Int):Text {
 		this._size = px;
 		return this;
 	}
+
 	inline public function textAlign(pos:String):Text {
 		this._textAlign = pos; // left/right/center
 		return this;
 	}
+
 	inline public function leftAlign():Text {
 		this._textAlign = 'left'; // left/right/center
 		return this;
 	}
+
 	inline public function rightAlign():Text {
 		this._textAlign = 'right'; // left/right/center
 		return this;
 	}
+
 	inline public function centerAlign():Text {
 		this._textAlign = 'center'; // left/right/center
 		return this;
 	}
+
 	inline public function topBaseline():Text {
 		this._textBaseline = 'top'; // top/middle/bottom
 		return this;
 	}
+
 	inline public function middleBaseline():Text {
 		this._textBaseline = 'middle'; // top/middle/bottom
 		return this;
 	}
+
 	inline public function bottomBaseline():Text {
 		this._textBaseline = 'bottom'; // top/middle/bottom
 		return this;
 	}
+
 	inline public function textBaseline(pos:String):Text {
 		this._textBaseline = pos; // top/middle/bottom
 		return this;
 	}
+
 	inline public function rotate(degree:Int):Text {
 		this._rotate = degree;
 		return this;
 	}
+
 	inline public function rotateLeft():Text {
 		this._rotate = -90;
 		return this;
 	}
+
 	inline public function rotateRight():Text {
 		this._rotate = 90;
 		return this;
 	}
+
 	inline public function rotateDown():Text {
 		this._rotate = 180;
 		return this;
 	}
-	inline public function color(value:RGB):Text {
+
+	inline public function color(value:RGB, ?alpha:Float = 1):Text {
 		this._color = value;
+		this._alpha = clamp(alpha, 0, 1); // a value r should be between 0 and 1
 		return this;
 	}
+
+	inline public function alpha(alpha:Float):Text {
+		this._alpha = clamp(alpha, 0, 1); // a value r should be between 0 and 1
+		// this._alpha = alpha; // a value r should be between 0 and 1
+		return this;
+	}
+
 	inline public function draw():Text {
 		// draw to convast
 		_ctx.save(); // save current state
 
 		var previousColor = _ctx.fillStyle;
 		// check if color is set
-		if(_color != null){
-			_ctx.fillColourRGB(_color);
+		if (_color != null) {
+			_ctx.fillColourRGB(_color, this._alpha);
 		}
 		_ctx.font = '${_size}px ${_font}';
 		_ctx.textAlign = _textAlign;
@@ -140,7 +165,7 @@ class Text {
 
 		// move canvas and rotate
 		_ctx.translate(_x, _y);
-		_ctx.rotate(radians(_rotate) );
+		_ctx.rotate(radians(_rotate));
 		// print text
 		_ctx.fillText(_text, 0, 0);
 
@@ -153,16 +178,13 @@ class Text {
 		return this;
 	}
 
-
 	// public static function text(, x:Float, y:Float, css:String, ?size:Int = 20) {
 	// 	ctx.font = '${size}px ${css.replace(';', '')}';
 	// 	// seems to break something if css has `;`
 	// 	ctx.textAlign = "left"; // center / right
-
 	// 	ctx.font = '100px Miso';
 	// 	ctx.textAlign = 'center';
 	// 	ctx.textBaseline = 'middle';
-
 	// 	ctx.fillText(text, x, y);
 	// }
 	// TODO:
@@ -181,7 +203,6 @@ class Text {
 	// 	// important to have the font loaded
 	// 	ctx.fillStyle = getColourObj(_color4);
 	// 	Text.fillText(ctx, text, w / 2, -h, "'Oswald', sans-serif;", _fontSize);
-
 	// 	// split text up into string/lines
 	// 	var lines:Array<String> = TextUtil.getLines(ctx, text, square - (2 * _padding));
 	// 	for (i in 0...lines.length) {
@@ -189,7 +210,6 @@ class Text {
 	// 		Text.fillText(ctx, line, _padding, _paddingTop + ((i + 1) * _lineHeight), "'Oswald', sans-serif;", _fontSize);
 	// 	}
 	// }
-
 
 	/**
 	 * make sure to use Google fonts for this
