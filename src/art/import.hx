@@ -13,12 +13,13 @@ import cc.util.AnimateUtil.*;
 // utils
 import cc.util.*;
 import cc.util.ColorUtil;
-import cc.util.FontUtil;
 import cc.util.GridUtil;
 import cc.util.MathUtil;
 import cc.util.TextUtil;
 // easy access to typedef
 import cc.AST;
+
+import cc.draw.Text;
 
 // syntactic sugar to extend CanvasRenderingContext2D
 using cc.CanvasTools;

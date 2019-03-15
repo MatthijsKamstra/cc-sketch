@@ -6,6 +6,8 @@ import js.html.*;
 import js.html.MouseEvent;
 import js.html.CanvasElement;
 
+import cc.tool.Export;
+
 /**
  * inspired by George Gally, which was inpired by Seb Lee
  * https://github.com/GeorgeGally/creative_coding/blob/master/js/canvas.js
@@ -199,19 +201,19 @@ class Sketch {
 				e.preventDefault();
 				e.stopPropagation();
 				trace('cmd + s');
-				cc.util.ExportUtil.downloadImage(ctx, true);
+				Export.downloadImage(ctx, true);
 			}
 			if (e.metaKey == true && e.key == 's' && e.shiftKey == true) {
 				e.preventDefault();
 				e.stopPropagation();
 				trace('cmd + shift + s');
-				cc.util.ExportUtil.downloadImage(ctx, false);
+				Export.downloadImage(ctx, false);
 			}
 			if (e.metaKey == true && untyped e.code == 'KeyS' && e.altKey == true) {
 				e.preventDefault();
 				e.stopPropagation();
 				trace('cmd + alt + s');
-				cc.util.ExportUtil.onBase64Handler(ctx, true);
+				Export.onBase64Handler(ctx, true);
 			}
 
 			if (e.metaKey == true && e.key == 'f') {

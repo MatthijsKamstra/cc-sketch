@@ -28,14 +28,15 @@ class CC100 extends SketchBase {
 		init();
 		super(null);
 
-		trace(new cc.model.constants.Sizes().ARR);
+		var export = new Export(ctx, App.PORT);
+
+		trace(new cc.model.constants.Sizes().INSTAGRAM);
 	}
 
 	function init() {
-		var socket = new Export(ctx, App.PORT);
 		dot = createShape(100, {x: w / 2, y: h / 2});
 		// <link href="https://fonts.googleapis.com/css?family=Oswald:200,300,400,500,600,700" rel="stylesheet">
-		FontUtil.embedGoogleFont('Oswald:200,300,400,500,600,700', onEmbedHandler);
+		Text.embedGoogleFont('Oswald:200,300,400,500,600,700', onEmbedHandler);
 		createQuickSettings();
 		onAnimateHandler(dot);
 	}
@@ -100,7 +101,7 @@ class CC100 extends SketchBase {
 		// ctx.xcross(w/2, h/2, 200);
 
 		ctx.fillStyle = getColourObj(_color4);
-		FontUtil.centerFillText(ctx, 'text', w / 2, h / 2, "'Oswald', sans-serif;", 160);
+		Text.fillText(ctx, 'text', w / 2, h / 2, "'Oswald', sans-serif;", 160);
 
 		ctx.strokeColourRGB(_color3);
 		ctx.strokeWeight(2);
