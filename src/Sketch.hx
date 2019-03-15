@@ -201,7 +201,7 @@ class Sketch {
 				e.preventDefault();
 				e.stopPropagation();
 				trace('cmd + s');
-				Export.downloadImage(ctx, true);
+				Export.downloadImageBg(ctx, true); // jpg
 			}
 			if (e.metaKey == true && e.key == 's' && e.shiftKey == true) {
 				e.preventDefault();
