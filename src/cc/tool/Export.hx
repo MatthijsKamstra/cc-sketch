@@ -442,52 +442,67 @@ class Export {
 
 	// Returns contents of a canvas as a png based data url, with the specified
 	// background color
-	/*
-		public static function canvasToImage(canvas:js.html.CanvasElement, ?backgroundColor:String) {
-			// cache height and width
-			var w = canvas.width;
-			var h = canvas.height;
 
-			var context = canvas.getContext2d();
-
-			var data;
-			var compositeOperation:String;
-
-			if (backgroundColor != null) {
-				// get the current ImageData for the canvas.
-				data = context.getImageData(0, 0, w, h);
-
-				// store the current globalCompositeOperation
-				compositeOperation = context.globalCompositeOperation;
-
-				// set to draw behind current content
-				context.globalCompositeOperation = "destination-over";
-
-				// set background color
-				context.fillStyle = backgroundColor;
-
-				// draw background / rect on entire canvas
-				context.fillRect(0, 0, w, h);
-			}
-
-			// get the image data from the canvas
-			var imageData = canvas.toDataURL("image/png");
-
-			if (backgroundColor != null) {
-				// clear the canvas
-				context.clearRect(0, 0, w, h);
-
-				// restore it with original / cached ImageData
-				context.putImageData(data, 0, 0);
-
-				// reset the globalCompositeOperation to what it was
-				context.globalCompositeOperation = compositeOperation;
-			}
-
-			// return the Base64 encoded data url string
-			return imageData;
-		}
+	/**
+	 * just change the background to white... it really doesn't matter, when exporting a jpg
+	 * @param ctx
+	 * @param isJpg
+	 * @param fileName
 	 */
+	public static function downloadImageBg(ctx:CanvasRenderingContext2D, ?isJpg:Bool = false, ?fileName:String) {
+		var canvas = ctx.canvas;
+
+		if (fileName == null) {
+			var hash = js.Browser.location.hash;
+			hash = hash.replace('#', '').toLowerCase();
+			if (hash == '')
+				hash = 'image';
+			fileName = '${hash}-${Date.now().getTime()}';
+			// fileName = 'cc-art-${Date.now().getTime()}';
+		}
+
+		// cache height and width
+		var w = canvas.width;
+		var h = canvas.height;
+
+		// var ctx = canvas.getctx2d();
+
+		var data;
+		var compositeOperation:String;
+
+		// get the current ImageData for the canvas.
+		data = ctx.getImageData(0, 0, w, h);
+
+		// store the current globalCompositeOperation
+		compositeOperation = ctx.globalCompositeOperation;
+
+		// set to draw behind current content
+		ctx.globalCompositeOperation = "destination-over";
+
+		// set background color
+		ctx.fillStyle = '#ffffff';
+
+		// draw background / rect on entire canvas
+		ctx.fillRect(0, 0, w, h);
+
+		// get the image data from the canvas
+		// var imageData = canvas.toDataURL("image/png");
+
+		// // clear the canvas
+		// ctx.clearRect(0, 0, w, h);
+
+		// // restore it with original / cached ImageData
+		// ctx.putImageData(data, 0, 0);
+
+		// // reset the globalCompositeOperation to what it was
+		// ctx.globalCompositeOperation = compositeOperation;
+
+		var link = document.createAnchorElement();
+		link.href = ctx.canvas.toDataURL((isJpg) ? 'image/jpeg' : '', 1);
+		link.download = fileName;
+		link.click();
+	}
+
 	// ____________________________________ misc ____________________________________
 
 	function settings():String {
