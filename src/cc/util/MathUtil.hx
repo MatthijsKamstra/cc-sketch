@@ -206,6 +206,21 @@ class MathUtil {
 	};
 
 	/**
+	 * get an orbit value
+	 * @param xpos center point x
+	 * @param ypos center point y
+	 * @param angle in degree (360)
+	 * @param radius radous of circle
+	 * @return AST.Point
+	 */
+	static public function orbit(xpos:Float, ypos:Float, angle:Float, radius:Float):AST.Point {
+		// plot the balls x to cos and y to sin
+		var _xpos = xpos + Math.cos(radians(angle)) * radius;
+		var _ypos = ypos + Math.sin(radians(angle)) * radius;
+		return {x: _xpos, y: _ypos};
+	}
+
+	/**
 	 * sent a value, and check if it is in the correct range
 	 *
 	 * @example
