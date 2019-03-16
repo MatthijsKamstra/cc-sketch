@@ -49,11 +49,11 @@ class Gradient {
 	}
 
 	/**
-		* var Gradient = Gradient.create (ctx, 'Matthijs Kamstra aka [mck]').draw();
-		*
-		* @param ctx
-
-		* @return Gradient
+	 * var Gradient = Gradient.create (ctx, 'Matthijs Kamstra aka [mck]').draw();
+	 *
+	 * @param ctx
+	 *
+	 * @return Gradient
 	 */
 	static inline public function create(ctx:CanvasRenderingContext2D):Gradient {
 		var c = new Gradient(ctx);

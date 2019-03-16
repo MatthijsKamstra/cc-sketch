@@ -20,13 +20,16 @@ class Circle {
 	@:isVar public var _x(get, set):Float = 100;
 	@:isVar public var _y(get, set):Float = 100;
 	@:isVar public var _radius(get, set):Float = 100;
+	@:isVar public var _alpha(get, set):Float = 1; // 0 -> 1
+	@:isVar public var _rotate(get, set):Int = 0; // weird for circles ???
 
+	// Color
 	private var _color:RGB;
 	private var _colorstoke:RGB;
-	private var _gradient:js.html.CanvasGradient;
-	private var _alpha:Float = 1;
-	private var _rotate:Int = 0;
 
+	@:isVar public var _gradient(get, set):js.html.CanvasGradient;
+
+	// ____________________________________ constructor ____________________________________
 	public function new(ctx:CanvasRenderingContext2D) {
 		this._ctx = ctx;
 	}
@@ -60,11 +63,6 @@ class Circle {
 		this._y = y;
 		return this;
 	}
-
-	// inline public function size(px:Int):Circle {
-	// 	this._size = px;
-	// 	return this;
-	// }
 
 	inline public function radius(px:Int):Circle {
 		this._radius = px;
@@ -199,14 +197,32 @@ class Circle {
 		return _radius = value;
 	}
 
+	function get__alpha():Float {
+		return _alpha;
+	}
+
+	function set__alpha(value:Float):Float {
+		return _alpha = value;
+	}
+
+	function get__rotate():Int {
+		return _rotate;
+	}
+
+	function set__rotate(value:Int):Int {
+		return _rotate = value;
+	}
+
+	function get__gradient():js.html.CanvasGradient {
+		return _gradient;
+	}
+
+	function set__gradient(value:js.html.CanvasGradient):js.html.CanvasGradient {
+		return _gradient = value;
+	}
+
 	// ____________________________________ tostring ____________________________________
 	public function toString() {
-		// return '{
-		// 	_x: ${_x},
-		// 	_y: ${_y},
-		// 	_color: ${_color},
-		// 	_radius: ${_radius},
-		// }';
 		// return haxe.Json.stringify(this);
 		return ('Circle: ' + haxe.Json.parse(haxe.Json.stringify(this)));
 	}

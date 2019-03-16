@@ -15,18 +15,26 @@ class Text {
 	// are always set
 	private var _ctx:CanvasRenderingContext2D;
 	private var _text:String;
+
 	// defaults
-	private var _x:Float = 100;
-	private var _y:Float = 100;
-	private var _alpha:Float = 1;
-	private var _size:Int = 100;
-	private var _color:RGB;
-	private var _rotate:Int = 0;
+	@:isVar public var _x(get, set):Float = 100;
+	@:isVar public var _y(get, set):Float = 100;
+	@:isVar public var _radius(get, set):Float = 100;
+	@:isVar public var _alpha(get, set):Float = 1; // 0 -> 1
+	@:isVar public var _rotate(get, set):Int = 0; // weird for circles ???
+	// type related
+	@:isVar public var _size(get, set):Int;
+
 	private var _font:String = 'Arial'; // italic small-caps bold 12px aria
 	// https://www.w3schools.com/tags/canvas_textalign.asp
 	private var _textAlign:String = 'left'; // center|end|left|right|start"
 	// https://www.w3schools.com/tags/canvas_textbaseline.asp
 	private var _textBaseline:String = 'alphabetic'; // alphabetic|top|hanging|middle|ideographic|bottom
+	// Color
+	private var _color:RGB;
+	private var _colorstoke:RGB;
+
+	@:isVar public var _gradient(get, set):js.html.CanvasGradient;
 
 	public function new(ctx:CanvasRenderingContext2D, text:String) {
 		this._ctx = ctx;
@@ -260,5 +268,69 @@ class Text {
 				Reflect.callMethod(callback, callback, callbackArray);
 		}
 		document.head.appendChild(link);
+	}
+
+	// ____________________________________ getter/setter ____________________________________
+
+	function get__x():Float {
+		return _x;
+	}
+
+	function set__x(value:Float):Float {
+		return _x = value;
+	}
+
+	function get__y():Float {
+		return _y;
+	}
+
+	function set__y(value:Float):Float {
+		return _y = value;
+	}
+
+	function get__radius():Float {
+		return _radius;
+	}
+
+	function set__radius(value:Float):Float {
+		return _radius = value;
+	}
+
+	function get__alpha():Float {
+		return _alpha;
+	}
+
+	function set__alpha(value:Float):Float {
+		return _alpha = value;
+	}
+
+	function get__rotate():Int {
+		return _rotate;
+	}
+
+	function set__rotate(value:Int):Int {
+		return _rotate = value;
+	}
+
+	function get__gradient():js.html.CanvasGradient {
+		return _gradient;
+	}
+
+	function set__gradient(value:js.html.CanvasGradient):js.html.CanvasGradient {
+		return _gradient = value;
+	}
+
+	function get__size():Int {
+		return _size;
+	}
+
+	function set__size(value:Int):Int {
+		return _size = value;
+	}
+
+	// ____________________________________ tostring ____________________________________
+	public function toString() {
+		// return haxe.Json.stringify(this);
+		return ('Text: ' + haxe.Json.parse(haxe.Json.stringify(this)));
 	}
 }
