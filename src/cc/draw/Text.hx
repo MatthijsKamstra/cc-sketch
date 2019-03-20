@@ -36,6 +36,7 @@ class Text {
 
 	@:isVar public var _gradient(get, set):js.html.CanvasGradient;
 
+	// ____________________________________ constructor ____________________________________
 	public function new(ctx:CanvasRenderingContext2D, text:String) {
 		this._ctx = ctx;
 		this._text = text;
@@ -77,7 +78,7 @@ class Text {
 	}
 
 	inline public function font(font:String):Text {
-		this._font = font.replace(';', '');
+		this._font = font.replace(';', '').replace('+', ' ');
 		return this;
 	}
 
