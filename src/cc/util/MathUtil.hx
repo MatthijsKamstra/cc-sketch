@@ -19,11 +19,11 @@ package cc.util;
  *
  */
 class MathUtil {
-	static public function radians(deg:Float) {
+	static public function radians(deg:Float):Float {
 		return deg * Math.PI / 180;
 	};
 
-	static public function degrees(rad:Float) {
+	static public function degrees(rad:Float):Float {
 		return rad * 180 / Math.PI;
 	};
 
