@@ -1,6 +1,6 @@
 package cc;
 
-import  cc.util.ColorUtil;
+import cc.util.ColorUtil;
 
 class AST {}
 
@@ -49,6 +49,7 @@ typedef Point = {
 	var x:Float;
 	var y:Float;
 };
+
 // point
 typedef PointInt = {
 	var x:Int;
@@ -62,6 +63,7 @@ typedef Pixel = {
 	> Position,
 	> Appearance,
 }
+
 typedef Polygon = {
 	> Base,
 	> Position,
@@ -70,7 +72,6 @@ typedef Polygon = {
 	@:optional var radius:Float;
 	@:optional var size:Float;
 	@:optional var sides:Int;
-
 };
 
 typedef CircleExtra = {
@@ -81,7 +82,6 @@ typedef CircleExtra = {
 	@:optional var radius:Float;
 	@:optional var size:Float;
 };
-
 
 typedef Circle = {
 	> Base,
@@ -213,6 +213,4 @@ typedef EXPORT_CONVERT_VIDEO = {
 	@:optional var clear:Bool;
 	@:optional var description:String;
 	@:optional var fps:Int; // 60 default
-
 };
-
