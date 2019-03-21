@@ -4,6 +4,7 @@ import js.html.CanvasRenderingContext2D;
 import js.html.*;
 import js.Browser.document;
 import js.Browser.window;
+import js.Browser.*;
 // import cc.Global.*;
 import cc.util.ColorUtil.RGB;
 import cc.util.MathUtil.*;
@@ -31,6 +32,7 @@ class Spritesheet {
 	@:isVar public var _img(get, set):Image;
 	@:isVar public var _fps(get, set):Int = 60; // default 60 fps
 	@:isVar public var _scale(get, set):Float = 1;
+	@:isVar public var _id(get, set):String;
 
 	// image related stuff
 	// loading
@@ -39,6 +41,7 @@ class Spritesheet {
 	// var isDrawPreviouslyCalled:Bool = false;
 	// animation
 	private var _isAnimation:Bool = false;
+	private var _isActive:Bool = false;
 	private var _isLoop:Bool = false;
 	private var _loopRepeat:Int;
 	private var _currentSprite:Int = 0;
@@ -47,10 +50,16 @@ class Spritesheet {
 
 	public var _totalFrame:Int;
 
+	public static var _idCounter:Int = -1;
+
+	public var _pulse:Int = null;
+
 	// ____________________________________ constructor ____________________________________
 	public function new(ctx:CanvasRenderingContext2D, img:Image) {
 		this._ctx = ctx;
 		this._img = img;
+		Spritesheet._idCounter++;
+		this._id = 'spritesheet-${Spritesheet._idCounter}-${Date.now().getTime()}';
 
 		this._width = _img.width;
 		this._height = _img.height;
@@ -60,7 +69,20 @@ class Spritesheet {
 	}
 
 	/**
-	 * Load a spritesheet via this class
+	 * var text = Text.create (ctx, 'Matthijs Kamstra aka [mck]').draw();
+	 *
+	 * @param ctx
+	 * @param text
+	 * @return Text
+	 */
+	static inline public function create(ctx:CanvasRenderingContext2D, img:Image):Spritesheet {
+		var spritesheet = new Spritesheet(ctx, img);
+		return spritesheet;
+	}
+
+	/**
+	 * Load a spritesheet via this class, values need to be fed backt to this class
+	 * nothing clever here, just a helper
 	 *
 	 * @example
 	 *		Spritesheet.load(src, onLoadedComplete);
@@ -85,19 +107,12 @@ class Spritesheet {
 		}
 	}
 
-	/**
-	 * var text = Text.create (ctx, 'Matthijs Kamstra aka [mck]').draw();
-	 *
-	 * @param ctx
-	 * @param text
-	 * @return Text
-	 */
-	static inline public function create(ctx:CanvasRenderingContext2D, img:Image):Spritesheet {
-		var spritesheet = new Spritesheet(ctx, img);
-		return spritesheet;
-	}
-
 	// ____________________________________ properties ____________________________________
+
+	inline public function img(img:Image):Spritesheet {
+		this._img = img;
+		return this;
+	}
 
 	inline public function x(x:Float):Spritesheet {
 		this._x = x;
@@ -124,6 +139,16 @@ class Spritesheet {
 		return this;
 	}
 
+	inline public function center():Spritesheet {
+		this._isCentered = true;
+		return this;
+	}
+
+	inline public function scale(scale:Float):Spritesheet {
+		this._scale = scale;
+		return this;
+	}
+
 	/**
 	 * show image number (zero based)
 	 * @param index 	zero based,
@@ -144,23 +169,27 @@ class Spritesheet {
 		return this;
 	}
 
+	// ____________________________________ animation controlers ____________________________________
+
 	inline public function animate():Spritesheet {
 		this._isAnimation = true;
+		this._isActive = true;
 		return this;
 	}
 
-	inline public function center():Spritesheet {
-		this._isCentered = true;
+	inline public function loop(?nr:Int = -1):Spritesheet {
+		this._isLoop = true;
+		this._loopRepeat = nr;
 		return this;
 	}
 
-	inline public function img(img:Image):Spritesheet {
-		this._img = img;
+	inline public function start():Spritesheet {
+		this._isActive = true;
 		return this;
 	}
 
-	inline public function scale(scale:Float):Spritesheet {
-		this._scale = scale;
+	inline public function stop():Spritesheet {
+		this._isActive = false;
 		return this;
 	}
 
@@ -174,20 +203,14 @@ class Spritesheet {
 		return this;
 	}
 
-	function pulseFun() {
-		trace('pulse: ' + Date.now().getTime());
-	}
-
-	inline public function pulse(func:Void->Void):Spritesheet {
-		Reflect.callMethod(pulseFun, func, []);
-		return this;
-	}
-
-	inline public function loop(?nr:Int = -1):Spritesheet {
-		this._isLoop = true;
-		this._loopRepeat = nr;
-		return this;
-	}
+	// function pulseFun() {
+	// 	trace('pulse: ' + Date.now().getTime());
+	// }
+	// inline public function pulse(func:Void->Void):Spritesheet {
+	// 	Reflect.callMethod(pulseFun, func, []);
+	// 	return this;
+	// }
+	// ____________________________________ rotation ____________________________________
 
 	inline public function rotate(degree:Int):Spritesheet {
 		this._rotate = degree;
@@ -209,13 +232,22 @@ class Spritesheet {
 		return this;
 	}
 
+	// ____________________________________ transparance ____________________________________
+
 	inline public function alpha(alpha:Float):Spritesheet {
 		this._alpha = clamp(alpha, 0, 1); // a value r should be between 0 and 1
 		// this._alpha = alpha; // a value r should be between 0 and 1
 		return this;
 	}
 
+	// ____________________________________ draw ____________________________________
+
 	inline public function draw():Spritesheet {
+		if (_isActive && _pulse == null) {
+			console.warn('this should happen only once! (${_pulse} == null)');
+			trace(toString());
+			_pulse = window.requestAnimationFrame(pulseHandler);
+		}
 		var xpos = 0;
 		var ypos = 0;
 		if (this._isCentered) {
@@ -230,7 +262,7 @@ class Spritesheet {
 		_ctx.translate(_x, _y);
 		_ctx.rotate(radians(_rotate));
 		// print sprite
-		_ctx.clearRect(xpos, ypos, this._cellWidth * _scale, this._cellHeight * _scale);
+		_ctx.clearRect(xpos * _scale, ypos * _scale, this._cellWidth * _scale, this._cellHeight * _scale);
 		// draw each frame + place them in the middle
 		var shiftX = this._currentSprite * this._cellWidth;
 		var shiftY = 0; // FIX this later: this._index * this._cellHeight;
@@ -246,39 +278,40 @@ class Spritesheet {
 			Start at the beginning once you've reached the
 			end of your sprite!
 		 */
-		this._fpsCounter++;
-		this._currentSprite++;
-		if (this._currentSprite > this._totalFrame) {
-			if (this._isLoop) {
-				this._currentSprite = this._index;
-			} else {
-				this._isAnimation = false;
-				this._currentSprite = this._totalFrame - 1;
-				draw();
+		if (_isAnimation) {
+			this._currentSprite++;
+			if (this._currentSprite > this._totalFrame) {
+				if (this._isLoop) {
+					if (_isDebug)
+						trace('start loop');
+					this._currentSprite = this._index;
+				} else {
+					if (_isDebug)
+						trace('stop animation');
+					this._isAnimation = false;
+					this._currentSprite = this._totalFrame - 1;
+					draw();
+				}
 			}
 		}
-
-		// loop counter?
-
-		// trace('_fpsCounter: $_fpsCounter, _fps: $_fps - ${(60 / _fps)}');
-		// trace(_fpsCounter % (60 / _fps) == 0);
-		// trace(_fpsCounter % (60 / _fps) == 1);
-		// trace(_fpsCounter % (60 / _fps) == 2);
-		// trace(_fpsCounter % (60 / _fps) == 3);
-		// trace(_fpsCounter % (60 / _fps) == 4);
-
-		if (this._isAnimation) {
-			trace('_fpsCounter: $_fpsCounter % 60 / $_fps -> ' + (_fpsCounter % (60 / _fps)));
-			if (_fpsCounter % 60 / _fps == 0) {
-				window.requestAnimationFrame(redraw);
-			}
-		}
-
 		return this;
 	}
 
-	function redraw(?nr:Float) {
-		draw();
+	function pulseHandler(?nr:Float) {
+		if (this._isActive) {
+			// trace('totalFrames: ' + _totalFrame);
+			if (this._isAnimation) {
+				if (_isDebug) {
+					// trace('${this._id} | _fpsCounter: $_fpsCounter % (60 / $_fps) -> ' + (_fpsCounter % (60 / _fps)));
+					trace('_fpsCounter: $_fpsCounter % 60 / $_fps -> ' + (_fpsCounter % (60 / _fps)));
+				}
+				if (_fpsCounter % (60 / _fps) == 0) {
+					draw();
+				}
+			}
+			window.requestAnimationFrame(pulseHandler);
+			this._fpsCounter++;
+		}
 	}
 
 	// ____________________________________ getter setters ____________________________________
@@ -404,7 +437,16 @@ class Spritesheet {
 		return _scale = value;
 	}
 
+	function get__id():String {
+		return _id;
+	}
+
+	function set__id(value:String):String {
+		return _id = value;
+	}
+
 	// ____________________________________ tostring ____________________________________
+
 	public function toString() {
 		// return haxe.Json.stringify(this);
 		return ('Spritesheet: ' + haxe.Json.parse(haxe.Json.stringify(this)));
