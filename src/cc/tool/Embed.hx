@@ -21,7 +21,7 @@ class Embed {
 		el.src = src;
 		el.crossOrigin = 'anonymous';
 		el.onload = function() {
-			Zip.isZipLoaded = true; // embedding is done
+			// Zip.isZipLoaded = true; // embedding is done
 			if (callback != null) {
 				if (callbackArray == null) {
 					Reflect.callMethod(callback, callback, [id]);
