@@ -41,18 +41,21 @@ class Spritesheet {
 	// var isDrawPreviouslyCalled:Bool = false;
 	// animation
 	private var _isAnimation:Bool = false;
-	private var _isActive:Bool = false;
+	private var _isActive:Bool = false; // toggle for window framerate
 	private var _isLoop:Bool = false;
 	private var _loopRepeat:Int;
 	private var _currentSprite:Int = 0;
-	private var _fpsCounter:Int = 0;
-	var _delayCounter:Int = 0;
 
+	// var _delayCounter:Int = 0;
 	public var _totalFrame:Int;
 
 	public static var _idCounter:Int = -1;
 
 	public var _pulse:Int = null;
+
+	var _fpsCounter:Int = 0;
+	var _delayCounter:Int = 0;
+	var _delay:Int = 0;
 
 	// ____________________________________ constructor ____________________________________
 	public function new(ctx:CanvasRenderingContext2D, img:Image) {
@@ -203,6 +206,11 @@ class Spritesheet {
 		return this;
 	}
 
+	inline public function delay(frames:Int):Spritesheet {
+		this._delay = frames;
+		return this;
+	}
+
 	// function pulseFun() {
 	// 	trace('pulse: ' + Date.now().getTime());
 	// }
@@ -244,8 +252,12 @@ class Spritesheet {
 
 	inline public function draw():Spritesheet {
 		if (_isActive && _pulse == null) {
-			console.warn('this should happen only once! (${_pulse} == null)');
-			trace(toString());
+			console.info('${this._id} - this should happen only once! (${_pulse} == null)');
+
+			console.groupCollapsed('Spritesheet (${this._id}):');
+			console.warn('${toString()}');
+			console.groupEnd();
+
 			_pulse = window.requestAnimationFrame(pulseHandler);
 		}
 		var xpos = 0;
@@ -283,11 +295,11 @@ class Spritesheet {
 			if (this._currentSprite > this._totalFrame) {
 				if (this._isLoop) {
 					if (_isDebug)
-						trace('start loop');
+						trace('${this._id} - start loop');
 					this._currentSprite = this._index;
 				} else {
 					if (_isDebug)
-						trace('stop animation');
+						trace('${this._id} - stop animation');
 					this._isAnimation = false;
 					this._currentSprite = this._totalFrame - 1;
 					draw();
@@ -300,14 +312,19 @@ class Spritesheet {
 	function pulseHandler(?nr:Float) {
 		if (this._isActive) {
 			// trace('totalFrames: ' + _totalFrame);
-			if (this._isAnimation) {
-				if (_isDebug) {
-					// trace('${this._id} | _fpsCounter: $_fpsCounter % (60 / $_fps) -> ' + (_fpsCounter % (60 / _fps)));
-					trace('_fpsCounter: $_fpsCounter % 60 / $_fps -> ' + (_fpsCounter % (60 / _fps)));
+			if (_delayCounter >= _delay) {
+				if (this._isAnimation) {
+					if (_isDebug) {
+						// trace('${this._id} | _fpsCounter: $_fpsCounter % (60 / $_fps) -> ' + (_fpsCounter % (60 / _fps)));
+						// trace(' % 60 / $_fps');
+						// trace('_fpsCounter: $_fpsCounter % 60 / $_fps -> ' + (_fpsCounter % (60 / _fps)));
+					}
+					if (_fpsCounter % (60 / _fps) == 0) {
+						draw();
+					}
 				}
-				if (_fpsCounter % (60 / _fps) == 0) {
-					draw();
-				}
+			} else {
+				_delayCounter++;
 			}
 			window.requestAnimationFrame(pulseHandler);
 			this._fpsCounter++;
