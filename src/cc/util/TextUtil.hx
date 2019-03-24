@@ -2,6 +2,7 @@ package cc.util;
 
 import js.html.CanvasRenderingContext2D;
 import cc.util.MathUtil;
+import cc.util.MathUtil.*;
 
 class TextUtil {
 	public function new() {
@@ -71,6 +72,60 @@ class TextUtil {
 			ctx.rotate(angle / charArr.length);
 			ctx.save();
 			ctx.translate(0, -1 * radius);
+			ctx.fillText(_char, 0, 0);
+			ctx.restore();
+		}
+		ctx.restore();
+	}
+
+	static public function drawTextAlongArc4(ctx:CanvasRenderingContext2D, str:String, centerX:Float, centerY:Float, radius:Int, ?pAngle:Float = 10) {
+		var charArr = str.split('');
+		ctx.save();
+		var angle = 0.0;
+		for (i in 0...charArr.length) {
+			var _char = charArr[i];
+			angle = (i * (pAngle));
+			var xpos = centerX + Math.cos(radians(angle)) * radius;
+			var ypos = centerY + Math.sin(radians(angle)) * radius;
+
+			// radius: 200 / angle: 3.95
+			// radius: 300 / angle: 2.45
+			// trace('char: $_char, xpos: $xpos, ypos: $ypos, angle: $angle, ${radians(angle)}');
+
+			ctx.save();
+			ctx.translate(xpos, ypos);
+			ctx.rotate(radians(angle + 90));
+			// ctx.translate(0, -1 * radius);
+			ctx.fillText(_char, 0, 0);
+			ctx.restore();
+		}
+		ctx.restore();
+	}
+
+	static public function drawTextAlongArc3(ctx:CanvasRenderingContext2D, str:String, centerX:Float, centerY:Float, radius:Int) {
+		var charArr = str.split('');
+
+		ctx.save();
+		// ctx.translate(centerX, centerY);
+		// ctx.rotate(-1 * angle / 2);
+		// ctx.rotate(-1 * (angle / charArr.length) / 2);
+
+		// sh.angle += sh.speed;
+
+		var angle = 0;
+		// for (var n = 0; n < str.length; n++) {
+		for (i in 0...charArr.length) {
+			var _char = charArr[i];
+			angle = i;
+
+			// plot the balls x to cos and y to sin
+			var xpos = centerX + Math.cos(radians(angle)) * radius;
+			var ypos = centerY + Math.sin(radians(angle)) * radius;
+			trace(_char, i, xpos, ypos);
+			ctx.translate(xpos, ypos);
+			ctx.rotate(angle / charArr.length);
+			// ctx.save();
+			// ctx.translate(0, -1 * radius);
 			ctx.fillText(_char, 0, 0);
 			ctx.restore();
 		}
