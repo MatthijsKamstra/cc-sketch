@@ -3,6 +3,7 @@ package js;
 import haxe.extern.EitherType;
 import js.html.ArrayBuffer;
 import js.html.Uint8Array;
+import haxe.Constraints.Function;
 //
 import js.jszip.*;
 import js.Promise;
@@ -40,5 +41,6 @@ extern class JSZip {
 	 */
 	function generate(options:GenerateOptions):DataType;
 	//
+	@:overload(function(obj:Dynamic, updateCallback:Function):Promise<Dynamic> {})
 	function generateAsync(obj:Dynamic):Promise<Dynamic>;
 }
