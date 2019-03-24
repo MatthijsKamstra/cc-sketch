@@ -78,13 +78,22 @@ class TextUtil {
 		ctx.restore();
 	}
 
-	static public function drawTextAlongArc4(ctx:CanvasRenderingContext2D, str:String, centerX:Float, centerY:Float, radius:Int, ?pAngle:Float = 10) {
+	static public function drawTextAlongArc4(ctx:CanvasRenderingContext2D, str:String, centerX:Float, centerY:Float, radius:Float) {
+		// monotype
+		var monoW = ctx.measureText(" ").width;
+		// chars
 		var charArr = str.split('');
 		ctx.save();
 		var angle = 0.0;
 		for (i in 0...charArr.length) {
+			radius -= 0.15;
+			var a = monoW;
+			var b = radius;
+			var c = radius;
+			var cosa = (Math.pow(b, 2) + Math.pow(c, 2) - Math.pow(a, 2)) / (2 * b * c);
+			var pAngle = degrees(Math.acos(cosa));
 			var _char = charArr[i];
-			angle = (i * (pAngle));
+			angle = -90 + (i * (pAngle));
 			var xpos = centerX + Math.cos(radians(angle)) * radius;
 			var ypos = centerY + Math.sin(radians(angle)) * radius;
 
