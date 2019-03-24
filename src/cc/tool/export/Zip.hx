@@ -68,9 +68,11 @@ class Zip {
 	var imageStringArray:Array<String> = [];
 	var _onComplete:Dynamic;
 	var _onCompleteParams:Array<Dynamic>;
+	var progressBar:DivElement;
 
 	public function new(ctx:CanvasRenderingContext2D, ?fileName:String) {
 		createQuickSettings();
+		createProgressBar();
 
 		if (ctx == null)
 			console.warn('This is not acceptable, I need a context!');
@@ -238,10 +240,11 @@ echo \'End convertions png sequence to mp4\'
 		}
 		trace('Generate zip file - ${(Date.now().getTime() - startT) / 1000}sec');
 
-		createProgressBar(10);
+		createProgressBar(); // create another progress over the old
 		out('generate zip');
 		zip.generateAsync({type: "blob"}, function updateCallback(metadata) {
 			console.log("progression: " + metadata.percent.toFixed(2) + " %");
+			progressGeneration(Std.parseFloat(metadata.percent.toFixed(2)));
 			// if (metadata.currentFile) {
 			// 	console.log("current file = " + metadata.currentFile);
 			// }
@@ -254,18 +257,30 @@ echo \'End convertions png sequence to mp4\'
 		});
 	}
 
-	function createProgressBar(percentage:Int) {
+	function createProgressBar(?percentage:Int = 10) {
 		var body = document.querySelector('body');
 		var div:DivElement = document.createDivElement();
 		div.setAttribute("id", 'zip-progress');
-		div.innerHTML = percentage + '%';
+		div.innerHTML = '<span style="display:none">$percentage%</span>';
 		div.style.position = "absolute";
 		div.style.left = "0px";
 		div.style.top = "0px";
 		div.style.width = '100%';
-		div.style.height = '2px';
-		div.style.backgroundColor = 'red';
+		div.style.height = '1px';
+		div.style.backgroundColor = 'silver';
 		body.appendChild(div);
+
+		progressBar = div;
+	}
+
+	function progressGeneration(percent:Float) {
+		progressBar.style.width = '$percent%';
+		progressBar.style.backgroundColor = 'navy';
+	}
+
+	function progressRecording(percent:Float) {
+		progressBar.style.width = '$percent%';
+		progressBar.style.backgroundColor = 'red';
 	}
 
 	// ____________________________________ properties ____________________________________
@@ -332,6 +347,7 @@ echo \'End convertions png sequence to mp4\'
 					// trace('< ${_record} (recording)');
 					trace('recording: ${_recordCounter} <  ${_record}');
 					imageStringArray.push(_ctx.canvas.toDataURL('image/png').split('base64,')[1]);
+					progressRecording((_recordCounter / _record) * 100);
 					_recordCounter++;
 				} else {
 					stopExport();
