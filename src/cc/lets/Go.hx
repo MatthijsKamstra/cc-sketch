@@ -22,6 +22,7 @@ class Go {
 	private var _isFrom:Bool = false;
 	private var _isYoyo:Bool = false;
 	private var _isTimeBased:Bool = false; // default is frameBased
+	private var _isDelayDone:Bool = false; // default is frameBased
 	private var _initTime:Int = 0; // should work with time (miliseconds) and frames (FPS)
 	private var _delay:Int = 0;
 	private var _seconds:Float = 0;
@@ -282,7 +283,19 @@ class Go {
 	inline public function onComplete(func:Dynamic, ?arr:Array<Dynamic>):Go {
 		_options.onComplete = func;
 		_options.onCompleteParams = arr;
-		// _options.onCompleteParams = (arr == null ) ? [] : arr;
+		return this;
+	}
+
+	/**
+	 * on update of the animation call a function with param(s)
+	 *
+	 * @param  func         	function to call when animition is updated
+	 * @param  arr<Dynamic> 	params send to function
+	 * @return              Go
+	 */
+	inline public function onAnimationStart(func:Dynamic, ?arr:Array<Dynamic>):Go {
+		_options.onAnimationStart = func;
+		_options.onAnimationStartParams = arr;
 		return this;
 	}
 
@@ -374,6 +387,16 @@ class Go {
 			_delay--;
 			return null;
 		}
+		if (!_isDelayDone) {
+			if (DEBUG)
+				trace('should trigger only once: ${_id}');
+			if (Reflect.isFunction(_options.onAnimationStart)) {
+				var func = _options.onAnimationStart;
+				var arr = (_options.onAnimationStartParams != null) ? _options.onAnimationStartParams : [];
+				Reflect.callMethod(func, func, arr);
+			}
+		}
+		_isDelayDone = true;
 
 		// if (_delay > 0) {
 		// 	_delay--;
@@ -424,7 +447,10 @@ class Go {
 
 	private function complete():Void {
 		if (DEBUG)
-			trace('complete :: "$_id", _duration: $_duration, _seconds: $_seconds, _initTime: ' + _initTime + ' / _tweens.length: ' + _tweens.length);
+			trace('complete :: "$_id", _duration: $_duration, _seconds: $_seconds, _initTime: '
+				+ _initTime
+				+ ' / _tweens.length: '
+				+ _tweens.length);
 
 		if (_isYoyo) {
 			// [mck] reverse the props back to the original state
@@ -461,7 +487,8 @@ class Go {
 		if (_isTimeBased) {
 			d = Std.int(duration * 1000); // convert seconds to miliseconds
 		} else {
-			if(duration <= 0) duration = 0.1;
+			if (duration <= 0)
+				duration = 0.1;
 			d = Std.int(duration * FRAME_RATE); // seconds * FPS = frames
 		}
 		return d;
