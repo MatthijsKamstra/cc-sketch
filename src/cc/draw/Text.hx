@@ -33,8 +33,10 @@ class Text {
 	// Color
 	private var _color:RGB;
 	private var _colorstoke:RGB;
+	private var _lineArray:Array<String>;
 
 	@:isVar public var _gradient(get, set):js.html.CanvasGradient;
+	@:isVar public var _leading(get, set):Int;
 
 	// ____________________________________ constructor ____________________________________
 	public function new(ctx:CanvasRenderingContext2D, text:String) {
@@ -84,6 +86,13 @@ class Text {
 
 	inline public function size(px:Int):Text {
 		this._size = px;
+		if (_leading == null)
+			_leading = px;
+		return this;
+	}
+
+	inline public function leading(px:Int):Text {
+		this._leading = px;
 		return this;
 	}
 
@@ -159,14 +168,31 @@ class Text {
 		return this;
 	}
 
+	inline public function visible(isVisible:Bool):Text {
+		if (isVisible) {
+			alpha(1);
+		} else {
+			alpha(0);
+		}
+		return this;
+	}
+
 	inline public function draw():Text {
+		var isLines = false;
 		// draw to convast
 		_ctx.save(); // save current state
-
+		// split in lines
+		if (_text.indexOf('\n') != -1) {
+			_lineArray = _text.split('\n');
+			isLines = true;
+		}
+		// remembor previous color
 		var previousColor = _ctx.fillStyle;
 		// check if color is set
 		if (_color != null) {
 			_ctx.fillColourRGB(_color, this._alpha);
+		} else {
+			_ctx.fillColourRGB(cc.util.ColorUtil.hex2RGB(previousColor), this._alpha);
 		}
 		_ctx.font = '${_size}px ${_font}';
 		_ctx.textAlign = _textAlign;
@@ -175,9 +201,15 @@ class Text {
 		// move canvas and rotate
 		_ctx.translate(_x, _y);
 		_ctx.rotate(radians(_rotate));
-		// print text
-		_ctx.fillText(_text, 0, 0);
-
+		if (!isLines) {
+			// print text
+			_ctx.fillText(_text, 0, 0);
+		} else {
+			for (i in 0..._lineArray.length) {
+				var line = _lineArray[i];
+				_ctx.fillText(line, 0, i * _leading);
+			}
+		}
 		// restore canvas to previous position
 		_ctx.restore();
 
@@ -327,6 +359,14 @@ class Text {
 
 	function set__size(value:Int):Int {
 		return _size = value;
+	}
+
+	function get__leading():Int {
+		return _leading;
+	}
+
+	function set__leading(value:Int):Int {
+		return _leading = value;
 	}
 
 	// ____________________________________ tostring ____________________________________
