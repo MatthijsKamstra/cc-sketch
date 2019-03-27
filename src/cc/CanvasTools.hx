@@ -5,6 +5,7 @@ import cc.util.*;
 import cc.util.ColorUtil.*;
 import cc.util.ColorUtil.RGB;
 import js.html.CanvasRenderingContext2D;
+
 /**
  * using cc.CanvasTools;
 **/
@@ -21,13 +22,15 @@ class CanvasTools {
 	static public function leftStrokeRect(ctx:CanvasRenderingContext2D, x:Float, y:Float, width:Float, ?height:Float) {
 		if (height == null)
 			height = width;
-		ctx.strokeRect(x , y , width, height);
+		ctx.strokeRect(x, y, width, height);
 	};
+
 	static public function centreStrokeRect(ctx:CanvasRenderingContext2D, x:Float, y:Float, width:Float, ?height:Float) {
 		if (height == null)
 			height = width;
 		ctx.strokeRect(x - width / 2, y - height / 2, width, height);
 	};
+
 	// static public function centreFillStrokeRect(ctx:CanvasRenderingContext2D, x:Float, y:Float, width:Float, ?height:Float) {
 	// 	if (height == null)
 	// 		height = width;
@@ -48,7 +51,8 @@ class CanvasTools {
 		ctx.fillRect(x - width / 2, y - height / 2, width, height);
 	};
 
-	static public function roundRect(ctx:CanvasRenderingContext2D, _x:Float, _y:Float, _width, _height, _radius:Float = 5, ?_fill:Bool = true, ?_stroke:Bool = false) {
+	static public function roundRect(ctx:CanvasRenderingContext2D, _x:Float, _y:Float, _width, _height, _radius:Float = 5, ?_fill:Bool = true,
+			?_stroke:Bool = false) {
 		_width = Math.abs(_width);
 		_height = Math.abs(_height);
 		_x = _x - _width / 2;
@@ -100,14 +104,18 @@ class CanvasTools {
 		ctx.closePath();
 	};
 
-	static public function circleFill(ctx:CanvasRenderingContext2D, x:Float, y:Float, radius:Float) fillCircle(ctx, x,y,radius);
+	static public function circleFill(ctx:CanvasRenderingContext2D, x:Float, y:Float, radius:Float)
+		fillCircle(ctx, x, y, radius);
+
 	static public function fillCircle(ctx:CanvasRenderingContext2D, x:Float, y:Float, radius:Float) {
 		makeCircle(ctx, x, y, radius);
 		ctx.fill();
 		ctx.closePath();
 	};
 
-	static public function circleStroke(ctx:CanvasRenderingContext2D, x:Float, y:Float, radius:Float) strokeCircle(ctx, x,y,radius);
+	static public function circleStroke(ctx:CanvasRenderingContext2D, x:Float, y:Float, radius:Float)
+		strokeCircle(ctx, x, y, radius);
+
 	static public function strokeCircle(ctx:CanvasRenderingContext2D, x:Float, y:Float, radius:Float) {
 		makeCircle(ctx, x, y, radius);
 		ctx.stroke();
@@ -127,7 +135,7 @@ class CanvasTools {
 		ctx.fill();
 	}
 
-	static public function outlinedPolygon(ctx:CanvasRenderingContext2D, x:Float, y:Float, _sides, _size, _fill, _stroke) {
+	static public function outlinedPolygon(ctx:CanvasRenderingContext2D, x:Float, y:Float, _sides:Int, _size:Float, _fill:String, _stroke:String) {
 		ctx.fillStyle = _fill;
 		fillPolygon(ctx, x, y, _sides, _size);
 		ctx.strokeStyle = _stroke;
@@ -175,21 +183,27 @@ class CanvasTools {
 		ctx.closePath();
 	};
 
-	static public function ellipseFill(ctx:CanvasRenderingContext2D, x:Float, y:Float, width:Float, height:Float) fillEllipse(ctx, x, y, width, height);
+	static public function ellipseFill(ctx:CanvasRenderingContext2D, x:Float, y:Float, width:Float, height:Float)
+		fillEllipse(ctx, x, y, width, height);
+
 	static public function fillEllipse(ctx:CanvasRenderingContext2D, x:Float, y:Float, width:Float, height:Float) {
 		ctx.beginPath();
 		ctx.ellipse(x, y, width, height, 0, 0, 2 * Math.PI);
 		ctx.fill();
 	};
 
-	static public function ellipseStroke(ctx:CanvasRenderingContext2D, x:Float, y:Float, width:Float, height:Float) strokeEllipse(ctx, x, y, width, height);
+	static public function ellipseStroke(ctx:CanvasRenderingContext2D, x:Float, y:Float, width:Float, height:Float)
+		strokeEllipse(ctx, x, y, width, height);
+
 	static public function strokeEllipse(ctx:CanvasRenderingContext2D, x:Float, y:Float, width:Float, height:Float) {
 		ctx.beginPath();
 		ctx.ellipse(x, y, width, height, 0, 0, 2 * Math.PI);
 		ctx.stroke();
 	};
 
-	static public function ellipseFillStroke(ctx:CanvasRenderingContext2D, x:Float, y:Float, width:Float, height:Float) fillStrokeEllipse(ctx, x, y, width, height);
+	static public function ellipseFillStroke(ctx:CanvasRenderingContext2D, x:Float, y:Float, width:Float, height:Float)
+		fillStrokeEllipse(ctx, x, y, width, height);
+
 	static public function fillStrokeEllipse(ctx:CanvasRenderingContext2D, x:Float, y:Float, width:Float, height:Float) {
 		ctx.beginPath();
 		ctx.ellipse(x, y, width, height, 0, 0, 2 * Math.PI);
@@ -275,6 +289,7 @@ class CanvasTools {
 	static public function fillColour(ctx:CanvasRenderingContext2D, r:Int, ?g:Int, ?b:Int, ?a:Float) {
 		colour(ctx, r, g, b, a);
 	};
+
 	static public function fillColourRGB(ctx:CanvasRenderingContext2D, rgb:cc.util.ColorUtil.RGB, ?a:Float) {
 		colour(ctx, rgb.r, rgb.g, rgb.b, a);
 	};
@@ -283,20 +298,24 @@ class CanvasTools {
 		var c = ColorUtil.getColour(r, g, b, a);
 		ctx.fillStyle = c;
 	};
+
 	static public function colourObj(ctx:CanvasRenderingContext2D, rgb:cc.util.ColorUtil.RGB, ?a:Float) {
 		var c = ColorUtil.getColour(rgb.r, rgb.g, rgb.b, a);
 		ctx.fillStyle = c;
 	};
 
-	static public function strokeColourObj(ctx:CanvasRenderingContext2D,  rgb:cc.util.ColorUtil.RGB,  ?a:Float) {
+	static public function strokeColourObj(ctx:CanvasRenderingContext2D, rgb:cc.util.ColorUtil.RGB, ?a:Float) {
 		lineColour(ctx, rgb.r, rgb.g, rgb.b, a);
 	};
-	static public function lineColourRGB(ctx:CanvasRenderingContext2D,  rgb:cc.util.ColorUtil.RGB,  ?a:Float) {
+
+	static public function lineColourRGB(ctx:CanvasRenderingContext2D, rgb:cc.util.ColorUtil.RGB, ?a:Float) {
 		lineColour(ctx, rgb.r, rgb.g, rgb.b, a);
 	};
-	static public function strokeColourRGB(ctx:CanvasRenderingContext2D,  rgb:cc.util.ColorUtil.RGB,  ?a:Float) {
+
+	static public function strokeColourRGB(ctx:CanvasRenderingContext2D, rgb:cc.util.ColorUtil.RGB, ?a:Float) {
 		lineColour(ctx, rgb.r, rgb.g, rgb.b, a);
 	};
+
 	static public function strokeColour(ctx:CanvasRenderingContext2D, r:Int, ?g:Int, ?b:Int, ?a:Float) {
 		lineColour(ctx, r, g, b, a);
 	};
@@ -329,9 +348,11 @@ class CanvasTools {
 		}
 		ctx.fillRect(0, 0, w, h);
 	};
+
 	static public function backgroundObj(ctx:CanvasRenderingContext2D, rgb:ColorUtil.RGB) {
 		background(ctx, rgb.r, rgb.g, rgb.b);
 	}
+
 	static public function backgroundRGB(ctx:CanvasRenderingContext2D, rgb:ColorUtil.RGB) {
 		background(ctx, rgb.r, rgb.g, rgb.b);
 	}
