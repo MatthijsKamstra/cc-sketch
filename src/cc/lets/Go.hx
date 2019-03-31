@@ -222,8 +222,9 @@ class Go {
 
 	/**
 	 * yoyo to the original values of an object
+	 * its back and forth, only once.. use oncomplete to continuesly to do this
 	 *
-	  	 * @example		Go.to(foobarMc, 1.5).yoyo();
+	 * @example		Go.to(foobarMc, 1.5).yoyo();
 	 *
 	 * @return       Go
 	 */
@@ -235,7 +236,7 @@ class Go {
 	/**
 	 * delay the animation in seconds
 	 *
-	  	 * @example		Go.to(foobarMc, 1.5).delay(1.5);
+	 * @example		Go.to(foobarMc, 1.5).delay(1.5);
 	 *
 	 * @param duration 	delay in seconds
 	 * @return       Go
@@ -248,7 +249,7 @@ class Go {
 	/**
 	 * change the property of an object
 	 *
-	  	 * @example		Go.to(foobarMc, 1.5).prop('counter',10);
+	 * @example		Go.to(foobarMc, 1.5).prop('counter',10);
 	 *
 	 * @param  key   	description of the property as string
 	 * @param  value 	change to this value

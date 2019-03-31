@@ -5,7 +5,6 @@ import js.Browser.*;
 import js.html.*;
 import js.html.MouseEvent;
 import js.html.CanvasElement;
-
 import cc.tool.Export;
 
 /**
@@ -45,7 +44,7 @@ class Sketch {
 		var body = document.querySelector('body');
 
 		// [mck] check if `name` already exists
-		if(document.getElementById('canvas-wrapper') != null){
+		if (document.getElementById('canvas-wrapper') != null) {
 			// [mck] remove the previous one
 			var element = document.getElementById('canvas-wrapper');
 			element.parentNode.removeChild(element);
@@ -123,9 +122,9 @@ class Sketch {
 			var _c = c[i];
 			if (Sketch.option.scale) {
 				var padding = Sketch.option.padding;
-				var scaleX = (window.innerWidth- (2 * padding)) / w;
-				var scaleY = (window.innerHeight- (2 * padding)) / h;
-				var scale = Math.min(scaleX, scaleY) ;
+				var scaleX = (window.innerWidth - (2 * padding)) / w;
+				var scaleY = (window.innerHeight - (2 * padding)) / h;
+				var scale = Math.min(scaleX, scaleY);
 				_c.style.width = '${Sketch.option.width * scale}px';
 				_c.style.height = '${Sketch.option.height * scale}px';
 			}
@@ -152,7 +151,7 @@ class Sketch {
 		var canvas = document.createCanvasElement();
 		body.appendChild(canvas);
 
-		var __w = Math.min(w*0.50, option.width);
+		var __w = Math.min(w * 0.50, option.width);
 
 		canvas.setAttribute("id", 'hiddencanvas-${name}');
 		canvas.style.position = "absolute";
@@ -258,6 +257,7 @@ class Sketch {
 			untyped document.msExitFullscreen();
 		}
 	}
+
 	// https://github.com/soulwire/sketch.js/wiki/API#instance-methods
 	// ____________________________________ Instance Methods ____________________________________
 	// start
@@ -355,6 +355,7 @@ class SketchOption {
 	}
 
 	// autoclear Default: true Whether to clear the context before each call to draw. Otherwise call clear()
+
 	/**
 	 * TODO: [mck] doesn't work yet
 	 */
@@ -371,6 +372,7 @@ class SketchOption {
 	}
 
 	// autostart Default: true Otherwise call start()
+
 	/**
 	 * TODO: [mck] doesn't work yet
 	 */
@@ -388,6 +390,7 @@ class SketchOption {
 
 	// ?????????????????
 	// autopause Default: true Whether to pause the animation on window blur and resume on focus
+
 	/**
 	 * TODO: [mck] doesn't work yet
 	 */
@@ -404,6 +407,7 @@ class SketchOption {
 	}
 
 	// container Default: document.body Where to put the sketch context
+
 	/**
 	 * TODO: [mck] doesn't work yet
 	 */
@@ -420,6 +424,7 @@ class SketchOption {
 	}
 
 	// type Default Sketch.CANVAS Possible values: Sketch.CANVAS, Sketch.WEB_GL and Sketch.DOM
+
 	/**
 	 *
 	 */
@@ -471,13 +476,15 @@ class SketchOption {
 	 * 150 (home printers)
 	 * 300 (books printing)
 	 */
-	public var dpi ( get_dpi , set_dpi ) : Int;
-	private var _dpi : Int = 72; // default 72
+	public var dpi(get_dpi, set_dpi):Int;
 
-	function get_dpi () : Int {
+	private var _dpi:Int = 72; // default 72
+
+	function get_dpi():Int {
 		return _dpi;
 	}
-	function set_dpi(value : Int) : Int {
+
+	function set_dpi(value:Int):Int {
 		return _dpi = value;
 	}
 
@@ -496,13 +503,14 @@ class SketchBase {
 	public var isDrawActive:Bool = true;
 	public var isDebug:Bool = false;
 	public var dpiScale:Float = 1;
+
 	/**
 	 * constructor
 	 * @param ctx
 	 */
 	public function new(ctx:CanvasRenderingContext2D) {
 		trace('START :: ${toString()}');
-		if(ctx == null){
+		if (ctx == null) {
 			// setup Sketch
 			var option = new SketchOption();
 			option.width = 1080; // 1080
@@ -512,12 +520,13 @@ class SketchBase {
 			option.scale = true;
 			ctx = Sketch.create("creative_code_mck", option);
 		}
+
 		/**
 		 * default is 72 dpi, if you design based on that
 		 * and use dpiScaling to correct that value,
 		 * you will be just fine
 		 */
-		dpiScale =  Sketch.option.dpi / 72;
+		dpiScale = Sketch.option.dpi / 72;
 		this.ctx = ctx;
 		window.addEventListener(RESIZE, _reset, false);
 		window.addEventListener(KEY_DOWN, _keyDown, false);
@@ -616,49 +625,63 @@ class SketchBase {
 		isDrawActive = true;
 	}
 
+	public function start() {
+		isDrawActive = true;
+	}
+
 	/**
 	 * shorthand to get half `w` (width of canvas)
 	 */
 	@:isVar public var w2(get, null):Float;
+
 	function get_w2() {
-		return w/2;
+		return w / 2;
 	}
+
 	/**
 	 * shorthand to get half `h` (height of canvas)
 	 */
 	@:isVar public var h2(get, null):Float;
+
 	function get_h2() {
-		return h/2;
+		return h / 2;
 	}
+
 	/**
 	 * shorthand to get quarter `w` (width of canvas)
 	 */
 	@:isVar public var w4(get, null):Float;
+
 	function get_w4() {
-		return w/4;
+		return w / 4;
 	}
+
 	/**
 	 * shorthand to get quarter `h` (height of canvas)
 	 */
 	@:isVar public var h4(get, null):Float;
+
 	function get_h4() {
-		return h/4;
+		return h / 4;
 	}
+
 	/**
 	 * shorthand to get third `w` (width of canvas)
 	 */
 	@:isVar public var w3(get, null):Float;
+
 	function get_w3() {
-		return w/3;
+		return w / 3;
 	}
+
 	/**
 	 * shorthand to get third `h` (height of canvas)
 	 */
 	@:isVar public var h3(get, null):Float;
-	function get_h3() {
-		return h/3;
-	}
 
+	function get_h3() {
+		return h / 3;
+	}
 
 	/**
 	 * Get className, with package
