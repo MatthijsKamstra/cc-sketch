@@ -59,6 +59,7 @@ class Zip {
 	@:isVar public var _ctx(get, set):js.html.CanvasRenderingContext2D;
 	@:isVar public var description(get, set):String = '';
 	@:isVar public var _isMenu(get, set):Bool = true;
+	@:isVar public var _isDebug(get, set):Bool;
 
 	var _filename:String;
 	// timer
@@ -68,6 +69,10 @@ class Zip {
 	var imageStringArray:Array<String> = [];
 	var _onComplete:Dynamic;
 	var _onCompleteParams:Array<Dynamic>;
+	var _onRecordComplete:Dynamic;
+	var _onRecordCompleteParams:Array<Dynamic>;
+	var _onExportComplete:Dynamic;
+	var _onExportCompleteParams:Array<Dynamic>;
 	var progressBar:DivElement;
 
 	public function new(ctx:CanvasRenderingContext2D, ?fileName:String) {
@@ -133,6 +138,7 @@ class Zip {
 
 	function startExport() {
 		out('${toString()} - start export - 0ms');
+		trace(settings());
 		startT = Date.now().getTime();
 		isExportActive = true;
 		imageStringArray = [];
@@ -147,10 +153,15 @@ class Zip {
 		endT = Date.now().getTime();
 		isExportActive = false;
 		out(toString() + ' - stop export - ${(endT - startT) / 1000}sec');
+		trace(settings());
 
 		if (Reflect.isFunction(_onComplete)) {
 			var arr = (_onCompleteParams != null) ? _onCompleteParams : [];
 			Reflect.callMethod(_onComplete, _onComplete, arr);
+		}
+		if (Reflect.isFunction(_onRecordComplete)) {
+			var arr = (_onRecordCompleteParams != null) ? _onRecordCompleteParams : [];
+			Reflect.callMethod(_onRecordComplete, _onRecordComplete, arr);
 		}
 
 		var timeStamp = endT;
@@ -234,7 +245,8 @@ echo \'End convertions png sequence to mp4\'
 		zip.file('_${_filename}/convert.sh', bash);
 		zip.file('_${_filename}/png.sh', bash2);
 		for (i in 0...imageStringArray.length) {
-			trace('/${imageStringArray.length}. add image to file');
+			if (_isDebug)
+				trace('/${imageStringArray.length}. add image to file');
 			var img = imageStringArray[i];
 			zip.file('_${_filename}/sequence/image_${Std.string(i).lpad('0', 4)}.png', img, {base64: true});
 		}
@@ -243,7 +255,8 @@ echo \'End convertions png sequence to mp4\'
 		createProgressBar(); // create another progress over the old
 		out('generate zip');
 		zip.generateAsync({type: "blob"}, function updateCallback(metadata) {
-			console.log("progression: " + metadata.percent.toFixed(2) + " %");
+			if (_isDebug)
+				console.log("progression: " + metadata.percent.toFixed(2) + " %");
 			progressGeneration(Std.parseFloat(metadata.percent.toFixed(2)));
 			// if (metadata.currentFile) {
 			// 	console.log("current file = " + metadata.currentFile);
@@ -252,10 +265,29 @@ echo \'End convertions png sequence to mp4\'
 			console.log('Save zip file complete - ${(Date.now().getTime() - startT) / 1000}sec');
 			out('zip is downloaded');
 			untyped saveAs(blob, '_${_filename}_${timeStamp}.zip'); // 2) trigger the download
+
+			if (Reflect.isFunction(_onExportComplete)) {
+				var arr = (_onExportCompleteParams != null) ? _onExportCompleteParams : [];
+				Reflect.callMethod(_onExportComplete, _onExportComplete, arr);
+			}
+
+			trace(settings());
 		}, function(err) {
 			console.log(err);
 		});
 	}
+
+	function settings() {
+		return {
+			"filename": _filename,
+			"delay": _delay,
+			"record": _record,
+			"delay_in_seconds": (_delay / 60),
+			"record_in_seconds": (_record / 60),
+		};
+	}
+
+	var progressBarHeight = 3;
 
 	function createProgressBar(?percentage:Int = 10) {
 		var body = document.querySelector('body');
@@ -266,7 +298,7 @@ echo \'End convertions png sequence to mp4\'
 		div.style.left = "0px";
 		div.style.top = "0px";
 		div.style.width = '100%';
-		div.style.height = '1px';
+		div.style.height = '${progressBarHeight}px';
 		div.style.backgroundColor = 'silver';
 		body.appendChild(div);
 
@@ -296,6 +328,10 @@ echo \'End convertions png sequence to mp4\'
 		stopExport();
 	}
 
+	public function debug(?isDebug:Bool = true) {
+		this._isDebug = isDebug;
+	}
+
 	/**
 	 * on completion of the animation call a function with param(s)
 	 *
@@ -308,6 +344,16 @@ echo \'End convertions png sequence to mp4\'
 		_onCompleteParams = arr;
 	}
 
+	public function onRecordComplete(func:Dynamic, ?arr:Array<Dynamic>) {
+		_onRecordComplete = func;
+		_onRecordCompleteParams = arr;
+	}
+
+	public function onExportComplete(func:Dynamic, ?arr:Array<Dynamic>) {
+		_onExportComplete = func;
+		_onExportCompleteParams = arr;
+	}
+
 	public function menu(isVisible:Bool = false) {
 		this._isMenu = isVisible;
 		if (!_isMenu) {
@@ -315,19 +361,37 @@ echo \'End convertions png sequence to mp4\'
 		}
 	}
 
+	/**
+	 * Create a delay for your recording in frames
+	 * @param frames  (most likely 60fps * x.seconds)
+	 */
 	public function delay(frames:Int) {
 		this._delay = frames;
 	}
 
+	/**
+	 * Create a delay for your recording in seconds,
+	 * will be converted to frames
+	 * @param sec 	 seconds
+	 */
 	public function delayInSeconds(sec:Float) {
 		this._delay = Math.round(sec * fps);
 		panel1.setValue('delay in seconds', sec);
 	}
 
+	/**
+	 * Record the animation for x number of frames ()
+	 * @param frames  (most likely 60fps * x.seconds)
+	 */
 	public function record(frames:Int) {
 		this._record = frames;
 	}
 
+	/**
+	 * Record the animation for x seconds
+	 * will be converted to frames
+	 * @param sec 	 seconds
+	 */
 	public function recordInSeconds(sec:Float) {
 		this._record = Math.round(sec * fps);
 		panel1.setValue('record in seconds', sec);
@@ -339,13 +403,15 @@ echo \'End convertions png sequence to mp4\'
 			// trace('$isExportActive');
 			if (_delayCounter < _delay) {
 				// trace('>= ${_delay} (delay)');
-				trace('delay: ${_delayCounter} >= ${_delay}');
+				if (_isDebug)
+					trace('delay: ${_delayCounter} >= ${_delay}');
 			}
 
 			if (_delayCounter >= _delay) {
 				if (_recordCounter < _record) {
 					// trace('< ${_record} (recording)');
-					trace('recording: ${_recordCounter} <  ${_record}');
+					if (_isDebug)
+						trace('recording: ${_recordCounter} <  ${_record}');
 					imageStringArray.push(_ctx.canvas.toDataURL('image/png').split('base64,')[1]);
 					progressRecording((_recordCounter / _record) * 100);
 					_recordCounter++;
@@ -360,7 +426,7 @@ echo \'End convertions png sequence to mp4\'
 
 	// ____________________________________ inject script into page ____________________________________
 
-	public function embedScripts(?callback:Dynamic, ?callbackArray:Array<Dynamic>) {
+	public function embedScripts(?callback:Dynamic, ?callbackArray:String->Void) {
 		Embed.script('jszip', 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.2.0/jszip.min.js', onLoadComplete, ['jszip', callback, callbackArray]);
 		Embed.script('jsfilesaver', 'https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js', onLoadComplete,
 			['jsfilesaver', callback, callbackArray]);
@@ -382,7 +448,17 @@ echo \'End convertions png sequence to mp4\'
 			// trace(isFileLoaded, isZipLoaded);
 			Reflect.callMethod(callback, callback, ['JsZip and jsFilesaver are ready']);
 		}
-	} // ____________________________________ getter/setter ____________________________________
+	}
+
+	// ____________________________________ getter/setter ____________________________________
+
+	function get__isDebug():Bool {
+		return _isDebug;
+	}
+
+	function set__isDebug(value:Bool):Bool {
+		return _isDebug = value;
+	}
 
 	function get__ctx():js.html.CanvasRenderingContext2D {
 		return _ctx;
