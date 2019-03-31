@@ -6,13 +6,19 @@ import js.Browser.window;
 class SvgToImage {
 	public function new():Void {}
 
-	static public function convert(svg:String, callback:Dynamic) {
+	/**
+	 * convert a svg string into a Image
+	 *
+	 * @param svg		string (svg)
+	 * @param callback	when complete call this function
+	 */
+	static public function convert(svg:String, callback:Image->Void) {
 		// create the image used
 		var svgImage = new Image();
 		svgImage.onload = function() {
-			trace('base64 square');
-			trace('w: ' + svgImage.width);
-			trace('h: ' + svgImage.height);
+			// trace('base64 square');
+			// trace('w: ' + svgImage.width);
+			// trace('h: ' + svgImage.height);
 			Reflect.callMethod(callback, callback, [svgImage]);
 		}
 
