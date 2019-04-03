@@ -1,6 +1,8 @@
 package art;
 
-class ZipTest extends SketchBase {
+import cc.tool.export.ExportBase;
+
+class TestExport extends ExportBase {
 	var shapeArray:Array<Circle> = [];
 	var grid:GridUtil = new GridUtil();
 	// sizes
@@ -18,40 +20,33 @@ class ZipTest extends SketchBase {
 	var dot:Circle;
 
 	public function new() {
+		var option = new SketchOption();
+		option.width = 1080; // 1080
+		// option.height = 1000;
+		option.autostart = true;
+		option.padding = 10;
+		option.scale = true;
+		ctx = Sketch.create("creative_code_mck", option);
+
+		super(ctx);
+
 		init();
-		super(null);
-
-		// var export = new Export(ctx, App.PORT);
-
-		trace(new cc.model.constants.Sizes().INSTAGRAM);
 	}
 
 	function init() {
+		// override wrapper settings,
+		export.delayInSeconds(2);
+		export.recordInSeconds(2);
+		export.type(NODE);
+		// export.type(TEST);
+		export.isDebug(false);
+		trace(export.settings()); // get the settings
+		export.start(); // you always need to set this
+
+		// create a dot
 		dot = createShape(100, {x: w / 2, y: h / 2});
-		// <link href="https://fonts.googleapis.com/css?family=Oswald:200,300,400,500,600,700" rel="stylesheet">
-		Text.embedGoogleFont('Oswald:200,300,400,500,600,700', onEmbedHandler);
-		createQuickSettings();
+		// trace(new cc.model.constants.Sizes().INSTAGRAM);
 		onAnimateHandler(dot);
-	}
-
-	function onEmbedHandler(e) {
-		trace('onEmbedHandler :: ${toString()} -> "${e}"');
-		drawShape();
-	}
-
-	function createQuickSettings() {
-		// demo/basic example
-		panel1 = QuickSettings.create(10, 10, "Settings")
-			.setGlobalChangeHandler(untyped drawShape)
-
-			.addHTML("Reason", "Sometimes I need to find the best settings")
-
-			.addTextArea('Quote', 'text', function(value) trace(value))
-			.addBoolean('All Caps', false, function(value) trace(value))
-
-			.setKey('h') // use `h` to toggle menu
-
-			.saveInLocalStorage('store-data-${toString()}');
 	}
 
 	function createShape(i:Int, ?point:Point) {
@@ -79,6 +74,9 @@ class ZipTest extends SketchBase {
 	}
 
 	function drawShape() {
+		if (dot == null)
+			return;
+
 		ctx.clearRect(0, 0, w, h);
 		ctx.backgroundObj(WHITE);
 
@@ -89,16 +87,16 @@ class ZipTest extends SketchBase {
 		for (i in 0...shapeArray.length) {
 			var sh = shapeArray[i];
 		}
-		// var rgb = randomColourObject();
-		// ctx.strokeColour(rgb.r, rgb.g, rgb.b);
-		// ctx.xcross(w/2, h/2, 200);
+		var rgb = randomColourObject();
+		ctx.strokeColour(rgb.r, rgb.g, rgb.b);
+		ctx.xcross(w / 2, h / 2, 200);
 
-		ctx.fillStyle = getColourObj(_color4);
-		Text.fillText(ctx, 'text', w / 2, h / 2, "'Oswald', sans-serif;", 160);
+		// ctx.fillStyle = getColourObj(_color4);
+		// Text.fillText(ctx, 'text', w / 2, h / 2, "'Oswald', sans-serif;", 160);
 
 		ctx.strokeColourRGB(_color3);
-		ctx.strokeWeight(2);
-		ctx.circleStroke(dot.x, dot.y, 20);
+		ctx.strokeWeight(100);
+		ctx.circleStroke(dot.x, dot.y, 100);
 	}
 
 	override function setup() {
