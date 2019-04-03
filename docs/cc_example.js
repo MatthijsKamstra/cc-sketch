@@ -880,6 +880,7 @@ art_CCLoader.prototype = $extend(SketchBase.prototype,{
 	,__class__: art_CCLoader
 });
 var cc_tool_export_ExportBase = function(ctx) {
+	this._isDebug = false;
 	this.imageStringArray = [];
 	this["export"] = new cc_tool_export_ExportWrapper(ctx,this.toString());
 	this["export"].delay(0);
@@ -897,20 +898,26 @@ cc_tool_export_ExportBase.__super__ = SketchBase;
 cc_tool_export_ExportBase.prototype = $extend(SketchBase.prototype,{
 	onRecordStartHandler: function() {
 		if(this["export"].get__isDebug()) {
-			haxe_Log.trace("" + this.toString() + " onRecordStartHandler",{ fileName : "ExportBase.hx", lineNumber : 44, className : "cc.tool.export.ExportBase", methodName : "onRecordStartHandler"});
+			haxe_Log.trace("" + this.toString() + " onRecordStartHandler",{ fileName : "ExportBase.hx", lineNumber : 46, className : "cc.tool.export.ExportBase", methodName : "onRecordStartHandler"});
 		}
 	}
 	,onRecordCompleteHandler: function() {
 		if(this["export"].get__isDebug()) {
-			haxe_Log.trace("" + this.toString() + " onRecordCompleteHandler",{ fileName : "ExportBase.hx", lineNumber : 49, className : "cc.tool.export.ExportBase", methodName : "onRecordCompleteHandler"});
+			haxe_Log.trace("" + this.toString() + " onRecordCompleteHandler",{ fileName : "ExportBase.hx", lineNumber : 51, className : "cc.tool.export.ExportBase", methodName : "onRecordCompleteHandler"});
 		}
 		this.stop();
 	}
 	,onExportCompleteHandler: function() {
 		if(this["export"].get__isDebug()) {
-			haxe_Log.trace("" + this.toString() + " onExportCompleteHandler",{ fileName : "ExportBase.hx", lineNumber : 55, className : "cc.tool.export.ExportBase", methodName : "onExportCompleteHandler"});
+			haxe_Log.trace("" + this.toString() + " onExportCompleteHandler",{ fileName : "ExportBase.hx", lineNumber : 57, className : "cc.tool.export.ExportBase", methodName : "onExportCompleteHandler"});
 		}
 		this.start();
+	}
+	,debug: function(isDebug) {
+		if(isDebug == null) {
+			isDebug = false;
+		}
+		this._isDebug = isDebug;
 	}
 	,__export: function() {
 		this["export"].pulse();
@@ -2573,6 +2580,45 @@ cc_tool_FileType.Xml = ["Xml",7];
 cc_tool_FileType.Xml.__enum__ = cc_tool_FileType;
 cc_tool_FileType.Svg = ["Svg",8];
 cc_tool_FileType.Svg.__enum__ = cc_tool_FileType;
+var cc_tool_export_ExportNames = function() {
+};
+$hxClasses["cc.tool.export.ExportNames"] = cc_tool_export_ExportNames;
+cc_tool_export_ExportNames.__name__ = ["cc","tool","export","ExportNames"];
+cc_tool_export_ExportNames.prototype = {
+	__class__: cc_tool_export_ExportNames
+};
+var cc_tool_export_ExportWrapperBase = function() {
+	this._isDebug = false;
+};
+$hxClasses["cc.tool.export.ExportWrapperBase"] = cc_tool_export_ExportWrapperBase;
+cc_tool_export_ExportWrapperBase.__name__ = ["cc","tool","export","ExportWrapperBase"];
+cc_tool_export_ExportWrapperBase.prototype = {
+	progress: function(func) {
+		this._onProgressHandler = func;
+	}
+	,complete: function(func) {
+		this._onExportComplete = func;
+	}
+	,getMarkdown: function(obj) {
+		var md = "# " + this.toString() + "\n\n- Generated on: " + Std.string(new Date()) + "\n- total images: " + obj.imageStringArray.length + "\n- file name: `_" + obj.filename + "_" + obj.timestamp + ".zip`\n- delay: " + obj.delay + " frames (" + obj.delay / 60 + " sec)\n- record: " + obj.record + " frames (" + obj.record / 60 + " sec)\n\n## Instagram\n\n```\nsketch." + obj.filename + " :: " + obj.description + "\nobjcodeart #coding #creativecode #generative #generativeArt\n#minimalism #minimalist #minimal\n#haxe #javascript #js #nodejs\n#animation #illustration #graphicdesign\n```\n\n## convert\n\nopen terminal\n\n```\nsh convert.sh\n```\n\n## Folder structure\n\n```\n+ _" + obj.filename + "_" + obj.timestamp + ".zip\n+ _" + obj.filename + "\n\t- convert.sh\n\t- README.MD\n\t+ sequence\n\t\t- image_" + StringTools.lpad("0","0",4) + ".png\n\t\t- image_" + StringTools.lpad("1","0",4) + ".png\n\t\t- ...\n```\n";
+		return md;
+	}
+	,getBashConvert: function(obj) {
+		var bash = "#!/bin/bash\n\necho 'Start convertions png sequence to mp4'\n\nffmpeg -y -r 30 -i sequence/image_%04d.png -c:v libx264 -strict -2 -pix_fmt yuv420p -shortest -filter:v \"setpts=0.5*PTS\"  " + obj.filename + "_output_30fps.mp4\n# ffmpeg -y -r 30 -i sequence/image_%04d.png -c:v libx264 -strict -2 -pix_fmt yuv420p -shortest -filter:v \"setpts=0.5*PTS\"  sequence/_output_30fps.mp4\n\necho 'End convertions png sequence to mp4'\n\n";
+		return bash;
+	}
+	,getBashConvertPng: function(obj) {
+		var bash2 = "\n#!/bin/bash\n\necho 'Start remove transparancy from images sequence'\n\ncd sequence\nmkdir output\nfor i in *.png; do\n   convert \"$" + "i\" -background white -alpha remove output/\"$" + "i\"\n   echo \"$" + "i\"\ndone\n\necho 'End remove transparancy from images sequence'\necho 'Start convertions png sequence to mp4'\n\nffmpeg -y -r 30 -i output/image_%04d.png -c:v libx264 -strict -2 -pix_fmt yuv420p -shortest -filter:v \"setpts=0.5*PTS\"  ../" + obj.filename + "_white_output_30fps.mp4\n\necho 'End convertions png sequence to mp4'\n\n";
+		return bash2;
+	}
+	,debug: function(isDebug) {
+		this._isDebug = isDebug;
+	}
+	,toString: function() {
+		return "[ExportTypeBase]";
+	}
+	,__class__: cc_tool_export_ExportWrapperBase
+};
 var cc_tool_export_IExport = function() { };
 $hxClasses["cc.tool.export.IExport"] = cc_tool_export_IExport;
 cc_tool_export_IExport.__name__ = ["cc","tool","export","IExport"];
@@ -2580,34 +2626,74 @@ cc_tool_export_IExport.prototype = {
 	__class__: cc_tool_export_IExport
 };
 var cc_tool_export_ExportNodeServer = function() {
-	this._durationFrames = 0;
-	this._currentFrame = 0;
-	this._frameCounter = 0;
+	this._folder = "sequence";
+	this._name = "frame";
+	this._exportCounter = 0;
 	this._isRecording = false;
-	this._isStart = false;
 	this._isClear = false;
-	this._isDebug = false;
 	this._isTimer = false;
 	this._isSocketReady = false;
 	this._isExportServerReady = false;
-	this._isEmbedded = false;
-	haxe_Log.trace(this.toString(),{ fileName : "ExportNodeServer.hx", lineNumber : 40, className : "cc.tool.export.ExportNodeServer", methodName : "new"});
+	cc_tool_export_ExportWrapperBase.call(this);
 	this.embedScripts($bind(this,this.onEmbedComplete));
 };
 $hxClasses["cc.tool.export.ExportNodeServer"] = cc_tool_export_ExportNodeServer;
 cc_tool_export_ExportNodeServer.__name__ = ["cc","tool","export","ExportNodeServer"];
 cc_tool_export_ExportNodeServer.__interfaces__ = [cc_tool_export_IExport];
-cc_tool_export_ExportNodeServer.prototype = {
+cc_tool_export_ExportNodeServer.__super__ = cc_tool_export_ExportWrapperBase;
+cc_tool_export_ExportNodeServer.prototype = $extend(cc_tool_export_ExportWrapperBase.prototype,{
 	'export': function(obj) {
+		if(this._isDebug) {
+			haxe_Log.trace("" + this.toString() + " - export",{ fileName : "ExportNodeServer.hx", lineNumber : 38, className : "cc.tool.export.ExportNodeServer", methodName : "export"});
+		}
+		this._exportArray = obj.imageStringArray;
+		this._exportCounter = 0;
+		this.deleteFolder();
 	}
-	,progress: function(func) {
+	,startExport: function() {
+		if(this._isDebug) {
+			haxe_Log.trace("startExport: " + this._exportCounter + " / " + this._exportArray.length,{ fileName : "ExportNodeServer.hx", lineNumber : 49, className : "cc.tool.export.ExportNodeServer", methodName : "startExport"});
+		}
+		if(Reflect.isFunction(this._onProgressHandler)) {
+			this._onProgressHandler.apply(this._onProgressHandler,[this._exportCounter / this._exportArray.length * 100]);
+		}
+		if(this._exportCounter >= this._exportArray.length) {
+			this._isRecording = false;
+			if(Reflect.isFunction(this._onExportComplete)) {
+				this._onExportComplete.apply(this._onExportComplete,[]);
+			}
+			if(this._isDebug) {
+				haxe_Log.trace("" + this.toString() + " STOP recording base on total frames",{ fileName : "ExportNodeServer.hx", lineNumber : 60, className : "cc.tool.export.ExportNodeServer", methodName : "startExport"});
+			}
+			this.convertExport();
+			return;
+		}
+		var id = Std.string(new Date().getTime());
+		var data = { _id : id, file : this._exportArray[this._exportCounter], name : "" + this._name + "-" + StringTools.lpad(Std.string(this._exportCounter),"0",4), folder : "" + this._folder};
+		if(this._isDebug) {
+			haxe_Log.trace("" + this.toString() + " renderSequence : " + data._id,{ fileName : "ExportNodeServer.hx", lineNumber : 73, className : "cc.tool.export.ExportNodeServer", methodName : "startExport"});
+		}
+		this._socket.emit(cc_tool_export_ExportNames.SEQUENCE,data);
+		if(this._exportCounter % 60 == 1) {
+			if(this._isDebug) {
+				haxe_Log.trace("current frame render: " + this._exportCounter + "/" + this._exportArray.length,{ fileName : "ExportNodeServer.hx", lineNumber : 80, className : "cc.tool.export.ExportNodeServer", methodName : "startExport"});
+			}
+		}
 	}
-	,complete: function(func) {
+	,convertExport: function() {
+		var data = { name : "" + this._name, clear : this._isClear, folder : "" + this._folder, description : "export this file "};
+		this._socket.emit(cc_tool_export_ExportNames.COMBINE,data);
+	}
+	,deleteFolder: function() {
+		var data = { name : "" + this._name, clear : this._isClear, folder : "" + this._folder};
+		this._socket.emit(cc_tool_export_ExportNames.RENDER_CLEAR,data);
 	}
 	,initSocket: function() {
 		var _gthis = this;
-		haxe_Log.trace("" + this.toString() + " Init Socket",{ fileName : "ExportNodeServer.hx", lineNumber : 55, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
-		this._socket = io.connect("" + this._host + ":" + this._port,{upgradeTimeout: 30000});
+		if(this._isDebug) {
+			haxe_Log.trace("" + this.toString() + " Init Socket",{ fileName : "ExportNodeServer.hx", lineNumber : 109, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
+		}
+		this._socket = io();
 		this._socket.on("connect_error",function(err) {
 			window.console.group("Connection error export server");
 			window.console.warn("" + _gthis.toString() + " Error connecting to server \"" + err + "\", closing connection");
@@ -2619,49 +2705,60 @@ cc_tool_export_ExportNodeServer.prototype = {
 		});
 		this._socket.on("connect",function(err1) {
 			if(err1 == "undefined") {
-				haxe_Log.trace("" + _gthis.toString() + " connect: " + err1,{ fileName : "ExportNodeServer.hx", lineNumber : 71, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
+				haxe_Log.trace("" + _gthis.toString() + " connect: " + err1,{ fileName : "ExportNodeServer.hx", lineNumber : 125, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
 			} else {
-				haxe_Log.trace("" + _gthis.toString() + " connect",{ fileName : "ExportNodeServer.hx", lineNumber : 73, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
+				haxe_Log.trace("" + _gthis.toString() + " connect",{ fileName : "ExportNodeServer.hx", lineNumber : 127, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
 			}
-			haxe_Log.trace("_currentFrame : " + _gthis._currentFrame,{ fileName : "ExportNodeServer.hx", lineNumber : 76, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
 			if(err1 == null) {
 				_gthis._isSocketReady = true;
 			}
 		});
 		this._socket.on("disconnect",function(err2) {
-			haxe_Log.trace("" + _gthis.toString() + " disconnect: " + err2,{ fileName : "ExportNodeServer.hx", lineNumber : 83, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
-			_gthis._currentFrame = _gthis._frameCounter;
-			haxe_Log.trace("_currentFrame : " + _gthis._currentFrame,{ fileName : "ExportNodeServer.hx", lineNumber : 85, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
+			haxe_Log.trace("" + _gthis.toString() + " disconnect: " + err2,{ fileName : "ExportNodeServer.hx", lineNumber : 134, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
 		});
 		this._socket.on("connect_failed",function(err3) {
-			haxe_Log.trace("" + _gthis.toString() + " connect_failed: " + err3,{ fileName : "ExportNodeServer.hx", lineNumber : 88, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
+			haxe_Log.trace("" + _gthis.toString() + " connect_failed: " + err3,{ fileName : "ExportNodeServer.hx", lineNumber : 139, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
 		});
 		this._socket.on("error",function(err4) {
-			haxe_Log.trace("" + _gthis.toString() + " error: " + err4,{ fileName : "ExportNodeServer.hx", lineNumber : 91, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
+			haxe_Log.trace("" + _gthis.toString() + " error: " + err4,{ fileName : "ExportNodeServer.hx", lineNumber : 142, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
 		});
 		this._socket.on("message",function(data) {
 			if(data.message != null) {
-				haxe_Log.trace("" + _gthis.toString() + " message: " + data.message,{ fileName : "ExportNodeServer.hx", lineNumber : 97, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
+				haxe_Log.trace("" + _gthis.toString() + " message: " + data.message,{ fileName : "ExportNodeServer.hx", lineNumber : 148, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
 			} else {
-				haxe_Log.trace("" + _gthis.toString() + " There is a problem: " + Std.string(data),{ fileName : "ExportNodeServer.hx", lineNumber : 99, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
+				haxe_Log.trace("" + _gthis.toString() + " There is a problem: " + Std.string(data),{ fileName : "ExportNodeServer.hx", lineNumber : 150, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
 			}
 		});
-		this._socket.emit(cc_tool_export_ExportNodeServer.CHECKIN);
-		this._socket.on(cc_tool_export_ExportNodeServer.SERVER_CHECKIN,function(data1) {
+		this._socket.emit(cc_tool_export_ExportNames.CHECKIN);
+		this._socket.on(cc_tool_export_ExportNames.SERVER_CHECKIN,function(data1) {
 			if(data1.checkin != null && data1.checkin == true) {
 				_gthis._isExportServerReady = true;
-				haxe_Log.trace("" + _gthis.toString() + " data:  + " + Std.string(data1) + ", & _isExportServerReady: " + (_gthis._isExportServerReady == null ? "null" : "" + _gthis._isExportServerReady),{ fileName : "ExportNodeServer.hx", lineNumber : 106, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
-				var _gthis1 = _gthis._isStart;
+				haxe_Log.trace("" + _gthis.toString() + " data:  + " + Std.string(data1) + ", & _isExportServerReady: " + (_gthis._isExportServerReady == null ? "null" : "" + _gthis._isExportServerReady),{ fileName : "ExportNodeServer.hx", lineNumber : 157, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
 			} else {
-				haxe_Log.trace("" + _gthis.toString() + " There is a problem: " + Std.string(data1),{ fileName : "ExportNodeServer.hx", lineNumber : 112, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
+				haxe_Log.trace("" + _gthis.toString() + " There is a problem: " + Std.string(data1),{ fileName : "ExportNodeServer.hx", lineNumber : 159, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
 			}
 		});
-		this._socket.on(cc_tool_export_ExportNodeServer.RENDER_DONE,function(data2) {
-			haxe_Log.trace(data2,{ fileName : "ExportNodeServer.hx", lineNumber : 116, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
+		this._socket.on(cc_tool_export_ExportNames.RENDER_DONE,function(data2) {
+			haxe_Log.trace(data2,{ fileName : "ExportNodeServer.hx", lineNumber : 163, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
+		});
+		this._socket.on(cc_tool_export_ExportNames.RENDER_CLEAR_DONE,function(data3) {
+			if(_gthis._isDebug) {
+				haxe_Log.trace(data3.message,{ fileName : "ExportNodeServer.hx", lineNumber : 167, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
+			}
+			_gthis.startExport();
+		});
+		this._socket.on(cc_tool_export_ExportNames.SEQUENCE_NEXT,function(data4) {
+			if(_gthis._isDebug) {
+				haxe_Log.trace("SEQUENCE_NEXT: " + data4.message,{ fileName : "ExportNodeServer.hx", lineNumber : 172, className : "cc.tool.export.ExportNodeServer", methodName : "initSocket"});
+			}
+			_gthis._exportCounter++;
+			_gthis.startExport();
 		});
 	}
 	,onEmbedComplete: function(value) {
-		window.console.log("" + this.toString() + " - " + value);
+		if(this._isDebug) {
+			window.console.log("" + this.toString() + " " + value);
+		}
 		this.initSocket();
 	}
 	,embedScripts: function(callback,callbackArray) {
@@ -2671,14 +2768,16 @@ cc_tool_export_ExportNodeServer.prototype = {
 		return "[Export via Node]";
 	}
 	,__class__: cc_tool_export_ExportNodeServer
-};
+});
 var cc_tool_export_ExportNone = function() {
+	cc_tool_export_ExportWrapperBase.call(this);
 	haxe_Log.trace(this.toString(),{ fileName : "ExportNone.hx", lineNumber : 8, className : "cc.tool.export.ExportNone", methodName : "new"});
 };
 $hxClasses["cc.tool.export.ExportNone"] = cc_tool_export_ExportNone;
 cc_tool_export_ExportNone.__name__ = ["cc","tool","export","ExportNone"];
 cc_tool_export_ExportNone.__interfaces__ = [cc_tool_export_IExport];
-cc_tool_export_ExportNone.prototype = {
+cc_tool_export_ExportNone.__super__ = cc_tool_export_ExportWrapperBase;
+cc_tool_export_ExportNone.prototype = $extend(cc_tool_export_ExportWrapperBase.prototype,{
 	'export': function(obj) {
 		var _gthis = this;
 		haxe_Timer.delay(function() {
@@ -2697,21 +2796,15 @@ cc_tool_export_ExportNone.prototype = {
 			_gthis._complete(100);
 		},1000);
 	}
-	,progress: function(func) {
-		this._onProgressHandler = func;
-	}
-	,complete: function(func) {
-		this._onExportComplete = func;
-	}
 	,_progress: function(value) {
 		if(Reflect.isFunction(this._onProgressHandler)) {
-			haxe_Log.trace("onProgressHandler (" + value + ")",{ fileName : "ExportNone.hx", lineNumber : 42, className : "cc.tool.export.ExportNone", methodName : "_progress"});
+			haxe_Log.trace("onProgressHandler (" + value + ")",{ fileName : "ExportNone.hx", lineNumber : 34, className : "cc.tool.export.ExportNone", methodName : "_progress"});
 			this._onProgressHandler.apply(this._onProgressHandler,[value]);
 		}
 	}
 	,_complete: function(value) {
 		if(Reflect.isFunction(this._onExportComplete)) {
-			haxe_Log.trace("onExportComplete (" + value + ")",{ fileName : "ExportNone.hx", lineNumber : 49, className : "cc.tool.export.ExportNone", methodName : "_complete"});
+			haxe_Log.trace("onExportComplete (" + value + ")",{ fileName : "ExportNone.hx", lineNumber : 41, className : "cc.tool.export.ExportNone", methodName : "_complete"});
 			this._onExportComplete.apply(this._onExportComplete,[]);
 		}
 	}
@@ -2719,7 +2812,7 @@ cc_tool_export_ExportNone.prototype = {
 		return "[Export via TEST/NONE]";
 	}
 	,__class__: cc_tool_export_ExportNone
-};
+});
 var cc_tool_export_ExportWrapper = function(ctx,fileName) {
 	this.imageStringArray = [];
 	this._type = cc_tool_export_ExportType.NONE;
@@ -2777,14 +2870,19 @@ cc_tool_export_ExportWrapper.prototype = {
 		haxe_Log.trace(this.exportType.toString(),{ fileName : "ExportWrapper.hx", lineNumber : 110, className : "cc.tool.export.ExportWrapper", methodName : "stopExport"});
 		this.exportType.progress($bind(this,this.progressGeneration));
 		this.exportType.complete(this._onExportComplete);
+		this.exportType.debug(this.get__isDebug());
 		this.exportType["export"](this.settings());
 	}
-	,start: function() {
+	,init: function() {
 		if($bind(this,this.pulse) == null) {
 			window.console.warn("no pulse detected, hook into the animation");
 			return;
 		}
 		this.startExport();
+	}
+	,start: function() {
+		this.set__delay(0);
+		this.init();
 	}
 	,stop: function() {
 		this.stopExport();
@@ -2923,22 +3021,22 @@ cc_tool_export_ExportWrapper.prototype = {
 		var _g = input.value;
 		switch(_g) {
 		case "init recording":
-			haxe_Log.trace("init recording",{ fileName : "ExportWrapper.hx", lineNumber : 348, className : "cc.tool.export.ExportWrapper", methodName : "onClickHandler"});
+			haxe_Log.trace("init recording",{ fileName : "ExportWrapper.hx", lineNumber : 366, className : "cc.tool.export.ExportWrapper", methodName : "onClickHandler"});
 			this.setDelay(this.panel1.getValue("delay in seconds"));
 			this.setRecord(this.panel1.getValue("record in seconds"));
 			this.start();
-			haxe_Log.trace(JSON.parse(JSON.stringify(this)),{ fileName : "ExportWrapper.hx", lineNumber : 352, className : "cc.tool.export.ExportWrapper", methodName : "onClickHandler"});
+			haxe_Log.trace(JSON.parse(JSON.stringify(this)),{ fileName : "ExportWrapper.hx", lineNumber : 370, className : "cc.tool.export.ExportWrapper", methodName : "onClickHandler"});
 			break;
 		case "recording":
 			break;
 		case "start recording":
 			break;
 		case "stop recording":
-			haxe_Log.trace("stop recording",{ fileName : "ExportWrapper.hx", lineNumber : 354, className : "cc.tool.export.ExportWrapper", methodName : "onClickHandler"});
+			haxe_Log.trace("stop recording",{ fileName : "ExportWrapper.hx", lineNumber : 372, className : "cc.tool.export.ExportWrapper", methodName : "onClickHandler"});
 			this.stop();
 			break;
 		default:
-			haxe_Log.trace("case '" + input.value + "': trace ('" + input.value + "');",{ fileName : "ExportWrapper.hx", lineNumber : 357, className : "cc.tool.export.ExportWrapper", methodName : "onClickHandler"});
+			haxe_Log.trace("case '" + input.value + "': trace ('" + input.value + "');",{ fileName : "ExportWrapper.hx", lineNumber : 375, className : "cc.tool.export.ExportWrapper", methodName : "onClickHandler"});
 		}
 	}
 	,create_ProgressBar: function(percentage) {
@@ -3023,29 +3121,8 @@ cc_tool_export_ExportType.NONE = ["NONE",2];
 cc_tool_export_ExportType.NONE.__enum__ = cc_tool_export_ExportType;
 cc_tool_export_ExportType.TEST = ["TEST",3];
 cc_tool_export_ExportType.TEST.__enum__ = cc_tool_export_ExportType;
-var cc_tool_export_ExportWrapperBase = function() { };
-$hxClasses["cc.tool.export.ExportWrapperBase"] = cc_tool_export_ExportWrapperBase;
-cc_tool_export_ExportWrapperBase.__name__ = ["cc","tool","export","ExportWrapperBase"];
-cc_tool_export_ExportWrapperBase.prototype = {
-	getMarkdown: function(obj) {
-		var md = "# " + this.toString() + "\n\n- Generated on: " + Std.string(new Date()) + "\n- total images: " + obj.imageStringArray.length + "\n- file name: `_" + obj.filename + "_" + obj.timestamp + ".zip`\n- delay: " + obj.delay + " frames (" + obj.delay / 60 + " sec)\n- record: " + obj.record + " frames (" + obj.record / 60 + " sec)\n\n## Instagram\n\n```\nsketch." + obj.filename + " :: " + obj.description + "\nobjcodeart #coding #creativecode #generative #generativeArt\n#minimalism #minimalist #minimal\n#haxe #javascript #js #nodejs\n#animation #illustration #graphicdesign\n```\n\n## convert\n\nopen terminal\n\n```\nsh convert.sh\n```\n\n## Folder structure\n\n```\n+ _" + obj.filename + "_" + obj.timestamp + ".zip\n+ _" + obj.filename + "\n\t- convert.sh\n\t- README.MD\n\t+ sequence\n\t\t- image_" + StringTools.lpad("0","0",4) + ".png\n\t\t- image_" + StringTools.lpad("1","0",4) + ".png\n\t\t- ...\n```\n";
-		return md;
-	}
-	,getBashConvert: function(obj) {
-		var bash = "#!/bin/bash\n\necho 'Start convertions png sequence to mp4'\n\nffmpeg -y -r 30 -i sequence/image_%04d.png -c:v libx264 -strict -2 -pix_fmt yuv420p -shortest -filter:v \"setpts=0.5*PTS\"  " + obj.filename + "_output_30fps.mp4\n# ffmpeg -y -r 30 -i sequence/image_%04d.png -c:v libx264 -strict -2 -pix_fmt yuv420p -shortest -filter:v \"setpts=0.5*PTS\"  sequence/_output_30fps.mp4\n\necho 'End convertions png sequence to mp4'\n\n";
-		return bash;
-	}
-	,getBashConvertPng: function(obj) {
-		var bash2 = "\n#!/bin/bash\n\necho 'Start remove transparancy from images sequence'\n\ncd sequence\nmkdir output\nfor i in *.png; do\n   convert \"$" + "i\" -background white -alpha remove output/\"$" + "i\"\n   echo \"$" + "i\"\ndone\n\necho 'End remove transparancy from images sequence'\necho 'Start convertions png sequence to mp4'\n\nffmpeg -y -r 30 -i output/image_%04d.png -c:v libx264 -strict -2 -pix_fmt yuv420p -shortest -filter:v \"setpts=0.5*PTS\"  ../" + obj.filename + "_white_output_30fps.mp4\n\necho 'End convertions png sequence to mp4'\n\n";
-		return bash2;
-	}
-	,toString: function() {
-		return "[ExportTypeBase]";
-	}
-	,__class__: cc_tool_export_ExportWrapperBase
-};
 var cc_tool_export_ExportZip = function() {
-	haxe_Log.trace(this.toString(),{ fileName : "ExportZip.hx", lineNumber : 18, className : "cc.tool.export.ExportZip", methodName : "new"});
+	cc_tool_export_ExportWrapperBase.call(this);
 	this.embedScripts($bind(this,this.onEmbedComplete));
 };
 $hxClasses["cc.tool.export.ExportZip"] = cc_tool_export_ExportZip;
@@ -3056,7 +3133,7 @@ cc_tool_export_ExportZip.prototype = $extend(cc_tool_export_ExportWrapperBase.pr
 	'export': function(obj) {
 		var _gthis = this;
 		var startT = new Date().getTime();
-		haxe_Log.trace("Start creation zip file - " + (new Date().getTime() - startT) / 1000 + "sec",{ fileName : "ExportZip.hx", lineNumber : 30, className : "cc.tool.export.ExportZip", methodName : "export"});
+		haxe_Log.trace("Start creation zip file - " + (new Date().getTime() - startT) / 1000 + "sec",{ fileName : "ExportZip.hx", lineNumber : 25, className : "cc.tool.export.ExportZip", methodName : "export"});
 		var zip = new JSZip();
 		zip.file("_" + obj.filename + "/README.MD",this.getMarkdown(obj));
 		zip.file("_" + obj.filename + "/convert.sh",this.getBashConvert(obj));
@@ -3065,13 +3142,17 @@ cc_tool_export_ExportZip.prototype = $extend(cc_tool_export_ExportWrapperBase.pr
 		var _g = obj.imageStringArray.length;
 		while(_g1 < _g) {
 			var i = _g1++;
-			haxe_Log.trace("/" + obj.imageStringArray.length + ". add image to file",{ fileName : "ExportZip.hx", lineNumber : 37, className : "cc.tool.export.ExportZip", methodName : "export"});
+			if(this._isDebug) {
+				haxe_Log.trace("/" + obj.imageStringArray.length + ". add image to file",{ fileName : "ExportZip.hx", lineNumber : 32, className : "cc.tool.export.ExportZip", methodName : "export"});
+			}
 			var img = obj.imageStringArray[i];
 			zip.file("_" + obj.filename + "/sequence/image_" + StringTools.lpad(i == null ? "null" : "" + i,"0",4) + ".png",img,{ base64 : true});
 		}
-		haxe_Log.trace("Generate zip file - " + (new Date().getTime() - startT) / 1000 + "sec",{ fileName : "ExportZip.hx", lineNumber : 41, className : "cc.tool.export.ExportZip", methodName : "export"});
+		haxe_Log.trace("Generate zip file - " + (new Date().getTime() - startT) / 1000 + "sec",{ fileName : "ExportZip.hx", lineNumber : 36, className : "cc.tool.export.ExportZip", methodName : "export"});
 		var updateCallback = function(metadata) {
-			window.console.log("progression: " + metadata.percent.toFixed(2) + " %");
+			if(_gthis._isDebug) {
+				window.console.log("progression: " + metadata.percent.toFixed(2) + " %");
+			}
 			if(Reflect.isFunction(_gthis._onProgressHandler)) {
 				var o = _gthis._onProgressHandler;
 				var func = _gthis._onProgressHandler;
@@ -3089,15 +3170,6 @@ cc_tool_export_ExportZip.prototype = $extend(cc_tool_export_ExportWrapperBase.pr
 			window.console.log(err);
 		});
 	}
-	,progress: function(func) {
-		this._onProgressHandler = func;
-	}
-	,complete: function(func) {
-		this._onExportComplete = func;
-	}
-	,onEmbedComplete: function(value) {
-		window.console.log("" + this.toString() + " - " + value);
-	}
 	,embedScripts: function(callback,callbackArray) {
 		cc_tool_Embed.script("jszip","https://cdnjs.cloudflare.com/ajax/libs/jszip/3.2.0/jszip.min.js",$bind(this,this.onLoadComplete),["jszip",callback,callbackArray]);
 		cc_tool_Embed.script("jsfilesaver","https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js",$bind(this,this.onLoadComplete),["jsfilesaver",callback,callbackArray]);
@@ -3111,11 +3183,14 @@ cc_tool_export_ExportZip.prototype = $extend(cc_tool_export_ExportWrapperBase.pr
 			cc_tool_export_ExportZip.isZipLoaded = true;
 			break;
 		default:
-			haxe_Log.trace("case '" + str + "': trace ('" + str + "');",{ fileName : "ExportZip.hx", lineNumber : 106, className : "cc.tool.export.ExportZip", methodName : "onLoadComplete"});
+			haxe_Log.trace("case '" + str + "': trace ('" + str + "');",{ fileName : "ExportZip.hx", lineNumber : 90, className : "cc.tool.export.ExportZip", methodName : "onLoadComplete"});
 		}
 		if(cc_tool_export_ExportZip.isFileLoaded && cc_tool_export_ExportZip.isZipLoaded) {
 			callback.apply(callback,["JsZip and jsFilesaver are embedded and loaded"]);
 		}
+	}
+	,onEmbedComplete: function(value) {
+		window.console.log("" + this.toString() + " - " + value);
 	}
 	,toString: function() {
 		return "[Export via Zip]";
@@ -4501,19 +4576,21 @@ Global.TWO_PI = Math.PI * 2;
 cc_lets_Go._tweens = [];
 cc_model_constants_App.NAME = "[cc-sketch]";
 cc_model_constants_App.PORT = "5000";
-cc_model_constants_App.BUILD = "2019-04-03 17:35:42";
-cc_tool_export_ExportNodeServer.SEND = "send";
-cc_tool_export_ExportNodeServer.MESSAGE = "message";
-cc_tool_export_ExportNodeServer.IMAGE = "image";
-cc_tool_export_ExportNodeServer.SEQUENCE = "sequence";
-cc_tool_export_ExportNodeServer.COMBINE = "combine";
-cc_tool_export_ExportNodeServer.MARKDOWN = "md";
-cc_tool_export_ExportNodeServer.CHECKIN = "checkin";
-cc_tool_export_ExportNodeServer.SERVER_CHECKIN = "server-checkin";
-cc_tool_export_ExportNodeServer.RENDER_CLEAR = "render-clear";
-cc_tool_export_ExportNodeServer.RENDER_FRAME = "render-frame";
-cc_tool_export_ExportNodeServer.RENDER_DONE = "render-done";
-cc_tool_export_ExportNodeServer.TEST = "test";
+cc_model_constants_App.BUILD = "2019-04-04 00:29:05";
+cc_tool_export_ExportNames.SEND = "send";
+cc_tool_export_ExportNames.MESSAGE = "message";
+cc_tool_export_ExportNames.IMAGE = "image";
+cc_tool_export_ExportNames.SEQUENCE = "sequence";
+cc_tool_export_ExportNames.SEQUENCE_NEXT = "sequence_next";
+cc_tool_export_ExportNames.COMBINE = "combine";
+cc_tool_export_ExportNames.MARKDOWN = "md";
+cc_tool_export_ExportNames.CHECKIN = "checkin";
+cc_tool_export_ExportNames.SERVER_CHECKIN = "server-checkin";
+cc_tool_export_ExportNames.RENDER_CLEAR = "render-clear";
+cc_tool_export_ExportNames.RENDER_CLEAR_DONE = "render-clear-done";
+cc_tool_export_ExportNames.RENDER_FRAME = "render-frame";
+cc_tool_export_ExportNames.RENDER_DONE = "render-done";
+cc_tool_export_ExportNames.TEST = "test";
 cc_tool_export_ExportZip.isZipLoaded = false;
 cc_tool_export_ExportZip.isFileLoaded = false;
 cc_util_ColorUtil.NAVY = { r : Math.round(0), g : Math.round(31), b : Math.round(63)};
