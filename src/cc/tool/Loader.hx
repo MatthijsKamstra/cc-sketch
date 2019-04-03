@@ -63,6 +63,8 @@ class Loader {
 			path: path,
 			type: _type
 		};
+		if (_isDebug)
+			trace(_obj);
 		this._loadingArray.push(_obj);
 		return this;
 	}
@@ -115,10 +117,10 @@ class Loader {
 		switch (ext.toLowerCase()) {
 			case 'jpg', 'jpeg':
 				type = JPG;
-				type = Img;
 			case 'gif':
 				type = Gif;
-				type = Img;
+			case 'png':
+				type = Png;
 			case 'json':
 				type = Json;
 			case 'xml':
@@ -147,78 +149,89 @@ class Loader {
 
 		// create the image used
 		var _l:LoaderObj = _loadingArray[_loadCounter];
-		if (_l.type == Img) {
-			var _img = new Image();
 
-			_img.crossOrigin = "Anonymous";
-			_img.src = _l.path;
-			_img.onload = function() {
-				if (_isDebug)
-					trace('w: ' + _img.width);
-				if (_isDebug)
-					trace('h: ' + _img.height);
-				if (_isDebug)
-					trace(completeArray.length);
-				_l.image = _img;
+		switch (_l.type) {
+			case JPEG, JPG, Png, Gif, Img:
+				imageLoader(_l);
+			case Json, Txt, Xml, Svg:
+				textLoader(_l);
+			case _:
+				trace('?????????');
+		}
+	}
+
+	function imageLoader(_l:LoaderObj) {
+		var _img = new Image();
+		_img.crossOrigin = "Anonymous";
+		_img.src = _l.path;
+		_img.onload = function() {
+			if (_isDebug)
+				trace('w: ' + _img.width);
+			if (_isDebug)
+				trace('h: ' + _img.height);
+			if (_isDebug)
+				trace(completeArray.length);
+			_l.image = _img;
+			completeArray.push(_l);
+			if (_isDebug)
+				trace(completeArray);
+			if (_isDebug)
+				trace(completeArray.length);
+
+			if (Reflect.isFunction(_onUpdate))
+				Reflect.callMethod(_onUpdate, _onUpdate, [_img]);
+			_loadCounter++;
+			loadingHandler();
+		}
+
+		_img.onerror = function() {
+			if (Reflect.isFunction(_onError))
+				Reflect.callMethod(_onError, _onError, [_img]);
+			_loadCounter++;
+			loadingHandler();
+		}
+
+		_img.onprogress = function() {
+			if (Reflect.isFunction(_onProgress))
+				Reflect.callMethod(_onProgress, _onProgress, [_img]);
+		}
+	}
+
+	function textLoader(_l:LoaderObj) {
+		var url = _l.path;
+		var req = new haxe.Http(url);
+		// req.setHeader('Content-Type', 'application/json');
+		// req.setHeader('auth', '${App.TOKEN}');
+		req.onData = function(data:String) {
+			try {
+				_l.str = data;
+				_l.json = haxe.Json.parse(data);
 				completeArray.push(_l);
-				if (_isDebug)
-					trace(completeArray);
-				if (_isDebug)
-					trace(completeArray.length);
 
 				if (Reflect.isFunction(_onUpdate))
-					Reflect.callMethod(_onUpdate, _onUpdate, [_img]);
+					Reflect.callMethod(_onUpdate, _onUpdate, ['_img']);
 				_loadCounter++;
+
 				loadingHandler();
-			}
-
-			_img.onerror = function() {
-				if (Reflect.isFunction(_onError))
-					Reflect.callMethod(_onError, _onError, [_img]);
-				_loadCounter++;
-				loadingHandler();
-			}
-
-			_img.onprogress = function() {
-				if (Reflect.isFunction(_onProgress))
-					Reflect.callMethod(_onProgress, _onProgress, [_img]);
-			}
-		} else {
-			var url = _l.path;
-			var req = new haxe.Http(url);
-			// req.setHeader('Content-Type', 'application/json');
-			// req.setHeader('auth', '${App.TOKEN}');
-			req.onData = function(data:String) {
-				try {
-					_l.str = data;
-					_l.json = haxe.Json.parse(data);
-					completeArray.push(_l);
-
-					if (Reflect.isFunction(_onUpdate))
-						Reflect.callMethod(_onUpdate, _onUpdate, ['_img']);
-					_loadCounter++;
-
-					loadingHandler();
-				} catch (e:Dynamic) {
-					if (_isDebug)
-						trace(e);
-
-					_loadCounter++;
-					loadingHandler();
-				}
-			}
-			req.onError = function(error:String) {
+			} catch (e:Dynamic) {
 				if (_isDebug)
-					trace('error: $error');
+					trace(e);
+
 				_loadCounter++;
 				loadingHandler();
 			}
-			req.onStatus = function(status:Int) {
-				if (_isDebug)
-					trace('status: $status');
-			}
-			req.request(true); // false=GET, true=POST
 		}
+		req.onError = function(error:String) {
+			if (_isDebug)
+				trace('error: $error');
+			_loadCounter++;
+			loadingHandler();
+		}
+		req.onStatus = function(status:Int) {
+			if (_isDebug)
+				trace('status: $status');
+		}
+		req.request(true); // false=GET, true=POST
 	}
 
 	// ____________________________________ getter/setter ____________________________________
@@ -260,6 +273,7 @@ enum FileType {
 	Txt;
 	Json;
 	Gif;
+	Png;
 	JPEG;
 	JPG;
 	Xml;
