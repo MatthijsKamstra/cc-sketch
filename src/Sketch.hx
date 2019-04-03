@@ -5,7 +5,7 @@ import js.Browser.*;
 import js.html.*;
 import js.html.MouseEvent;
 import js.html.CanvasElement;
-import cc.tool.Export;
+import cc.tool.ExportFile;
 
 /**
  * inspired by George Gally, which was inpired by Seb Lee
@@ -200,19 +200,19 @@ class Sketch {
 				e.preventDefault();
 				e.stopPropagation();
 				trace('cmd + s');
-				Export.downloadImageBg(ctx, true); // jpg
+				ExportFile.downloadImageBg(ctx, true); // jpg
 			}
 			if (e.metaKey == true && e.key == 's' && e.shiftKey == true) {
 				e.preventDefault();
 				e.stopPropagation();
 				trace('cmd + shift + s');
-				Export.downloadImage(ctx, false);
+				ExportFile.downloadImage(ctx, false);
 			}
 			if (e.metaKey == true && untyped e.code == 'KeyS' && e.altKey == true) {
 				e.preventDefault();
 				e.stopPropagation();
 				trace('cmd + alt + s');
-				Export.onBase64Handler(ctx, true);
+				ExportFile.onBase64Handler(ctx, true);
 			}
 
 			if (e.metaKey == true && e.key == 'f') {
@@ -509,9 +509,10 @@ class SketchBase {
 	 * @param ctx
 	 */
 	public function new(ctx:CanvasRenderingContext2D) {
-		trace('START :: ${toString()}');
+		if (isDebug)
+			trace('START :: ${toString()}');
 		if (ctx == null) {
-			// setup Sketch
+			// setup a default Sketch with Instagram settings
 			var option = new SketchOption();
 			option.width = 1080; // 1080
 			// option.height = 1000;
@@ -558,6 +559,7 @@ class SketchBase {
 	// wrapper around the real `draw` class
 	function _draw(?timestamp:Float) {
 		draw();
+		__export();
 		if (isDrawActive)
 			window.requestAnimationFrame(_draw);
 	}
@@ -569,7 +571,52 @@ class SketchBase {
 	 * when the browser resizes
 	 */
 	public function setup() {
-		// trace('SETUP :: ${toString()} -> override public function draw()');
+		if (isDebug)
+			trace('SETUP :: ${toString()} -> override public function draw()');
+	}
+
+	/**
+	 * the magic happens here, every class should have a `draw` function
+	 */
+	public function draw() {
+		if (isDebug)
+			trace('DRAW :: ${toString()} -> override public function draw()');
+	}
+
+	/**
+	 * might be completely useless, might change in the future,
+	 * but this is my library so deal with it
+	 * I need this for my export functions
+	 */
+	public function __export() {
+		if (isDebug)
+			trace('EXPORT :: ${toString()} -> override public function __export()');
+	}
+
+	/**
+	 * pause the draw function (toggle function)
+	 */
+	public function pause() {
+		isDrawActive = !isDrawActive;
+	}
+
+	/**
+	 * stop draw function
+	 */
+	public function stop() {
+		isDrawActive = false;
+	}
+
+	/**
+	 * play draw function
+	 */
+	public function play() {
+		isDrawActive = true;
+		_draw();
+	}
+
+	public function start() {
+		play();
 	}
 
 	public function onKeyDown(e:js.html.KeyboardEvent) {
@@ -596,38 +643,6 @@ class SketchBase {
 	// keydown
 	// keyup
 	// resize
-
-	/**
-	 * the magic happens here, every class should have a `draw` function
-	 */
-	public function draw() {
-		trace('DRAW :: ${toString()} -> override public function draw()');
-	}
-
-	/**
-	 * pause the draw function (toggle function)
-	 */
-	public function pause() {
-		isDrawActive = !isDrawActive;
-	}
-
-	/**
-	 * stop draw function
-	 */
-	public function stop() {
-		isDrawActive = false;
-	}
-
-	/**
-	 * play draw function
-	 */
-	public function play() {
-		isDrawActive = true;
-	}
-
-	public function start() {
-		isDrawActive = true;
-	}
 
 	/**
 	 * shorthand to get half `w` (width of canvas)
