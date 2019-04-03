@@ -11,6 +11,7 @@ class ExportNames {
 	public static var CHECKIN:String = "checkin";
 	public static var SERVER_CHECKIN:String = "server-checkin";
 	public static var RENDER_CLEAR:String = "render-clear";
+	public static var RENDER_CLEAR_DONE:String = "render-clear-done";
 	public static var RENDER_FRAME:String = "render-frame";
 	public static var RENDER_DONE:String = "render-done";
 	public static var TEST:String = "test";

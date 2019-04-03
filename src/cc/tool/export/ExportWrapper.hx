@@ -110,13 +110,18 @@ class ExportWrapper {
 		trace(exportType.toString());
 		exportType.progress(progressGeneration);
 		exportType.complete(_onExportComplete);
-		// exportType.
+		exportType.debug(_isDebug);
 		exportType.export(settings());
 	}
 
 	// ____________________________________ properties ____________________________________
 
-	public function start() {
+	/**
+	 * init project,
+	 * use delay in frames
+	 * use recording frames
+	 */
+	public function init() {
 		if (pulse == null) {
 			console.warn('no pulse detected, hook into the animation');
 			return;
@@ -124,6 +129,18 @@ class ExportWrapper {
 		startExport();
 	}
 
+	/**
+	 * Start recording now
+	 * reset _delay
+	 */
+	public function start() {
+		_delay = 0; // start now, so reset everthing
+		init();
+	}
+
+	/**
+	 * Stop recording now
+	 */
 	public function stop() {
 		stopExport();
 	}

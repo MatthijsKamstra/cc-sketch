@@ -9,7 +9,7 @@ class ExportWrapperBase {
 	var _isDebug:Bool = false;
 
 	public function new() {
-		trace(toString());
+		// trace(toString());
 	}
 
 	// ____________________________________ public functions ____________________________________

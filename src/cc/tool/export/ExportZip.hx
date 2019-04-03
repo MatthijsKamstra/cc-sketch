@@ -9,8 +9,6 @@ class ExportZip extends ExportWrapperBase implements IExport {
 	public static var isZipLoaded:Bool = false;
 	public static var isFileLoaded:Bool = false;
 
-	// public var imageStringArray:Array<String> = [];
-
 	public function new() {
 		super();
 		// might not be bullit proof!!!
@@ -30,8 +28,8 @@ class ExportZip extends ExportWrapperBase implements IExport {
 		zip.file('_${obj.filename}/convert.sh', getBashConvert(obj));
 		zip.file('_${obj.filename}/png.sh', getBashConvertPng(obj));
 		for (i in 0...obj.imageStringArray.length) {
-			// if (_isDebug)
-			trace('/${obj.imageStringArray.length}. add image to file');
+			if (_isDebug)
+				trace('/${obj.imageStringArray.length}. add image to file');
 			var img = obj.imageStringArray[i];
 			zip.file('_${obj.filename}/sequence/image_${Std.string(i).lpad('0', 4)}.png', img, {base64: true});
 		}
@@ -40,8 +38,8 @@ class ExportZip extends ExportWrapperBase implements IExport {
 		// createProgressBar(); // create another progress over the old
 		// out('generate zip');
 		zip.generateAsync({type: "blob"}, function updateCallback(metadata) {
-			// if (_isDebug)
-			console.log("progression: " + metadata.percent.toFixed(2) + " %");
+			if (_isDebug)
+				console.log("progression: " + metadata.percent.toFixed(2) + " %");
 			// progressGeneration(Std.parseFloat(metadata.percent.toFixed(2)));
 			// if (metadata.currentFile) {
 			// 	console.log("current file = " + metadata.currentFile);
@@ -66,9 +64,6 @@ class ExportZip extends ExportWrapperBase implements IExport {
 	}
 
 	// ____________________________________ inject script into page ____________________________________
-	function onEmbedComplete(?value:String) {
-		console.log('${toString()} - ${value}');
-	}
 
 	/**
 	 * embedScripts(onEmbedComplete);
@@ -98,6 +93,10 @@ class ExportZip extends ExportWrapperBase implements IExport {
 			// trace(isFileLoaded, isZipLoaded);
 			Reflect.callMethod(callback, callback, ['JsZip and jsFilesaver are embedded and loaded']);
 		}
+	}
+
+	function onEmbedComplete(?value:String) {
+		console.log('${toString()} - ${value}');
 	}
 
 	// ____________________________________ toString() ____________________________________

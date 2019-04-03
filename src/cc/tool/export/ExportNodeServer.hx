@@ -34,15 +34,12 @@ class ExportNodeServer extends ExportWrapperBase implements IExport {
 	// ____________________________________ public functions ____________________________________
 
 	public function export(obj:ExportWrapper.ExportWrapperObj):Void {
-		// trace('${toString()} - export - ${obj}');
-		trace('${toString()} - export');
+		if (_isDebug)
+			trace('${toString()} - export');
 		_exportArray = obj.imageStringArray;
 		_exportCounter = 0;
-
-		trace(_exportArray.length);
-		// trace(_exportArray[0]);
-		deleteFolder();
-		startExport();
+		deleteFolder(); // first delete then, via socket start export
+		// startExport();
 	}
 
 	// ____________________________________ private functions ____________________________________
@@ -50,9 +47,17 @@ class ExportNodeServer extends ExportWrapperBase implements IExport {
 	function startExport() {
 		if (_isDebug)
 			trace('startExport: ${_exportCounter} / ${_exportArray.length}');
+
+		if (Reflect.isFunction(_onProgressHandler)) {
+			Reflect.callMethod(_onProgressHandler, _onProgressHandler, [(_exportCounter / _exportArray.length) * 100]);
+		}
 		if (_exportCounter >= _exportArray.length) {
 			_isRecording = false;
-			trace('${toString()} STOP recording base on frames');
+			if (Reflect.isFunction(_onExportComplete)) {
+				Reflect.callMethod(_onExportComplete, _onExportComplete, []);
+			}
+			if (_isDebug)
+				trace('${toString()} STOP recording base on total frames');
 			convertExport();
 			return;
 		}
@@ -64,8 +69,6 @@ class ExportNodeServer extends ExportWrapperBase implements IExport {
 			folder: '${_folder}',
 		}
 
-		// trace(data);
-
 		if (_isDebug)
 			trace('${toString()} renderSequence : ${data._id}');
 
@@ -73,13 +76,9 @@ class ExportNodeServer extends ExportWrapperBase implements IExport {
 
 		// per 60 frames a mention in the browser
 		if (_exportCounter % 60 == 1) {
-			trace('current frame render: $_exportCounter/${_exportArray.length}');
+			if (_isDebug)
+				trace('current frame render: $_exportCounter/${_exportArray.length}');
 		}
-
-		// if (_isRecording) {
-		// 	window.requestAnimationFrame(renderSequence);
-		// }
-		// _exportCounter++;
 	}
 
 	// ____________________________________ convert to video ____________________________________
@@ -106,7 +105,8 @@ class ExportNodeServer extends ExportWrapperBase implements IExport {
 	// ____________________________________ init socket (script is embedded) ____________________________________
 
 	function initSocket() {
-		trace('${toString()} Init Socket');
+		if (_isDebug)
+			trace('${toString()} Init Socket');
 		_socket = untyped io();
 		// _socket = untyped __js__('io.connect({0},{upgradeTimeout: 30000});', '${_host}:${_port}');
 		// check possible ways to make sure the server is acitve
@@ -162,6 +162,11 @@ class ExportNodeServer extends ExportWrapperBase implements IExport {
 		_socket.on(RENDER_DONE, function(data) {
 			trace(data);
 		});
+		_socket.on(RENDER_CLEAR_DONE, function(data) {
+			if (_isDebug)
+				trace(data.message);
+			startExport();
+		});
 		_socket.on(SEQUENCE_NEXT, function(data) {
 			if (_isDebug)
 				trace('SEQUENCE_NEXT: ' + data.message);
@@ -173,11 +178,9 @@ class ExportNodeServer extends ExportWrapperBase implements IExport {
 	// ____________________________________ inject script into page ____________________________________
 
 	function onEmbedComplete(?value:String) {
-		console.log('${toString()} ${value}');
+		if (_isDebug)
+			console.log('${toString()} ${value}');
 		initSocket();
-		// haxe.Timer.delay(function (){
-		// 	initSocket();
-		// }, 500);
 	}
 
 	/**
