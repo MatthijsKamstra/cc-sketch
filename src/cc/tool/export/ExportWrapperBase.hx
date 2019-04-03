@@ -29,6 +29,7 @@ class ExportWrapperBase {
 
 - Generated on: ${Date.now()}
 - total images: ${obj.imageStringArray.length}
+- calculated time: ${obj.imageStringArray.length / 60} sec
 - file name: `_${obj.filename}_${obj.timestamp}.zip`
 - delay: ${obj.delay} frames (${obj.delay / 60} sec)
 - record: ${obj.record} frames (${obj.record / 60} sec)
@@ -37,7 +38,8 @@ class ExportWrapperBase {
 
 ```
 sketch.${obj.filename} :: ${obj.description}
-objcodeart #coding #creativecode #generative #generativeArt
+
+#codeart #coding #creativecode #generative #generativeArt
 #minimalism #minimalist #minimal
 #haxe #javascript #js #nodejs
 #animation #illustration #graphicdesign
