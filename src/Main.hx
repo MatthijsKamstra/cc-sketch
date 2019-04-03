@@ -11,7 +11,7 @@ using StringTools;
 class Main {
 	var count:Int;
 	var hash:String;
-	var ccTypeArray:Array<Class<Dynamic>> = [CC100, ExportTest, ZipTest, CCLoader];
+	var ccTypeArray:Array<Class<Dynamic>> = [CC100, TestExport, ZipTest, CCLoader];
 
 	public function new() {
 		document.addEventListener("DOMContentLoaded", function(event) {
