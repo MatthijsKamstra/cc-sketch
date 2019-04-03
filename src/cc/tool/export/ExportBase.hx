@@ -59,7 +59,7 @@ class ExportBase extends SketchBase {
 	}
 
 	/**
-	 * ctivate logs
+	 * activate logs
 	 * @param isDebug (default is `false`)
 	 */
 	public function debug(?isDebug:Bool = false) {
