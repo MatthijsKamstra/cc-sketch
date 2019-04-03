@@ -3,9 +3,8 @@ package art;
 import js.Browser.*;
 import js.html.*;
 import Sketch;
-
 import cc.model.constants.App;
-import cc.tool.Export;
+import cc.tool.ExportFile;
 
 class CC100 extends SketchBase {
 	var shapeArray:Array<Circle> = [];
@@ -28,7 +27,7 @@ class CC100 extends SketchBase {
 		init();
 		super(null);
 
-		var export = new Export(ctx, App.PORT);
+		// var export = new Export(ctx, App.PORT);
 
 		trace(new cc.model.constants.Sizes().INSTAGRAM);
 	}
