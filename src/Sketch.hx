@@ -589,8 +589,8 @@ class SketchBase {
 	 * I need this for my export functions
 	 */
 	public function __export() {
-		if (isDebug)
-			trace('EXPORT :: ${toString()} -> override public function __export()');
+		// if (isDebug)
+		// trace('EXPORT :: ${toString()} -> override public function __export()');
 	}
 
 	/**
