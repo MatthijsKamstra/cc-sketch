@@ -31,7 +31,7 @@ import js.html.*;
 import Sketch;
 import Sketch.*;
 import cc.model.constants.App;
-import cc.tool.Export;
+import cc.tool.ExportFile;
 import js.html.*;
 import js.Browser.document;
 import js.Browser.window;
