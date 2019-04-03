@@ -38,7 +38,7 @@ class CCLoader extends SketchBase {
 			.load();
 	}
 
-	function onCompleteHandler(completeArray:Array<js.html.ImageElement>) {
+	function onCompleteHandler(completeArray:Array<LoaderObj>) {
 		trace('onCompleteHandler: ' + completeArray.length);
 	}
 
