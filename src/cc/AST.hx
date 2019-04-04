@@ -21,6 +21,7 @@ typedef Dimensions = {
 	@:optional var width:Float;
 	@:optional var height:Float;
 	@:optional var rotation:Float; // not sure about this
+	@:optional var scale:Float; // not sure about this
 };
 
 typedef Position = {
@@ -79,6 +80,7 @@ typedef CircleExtra = {
 	> Position,
 	> Appearance,
 	> Rotation,
+	> Dimensions,
 	@:optional var radius:Float;
 	@:optional var size:Float;
 };
@@ -111,6 +113,7 @@ typedef Square = {
 	> Base,
 	> Position,
 	> Appearance,
+	> Rotation,
 	@:optional var rotation:Float;
 	@:optional var size:Float; // width and height are the same
 }
