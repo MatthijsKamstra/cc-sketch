@@ -309,6 +309,19 @@ class CanvasTools {
 		ctx.shadowColor = c;
 	};
 
+	/**
+	 * quickly set color and blur for shadow
+	 * @param ctx
+	 * @param rgb
+	 * @param a
+	 * @param blur
+	 */
+	static public function shadowSet(ctx:CanvasRenderingContext2D, rgb:cc.util.ColorUtil.RGB, ?a:Float = 1, ?blur:Int = 15) {
+		var c = ColorUtil.getColour(rgb.r, rgb.g, rgb.b, a);
+		ctx.shadowColor = c;
+		ctx.shadowBlur = blur;
+	};
+
 	static public function strokeColourObj(ctx:CanvasRenderingContext2D, rgb:cc.util.ColorUtil.RGB, ?a:Float) {
 		lineColour(ctx, rgb.r, rgb.g, rgb.b, a);
 	};
