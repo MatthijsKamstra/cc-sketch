@@ -12,7 +12,8 @@ import js.html.*;
 
 using StringTools;
 
-class ExportWrapper {
+class ExportWrapper //  implements IExportWrapper
+{
 	var fps:Int = 60;
 	var panel1:QuickSettings;
 	var isExportActive:Bool = false;
