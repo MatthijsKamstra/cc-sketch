@@ -6,6 +6,11 @@ import cc.lets.easing.Quad;
 import cc.lets.easing.IEasing;
 import js.Browser.*;
 
+/**
+ * version
+ * 		1.0.6 - convert to js only
+ * 		1.0.7 - wiggle
+ */
 class Go {
 	// private static var _trigger:Timer;
 	// private static var _trigger:Int; // requestAnimationFrame
@@ -21,6 +26,7 @@ class Go {
 	private var _props = new Map<String, Range>();
 	private var _isFrom:Bool = false;
 	private var _isYoyo:Bool = false;
+	private var _isWiggle:Bool = false;
 	private var _isTimeBased:Bool = false; // default is frameBased
 	private var _isDelayDone:Bool = false; // default is frameBased
 	private var _initTime:Int = 0; // should work with time (miliseconds) and frames (FPS)
@@ -28,7 +34,7 @@ class Go {
 	private var _seconds:Float = 0;
 	private var FRAME_RATE:Int = 60; // 60 frames per second (FPS)
 	private var DEBUG:Bool = false;
-	private var VERSION:String = '1.0.6';
+	private var VERSION:String = '1.0.7';
 
 	/**
 	 * Animate an object to another state (like position, scale, rotation, alpha)
@@ -104,6 +110,31 @@ class Go {
 	}
 
 	/**
+	 * continues wiggling of an object in random x and y dir
+	 *
+	 * @example		Go.wiggle(foobarMc, 10, 10, 10);
+	 *
+	 * @param x				centerpoint x
+	 * @param y				centerpoint y
+	 * @param wiggleRoom	offset from x and y
+	 * @return Go
+	 */
+	static inline public function wiggle(target:Dynamic, x:Float, y:Float, ?wiggleRoom:Float = 10):Go {
+		var _go = new Go(target, 1 + (Math.random()));
+		_go._isWiggle = true;
+		// Go._isYoyo = true;
+		var max = wiggleRoom;
+		var min = -wiggleRoom;
+		_go.prop('x', x + (Math.random() * (max - min)) + min);
+		_go.prop('y', y + (Math.random() * (max - min)) + min);
+		_go.ease(cc.lets.easing.Sine.easeInOut);
+		_go.onComplete(function() {
+			Go.wiggle(target, x, y, wiggleRoom);
+		});
+		return _go;
+	}
+
+	/**
 	 * default the animation is framebased (`requestAnimationFrame`) and will stop animating when focus is gone
 	 * but perhaps time is important
 	 *
@@ -164,6 +195,21 @@ class Go {
 	 */
 	inline public function y(value:Float):Go {
 		prop('y', value);
+		return this;
+	}
+
+	/**
+	 * change the y value of an object
+	 *
+	 * @example		Go.to(foobarMc, 1.5).pos(10,20);
+	 *
+	 * @param  x 	x-position
+	 * @param  y 	y-position
+	 * @return       Go
+	 */
+	inline public function pos(x:Float, y:Float):Go {
+		prop('x', x);
+		prop('y', y);
 		return this;
 	}
 
