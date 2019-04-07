@@ -116,7 +116,7 @@ _$List_ListIterator.prototype = {
 	,__class__: _$List_ListIterator
 };
 var Main = function() {
-	this.ccTypeArray = [art_CC100,art_TestExport,art_ZipTest,art_CCLoader];
+	this.ccTypeArray = [art_CC100,art_TestExport,art_ZipTest,art_CCLoader,art_TestGo];
 	var _gthis = this;
 	window.document.addEventListener("DOMContentLoaded",function(event) {
 		window.console.log("" + cc_model_constants_App.NAME + " :: build: " + cc_model_constants_App.BUILD);
@@ -546,9 +546,6 @@ SketchBase.prototype = {
 		}
 	}
 	,__export: function() {
-		if(this.isDebug) {
-			haxe_Log.trace("EXPORT :: " + this.toString() + " -> override public function __export()",{ fileName : "Sketch.hx", lineNumber : 593, className : "SketchBase", methodName : "__export"});
-		}
 	}
 	,pause: function() {
 		this.isDrawActive = !this.isDrawActive;
@@ -832,18 +829,30 @@ art_CCLoader.prototype = $extend(SketchBase.prototype,{
 		var _this = loader;
 		var _type = _this.fileType("img/aaron-burden-38410-unsplash.jpg");
 		var _obj = { path : "img/aaron-burden-38410-unsplash.jpg", type : _type};
+		if(_this.get__isDebug()) {
+			haxe_Log.trace(_obj,{ fileName : "Loader.hx", lineNumber : 67, className : "cc.tool.Loader", methodName : "add"});
+		}
 		_this.get__loadingArray().push(_obj);
 		var _this1 = _this;
 		var _type1 = _this1.fileType("img/miguel-ibanez-643801-unsplash.jpg");
 		var _obj1 = { path : "img/miguel-ibanez-643801-unsplash.jpg", type : _type1};
+		if(_this1.get__isDebug()) {
+			haxe_Log.trace(_obj1,{ fileName : "Loader.hx", lineNumber : 67, className : "cc.tool.Loader", methodName : "add"});
+		}
 		_this1.get__loadingArray().push(_obj1);
 		var _this2 = _this1;
 		var _type2 = _this2.fileType("img/nathan-dumlao-526295-unsplash.jpg");
 		var _obj2 = { path : "img/nathan-dumlao-526295-unsplash.jpg", type : _type2};
+		if(_this2.get__isDebug()) {
+			haxe_Log.trace(_obj2,{ fileName : "Loader.hx", lineNumber : 67, className : "cc.tool.Loader", methodName : "add"});
+		}
 		_this2.get__loadingArray().push(_obj2);
 		var _this3 = _this2;
 		var _type3 = _this3.fileType("img/foobar.jpg");
 		var _obj3 = { path : "img/foobar.jpg", type : _type3};
+		if(_this3.get__isDebug()) {
+			haxe_Log.trace(_obj3,{ fileName : "Loader.hx", lineNumber : 67, className : "cc.tool.Loader", methodName : "add"});
+		}
 		_this3.get__loadingArray().push(_obj3);
 		var _this4 = _this3;
 		_this4._onComplete = $bind(this,this.onCompleteHandler);
@@ -859,7 +868,7 @@ art_CCLoader.prototype = $extend(SketchBase.prototype,{
 		_this7._onErrorParams = null;
 		var _this8 = _this7;
 		if(_this8.get__isDebug()) {
-			haxe_Log.trace("start loading",{ fileName : "Loader.hx", lineNumber : 96, className : "cc.tool.Loader", methodName : "load"});
+			haxe_Log.trace("start loading",{ fileName : "Loader.hx", lineNumber : 98, className : "cc.tool.Loader", methodName : "load"});
 		}
 		_this8.loadingHandler();
 	}
@@ -1044,6 +1053,195 @@ art_TestExport.prototype = $extend(cc_tool_export_ExportBase.prototype,{
 		this.drawShape();
 	}
 	,__class__: art_TestExport
+});
+var art_TestGo = function() {
+	this._radius = 50;
+	this.init();
+	SketchBase.call(this,null);
+};
+$hxClasses["art.TestGo"] = art_TestGo;
+art_TestGo.__name__ = ["art","TestGo"];
+art_TestGo.__super__ = SketchBase;
+art_TestGo.prototype = $extend(SketchBase.prototype,{
+	init: function() {
+		this.dot = this.createShape(100,{ x : Global.w / 2, y : Global.h / 2});
+		this.dot2 = this.createShape(100,{ x : Global.w / 2, y : Global.h / 2});
+		this.dot3 = this.createShape(100,{ x : Global.w / 2, y : Global.h / 2});
+		var target = this.dot2;
+		var x = this.get_w2();
+		var y = this.get_h2();
+		var _go = 1 + Math.random();
+		var _go1 = new cc_lets_Go(target,_go);
+		_go1._isWiggle = true;
+		var max = 50;
+		var min = -50;
+		var value = Math.random() * (max - min);
+		var value1 = x + value + min;
+		var objValue = 0;
+		if(Object.prototype.hasOwnProperty.call(_go1._target,"x")) {
+			objValue = Reflect.getProperty(_go1._target,"x");
+		}
+		var _range = { key : "x", from : _go1._isFrom ? value1 : objValue, to : !_go1._isFrom ? value1 : objValue};
+		_go1._props.set("x",_range);
+		if(_go1._isFrom) {
+			_go1.updateProperties(0);
+		}
+		var value2 = Math.random() * (max - min);
+		var value3 = y + value2 + min;
+		var objValue1 = 0;
+		if(Object.prototype.hasOwnProperty.call(_go1._target,"y")) {
+			objValue1 = Reflect.getProperty(_go1._target,"y");
+		}
+		var _range1 = { key : "y", from : _go1._isFrom ? value3 : objValue1, to : !_go1._isFrom ? value3 : objValue1};
+		_go1._props.set("y",_range1);
+		if(_go1._isFrom) {
+			_go1.updateProperties(0);
+		}
+		_go1._easing = cc_lets_easing_Sine.get_easeInOut();
+		_go1._options.onComplete = function() {
+			cc_lets_Go.wiggle(target,x,y,50);
+		};
+		_go1._options.onCompleteParams = null;
+		var target1 = this.dot3;
+		var x1 = this.get_w2();
+		var y1 = this.get_h2();
+		var _go2 = new cc_lets_Go(target1,1 + Math.random());
+		_go2._isOrbit = true;
+		var objValue2 = 0;
+		if(Object.prototype.hasOwnProperty.call(_go2._target,"x")) {
+			objValue2 = Reflect.getProperty(_go2._target,"x");
+		}
+		var _range2 = { key : "x", from : _go2._isFrom ? x1 : objValue2, to : !_go2._isFrom ? x1 : objValue2};
+		_go2._props.set("x",_range2);
+		if(_go2._isFrom) {
+			_go2.updateProperties(0);
+		}
+		var objValue3 = 0;
+		if(Object.prototype.hasOwnProperty.call(_go2._target,"y")) {
+			objValue3 = Reflect.getProperty(_go2._target,"y");
+		}
+		var _range3 = { key : "y", from : _go2._isFrom ? y1 : objValue3, to : !_go2._isFrom ? y1 : objValue3};
+		_go2._props.set("y",_range3);
+		if(_go2._isFrom) {
+			_go2.updateProperties(0);
+		}
+		var objValue4 = 0;
+		if(Object.prototype.hasOwnProperty.call(_go2._target,"cx")) {
+			objValue4 = Reflect.getProperty(_go2._target,"cx");
+		}
+		var _range4 = { key : "cx", from : _go2._isFrom ? x1 : objValue4, to : !_go2._isFrom ? x1 : objValue4};
+		_go2._props.set("cx",_range4);
+		if(_go2._isFrom) {
+			_go2.updateProperties(0);
+		}
+		var objValue5 = 0;
+		if(Object.prototype.hasOwnProperty.call(_go2._target,"cy")) {
+			objValue5 = Reflect.getProperty(_go2._target,"cy");
+		}
+		var _range5 = { key : "cy", from : _go2._isFrom ? y1 : objValue5, to : !_go2._isFrom ? y1 : objValue5};
+		_go2._props.set("cy",_range5);
+		if(_go2._isFrom) {
+			_go2.updateProperties(0);
+		}
+		var objValue6 = 0;
+		if(Object.prototype.hasOwnProperty.call(_go2._target,"radius")) {
+			objValue6 = Reflect.getProperty(_go2._target,"radius");
+		}
+		var _range6 = { key : "radius", from : _go2._isFrom ? 50 : objValue6, to : !_go2._isFrom ? 50 : objValue6};
+		_go2._props.set("radius",_range6);
+		if(_go2._isFrom) {
+			_go2.updateProperties(0);
+		}
+		var objValue7 = 0;
+		if(Object.prototype.hasOwnProperty.call(_go2._target,"speed")) {
+			objValue7 = Reflect.getProperty(_go2._target,"speed");
+		}
+		var _range7 = { key : "speed", from : _go2._isFrom ? 2 : objValue7, to : !_go2._isFrom ? 2 : objValue7};
+		_go2._props.set("speed",_range7);
+		if(_go2._isFrom) {
+			_go2.updateProperties(0);
+		}
+		var objValue8 = 0;
+		if(Object.prototype.hasOwnProperty.call(_go2._target,"angle")) {
+			objValue8 = Reflect.getProperty(_go2._target,"angle");
+		}
+		var _range8 = { key : "angle", from : _go2._isFrom ? 2 : objValue8, to : !_go2._isFrom ? 2 : objValue8};
+		_go2._props.set("angle",_range8);
+		if(_go2._isFrom) {
+			_go2.updateProperties(0);
+		}
+		target1["cx"] = x1;
+		target1["cy"] = y1;
+		target1["angle"] = 0;
+		target1["speed"] = 2;
+		target1["radius"] = 50;
+		this.onAnimateHandler(this.dot);
+	}
+	,createQuickSettings: function() {
+		this.panel1 = QuickSettings.create(10,10,"Settings").setGlobalChangeHandler($bind(this,this.drawShape)).addHTML("Reason","Sometimes I need to find the best settings").addTextArea("Quote","text",function(value) {
+			haxe_Log.trace(value,{ fileName : "TestGo.hx", lineNumber : 41, className : "art.TestGo", methodName : "createQuickSettings"});
+		}).addBoolean("All Caps",false,function(value1) {
+			haxe_Log.trace(value1,{ fileName : "TestGo.hx", lineNumber : 42, className : "art.TestGo", methodName : "createQuickSettings"});
+		}).setKey("h").saveInLocalStorage("store-data-" + this.toString());
+	}
+	,createShape: function(i,point) {
+		var shape = { _id : "" + i, _type : "circle", x : point.x, y : point.y, radius : this._radius};
+		return shape;
+	}
+	,onAnimateHandler: function(obj) {
+		var padding = 50;
+		var time = cc_util_MathUtil.random(1,2);
+		var xpos = cc_util_MathUtil.random(padding,Global.w - 2 * padding);
+		var ypos = cc_util_MathUtil.random(padding,Global.h - 2 * padding);
+		var Go = new cc_lets_Go(obj,time);
+		Go._isFrom = false;
+		var _this = Go;
+		var objValue = 0;
+		if(Object.prototype.hasOwnProperty.call(_this._target,"x")) {
+			objValue = Reflect.getProperty(_this._target,"x");
+		}
+		var _range = { key : "x", from : _this._isFrom ? xpos : objValue, to : !_this._isFrom ? xpos : objValue};
+		_this._props.set("x",_range);
+		if(_this._isFrom) {
+			_this.updateProperties(0);
+		}
+		var _this1 = _this;
+		var objValue1 = 0;
+		if(Object.prototype.hasOwnProperty.call(_this1._target,"y")) {
+			objValue1 = Reflect.getProperty(_this1._target,"y");
+		}
+		var _range1 = { key : "y", from : _this1._isFrom ? ypos : objValue1, to : !_this1._isFrom ? ypos : objValue1};
+		_this1._props.set("y",_range1);
+		if(_this1._isFrom) {
+			_this1.updateProperties(0);
+		}
+		var _this2 = _this1;
+		_this2._arc = 0;
+		var _this3 = _this2;
+		_this3._easing = cc_lets_easing_Sine.get_easeInOut();
+		var _this4 = _this3;
+		_this4._options.onComplete = $bind(this,this.onAnimateHandler);
+		_this4._options.onCompleteParams = [obj];
+	}
+	,drawShape: function() {
+		this.ctx.clearRect(0,0,Global.w,Global.h);
+		cc_CanvasTools.backgroundObj(this.ctx,cc_util_ColorUtil.WHITE);
+		cc_CanvasTools.strokeColourRGB(this.ctx,cc_util_ColorUtil.BLACK);
+		cc_CanvasTools.strokeWeight(this.ctx,2);
+		cc_CanvasTools.circleStroke(this.ctx,this.dot.x,this.dot.y,20);
+		cc_CanvasTools.strokeColourRGB(this.ctx,cc_util_ColorUtil.RED);
+		cc_CanvasTools.circleStroke(this.ctx,this.dot2.x,this.dot2.y,100);
+		cc_CanvasTools.strokeColourRGB(this.ctx,cc_util_ColorUtil.GREEN);
+		cc_CanvasTools.circleStroke(this.ctx,this.dot3.x,this.dot3.y,50);
+	}
+	,setup: function() {
+		haxe_Log.trace("SETUP :: " + this.toString(),{ fileName : "TestGo.hx", lineNumber : 90, className : "art.TestGo", methodName : "setup"});
+		this.isDebug = true;
+	}
+	,draw: function() {
+		this.drawShape();
+	}
+	,__class__: art_TestGo
 });
 var art_ZipTest = function() {
 	this._color4 = null;
@@ -1398,6 +1596,21 @@ cc_CanvasTools.colourObj = function(ctx,rgb,a) {
 	var c = cc_util_ColorUtil.getColour(rgb.r,rgb.g,rgb.b,a);
 	ctx.fillStyle = c;
 };
+cc_CanvasTools.shadowColorRGB = function(ctx,rgb,a) {
+	var c = cc_util_ColorUtil.getColour(rgb.r,rgb.g,rgb.b,a);
+	ctx.shadowColor = c;
+};
+cc_CanvasTools.shadowSet = function(ctx,rgb,a,blur) {
+	if(blur == null) {
+		blur = 15;
+	}
+	if(a == null) {
+		a = 1;
+	}
+	var c = cc_util_ColorUtil.getColour(rgb.r,rgb.g,rgb.b,a);
+	ctx.shadowColor = c;
+	ctx.shadowBlur = blur;
+};
 cc_CanvasTools.strokeColourObj = function(ctx,rgb,a) {
 	cc_CanvasTools.lineColour(ctx,rgb.r,rgb.g,rgb.b,a);
 };
@@ -1748,14 +1961,17 @@ cc_lets_Easing.reflect = function(f) {
 	};
 };
 var cc_lets_Go = function(target,duration) {
-	this.VERSION = "1.0.6";
+	this.VERSION = "1.0.7";
 	this.DEBUG = false;
 	this.FRAME_RATE = 60;
+	this._arc = 0;
 	this._seconds = 0;
 	this._delay = 0;
 	this._initTime = 0;
 	this._isDelayDone = false;
 	this._isTimeBased = false;
+	this._isOrbit = false;
+	this._isWiggle = false;
 	this._isYoyo = false;
 	this._isFrom = false;
 	this._props = new haxe_ds_StringMap();
@@ -1793,12 +2009,123 @@ cc_lets_Go.timer = function(duration) {
 	var Go = new cc_lets_Go({ },duration);
 	return Go;
 };
+cc_lets_Go.wiggle = function(target,x,y,wiggleRoom) {
+	if(wiggleRoom == null) {
+		wiggleRoom = 10;
+	}
+	var _go = 1 + Math.random();
+	var _go1 = new cc_lets_Go(target,_go);
+	_go1._isWiggle = true;
+	var max = wiggleRoom;
+	var min = -wiggleRoom;
+	var value = Math.random() * (max - min);
+	var value1 = x + value + min;
+	var objValue = 0;
+	if(Object.prototype.hasOwnProperty.call(_go1._target,"x")) {
+		objValue = Reflect.getProperty(_go1._target,"x");
+	}
+	var _range = { key : "x", from : _go1._isFrom ? value1 : objValue, to : !_go1._isFrom ? value1 : objValue};
+	_go1._props.set("x",_range);
+	if(_go1._isFrom) {
+		_go1.updateProperties(0);
+	}
+	var value2 = Math.random() * (max - min);
+	var value3 = y + value2 + min;
+	var objValue1 = 0;
+	if(Object.prototype.hasOwnProperty.call(_go1._target,"y")) {
+		objValue1 = Reflect.getProperty(_go1._target,"y");
+	}
+	var _range1 = { key : "y", from : _go1._isFrom ? value3 : objValue1, to : !_go1._isFrom ? value3 : objValue1};
+	_go1._props.set("y",_range1);
+	if(_go1._isFrom) {
+		_go1.updateProperties(0);
+	}
+	_go1._easing = cc_lets_easing_Sine.get_easeInOut();
+	_go1._options.onComplete = function() {
+		cc_lets_Go.wiggle(target,x,y,wiggleRoom);
+	};
+	_go1._options.onCompleteParams = null;
+	return _go1;
+};
+cc_lets_Go.orbit = function(target,x,y,radius,speed) {
+	var _go = new cc_lets_Go(target,1 + Math.random());
+	_go._isOrbit = true;
+	var objValue = 0;
+	if(Object.prototype.hasOwnProperty.call(_go._target,"x")) {
+		objValue = Reflect.getProperty(_go._target,"x");
+	}
+	var _range = { key : "x", from : _go._isFrom ? x : objValue, to : !_go._isFrom ? x : objValue};
+	_go._props.set("x",_range);
+	if(_go._isFrom) {
+		_go.updateProperties(0);
+	}
+	var objValue1 = 0;
+	if(Object.prototype.hasOwnProperty.call(_go._target,"y")) {
+		objValue1 = Reflect.getProperty(_go._target,"y");
+	}
+	var _range1 = { key : "y", from : _go._isFrom ? y : objValue1, to : !_go._isFrom ? y : objValue1};
+	_go._props.set("y",_range1);
+	if(_go._isFrom) {
+		_go.updateProperties(0);
+	}
+	var objValue2 = 0;
+	if(Object.prototype.hasOwnProperty.call(_go._target,"cx")) {
+		objValue2 = Reflect.getProperty(_go._target,"cx");
+	}
+	var _range2 = { key : "cx", from : _go._isFrom ? x : objValue2, to : !_go._isFrom ? x : objValue2};
+	_go._props.set("cx",_range2);
+	if(_go._isFrom) {
+		_go.updateProperties(0);
+	}
+	var objValue3 = 0;
+	if(Object.prototype.hasOwnProperty.call(_go._target,"cy")) {
+		objValue3 = Reflect.getProperty(_go._target,"cy");
+	}
+	var _range3 = { key : "cy", from : _go._isFrom ? y : objValue3, to : !_go._isFrom ? y : objValue3};
+	_go._props.set("cy",_range3);
+	if(_go._isFrom) {
+		_go.updateProperties(0);
+	}
+	var objValue4 = 0;
+	if(Object.prototype.hasOwnProperty.call(_go._target,"radius")) {
+		objValue4 = Reflect.getProperty(_go._target,"radius");
+	}
+	var _range4 = { key : "radius", from : _go._isFrom ? radius : objValue4, to : !_go._isFrom ? radius : objValue4};
+	_go._props.set("radius",_range4);
+	if(_go._isFrom) {
+		_go.updateProperties(0);
+	}
+	var objValue5 = 0;
+	if(Object.prototype.hasOwnProperty.call(_go._target,"speed")) {
+		objValue5 = Reflect.getProperty(_go._target,"speed");
+	}
+	var _range5 = { key : "speed", from : _go._isFrom ? speed : objValue5, to : !_go._isFrom ? speed : objValue5};
+	_go._props.set("speed",_range5);
+	if(_go._isFrom) {
+		_go.updateProperties(0);
+	}
+	var objValue6 = 0;
+	if(Object.prototype.hasOwnProperty.call(_go._target,"angle")) {
+		objValue6 = Reflect.getProperty(_go._target,"angle");
+	}
+	var _range6 = { key : "angle", from : _go._isFrom ? speed : objValue6, to : !_go._isFrom ? speed : objValue6};
+	_go._props.set("angle",_range6);
+	if(_go._isFrom) {
+		_go.updateProperties(0);
+	}
+	target["cx"] = x;
+	target["cy"] = y;
+	target["angle"] = 0;
+	target["speed"] = speed;
+	target["radius"] = radius;
+	return _go;
+};
 cc_lets_Go.prototype = {
 	isTimeBased: function(isTimeBased) {
 		if(isTimeBased == null) {
 			isTimeBased = true;
 		}
-		haxe_Log.trace("Fixme: this doesn\t work right now",{ fileName : "Go.hx", lineNumber : 116, className : "cc.lets.Go", methodName : "isTimeBased"});
+		haxe_Log.trace("Fixme: this doesn\t work right now",{ fileName : "Go.hx", lineNumber : 177, className : "cc.lets.Go", methodName : "isTimeBased"});
 		this._isTimeBased = isTimeBased;
 		this._duration = this._duration / this.FRAME_RATE | 0;
 		return this;
@@ -1846,6 +2173,27 @@ cc_lets_Go.prototype = {
 		}
 		var _range = { key : "y", from : this._isFrom ? value : objValue, to : !this._isFrom ? value : objValue};
 		this._props.set("y",_range);
+		if(this._isFrom) {
+			this.updateProperties(0);
+		}
+		return this;
+	}
+	,pos: function(x,y) {
+		var objValue = 0;
+		if(Object.prototype.hasOwnProperty.call(this._target,"x")) {
+			objValue = Reflect.getProperty(this._target,"x");
+		}
+		var _range = { key : "x", from : this._isFrom ? x : objValue, to : !this._isFrom ? x : objValue};
+		this._props.set("x",_range);
+		if(this._isFrom) {
+			this.updateProperties(0);
+		}
+		var objValue1 = 0;
+		if(Object.prototype.hasOwnProperty.call(this._target,"y")) {
+			objValue1 = Reflect.getProperty(this._target,"y");
+		}
+		var _range1 = { key : "y", from : this._isFrom ? y : objValue1, to : !this._isFrom ? y : objValue1};
+		this._props.set("y",_range1);
 		if(this._isFrom) {
 			this.updateProperties(0);
 		}
@@ -1934,6 +2282,10 @@ cc_lets_Go.prototype = {
 		this._isYoyo = true;
 		return this;
 	}
+	,arc: function(dir) {
+		this._arc = 0;
+		return this;
+	}
 	,delay: function(duration) {
 		this._delay = this.getDuration(duration);
 		return this;
@@ -1979,7 +2331,7 @@ cc_lets_Go.prototype = {
 	}
 	,init: function() {
 		if(this._isTimeBased) {
-			haxe_Log.trace("TODO: build timebased animation",{ fileName : "Go.hx", lineNumber : 347, className : "cc.lets.Go", methodName : "init"});
+			haxe_Log.trace("TODO: build timebased animation",{ fileName : "Go.hx", lineNumber : 428, className : "cc.lets.Go", methodName : "init"});
 		} else if(cc_lets_Go._requestId == null) {
 			cc_lets_Go._requestId = window.requestAnimationFrame($bind(this,this.onEnterFrameHandler));
 		}
@@ -2004,7 +2356,7 @@ cc_lets_Go.prototype = {
 	}
 	,update: function() {
 		if(this._delay > 0 && this._isTimeBased) {
-			haxe_Log.trace("FIXME this doesn't work yet",{ fileName : "Go.hx", lineNumber : 386, className : "cc.lets.Go", methodName : "update"});
+			haxe_Log.trace("FIXME this doesn't work yet",{ fileName : "Go.hx", lineNumber : 467, className : "cc.lets.Go", methodName : "update"});
 		}
 		if(this._delay > 0) {
 			this._delay--;
@@ -2012,7 +2364,7 @@ cc_lets_Go.prototype = {
 		}
 		if(!this._isDelayDone) {
 			if(this.DEBUG) {
-				haxe_Log.trace("should trigger only once: " + this._id,{ fileName : "Go.hx", lineNumber : 393, className : "cc.lets.Go", methodName : "update"});
+				haxe_Log.trace("should trigger only once: " + this._id,{ fileName : "Go.hx", lineNumber : 474, className : "cc.lets.Go", methodName : "update"});
 			}
 			if(Reflect.isFunction(this._options.onAnimationStart)) {
 				var func = this._options.onAnimationStart;
@@ -2047,12 +2399,32 @@ cc_lets_Go.prototype = {
 			var n1 = n.next();
 			var _this = this._props;
 			var range = __map_reserved[n1] != null ? _this.getReserved(n1) : _this.h[n1];
-			Reflect.setProperty(this._target,n1,this._easing.ease(time,range.from,range.to - range.from,this._duration));
+			if(this._isOrbit) {
+				var _this1 = this._props;
+				var __cx = __map_reserved["cx"] != null ? _this1.getReserved("cx") : _this1.h["cx"];
+				var _this2 = this._props;
+				var __cy = __map_reserved["cy"] != null ? _this2.getReserved("cy") : _this2.h["cy"];
+				var _this3 = this._props;
+				var __angle = __map_reserved["angle"] != null ? _this3.getReserved("angle") : _this3.h["angle"];
+				var _this4 = this._props;
+				var __speed = __map_reserved["speed"] != null ? _this4.getReserved("speed") : _this4.h["speed"];
+				var _this5 = this._props;
+				var __rad = __map_reserved["radius"] != null ? _this5.getReserved("radius") : _this5.h["radius"];
+				haxe_Log.trace("cx: " + __cx.to + ",  cy: " + __cy.to + " , " + __angle.to + ", " + __speed.to + ", " + __rad.to,{ fileName : "Go.hx", lineNumber : 532, className : "cc.lets.Go", methodName : "updateProperties"});
+				haxe_Log.trace("" + n1 + " == \"angle\" : " + Std.string(n1 == "angle"),{ fileName : "Go.hx", lineNumber : 543, className : "cc.lets.Go", methodName : "updateProperties"});
+				haxe_Log.trace(this._target,{ fileName : "Go.hx", lineNumber : 545, className : "cc.lets.Go", methodName : "updateProperties"});
+				if(n1 == "angle") {
+					var aa = __angle.to + __speed.to;
+					Reflect.setProperty(this._target,n1,aa);
+				}
+			} else {
+				Reflect.setProperty(this._target,n1,this._easing.ease(time,range.from,range.to - range.from,this._duration));
+			}
 		}
 	}
 	,complete: function() {
 		if(this.DEBUG) {
-			haxe_Log.trace("complete :: \"" + this._id + "\", _duration: " + this._duration + ", _seconds: " + this._seconds + ", _initTime: " + this._initTime + " / _tweens.length: " + cc_lets_Go._tweens.length,{ fileName : "Go.hx", lineNumber : 451, className : "cc.lets.Go", methodName : "complete"});
+			haxe_Log.trace("complete :: \"" + this._id + "\", _duration: " + this._duration + ", _seconds: " + this._seconds + ", _initTime: " + this._initTime + " / _tweens.length: " + cc_lets_Go._tweens.length,{ fileName : "Go.hx", lineNumber : 568, className : "cc.lets.Go", methodName : "complete"});
 		}
 		if(this._isYoyo) {
 			var n = this._props.keys();
@@ -2385,6 +2757,9 @@ cc_tool_Loader.prototype = {
 	,add: function(path,type) {
 		var _type = type == null ? this.fileType(path) : type;
 		var _obj = { path : path, type : _type};
+		if(this.get__isDebug()) {
+			haxe_Log.trace(_obj,{ fileName : "Loader.hx", lineNumber : 67, className : "cc.tool.Loader", methodName : "add"});
+		}
 		this.get__loadingArray().push(_obj);
 		return this;
 	}
@@ -2410,7 +2785,7 @@ cc_tool_Loader.prototype = {
 	}
 	,load: function() {
 		if(this.get__isDebug()) {
-			haxe_Log.trace("start loading",{ fileName : "Loader.hx", lineNumber : 96, className : "cc.tool.Loader", methodName : "load"});
+			haxe_Log.trace("start loading",{ fileName : "Loader.hx", lineNumber : 98, className : "cc.tool.Loader", methodName : "load"});
 		}
 		this.loadingHandler();
 		return this;
@@ -2422,14 +2797,15 @@ cc_tool_Loader.prototype = {
 		switch(_g) {
 		case "gif":
 			type = cc_tool_FileType.Gif;
-			type = cc_tool_FileType.Img;
 			break;
 		case "jpeg":case "jpg":
 			type = cc_tool_FileType.JPG;
-			type = cc_tool_FileType.Img;
 			break;
 		case "json":
 			type = cc_tool_FileType.Json;
+			break;
+		case "png":
+			type = cc_tool_FileType.Png;
 			break;
 		case "txt":
 			type = cc_tool_FileType.Txt;
@@ -2443,16 +2819,15 @@ cc_tool_Loader.prototype = {
 		return type;
 	}
 	,loadingHandler: function() {
-		var _gthis = this;
 		if(this._loadCounter >= this.get__loadingArray().length) {
 			if(this.get__isDebug()) {
-				haxe_Log.trace("" + this.toString() + " :: Loading queue is done",{ fileName : "Loader.hx", lineNumber : 138, className : "cc.tool.Loader", methodName : "loadingHandler"});
+				haxe_Log.trace("" + this.toString() + " :: Loading queue is done",{ fileName : "Loader.hx", lineNumber : 140, className : "cc.tool.Loader", methodName : "loadingHandler"});
 			}
 			if(this.get__isDebug()) {
-				haxe_Log.trace("show completed array: " + Std.string(this.completeArray),{ fileName : "Loader.hx", lineNumber : 140, className : "cc.tool.Loader", methodName : "loadingHandler"});
+				haxe_Log.trace("show completed array: " + Std.string(this.completeArray),{ fileName : "Loader.hx", lineNumber : 142, className : "cc.tool.Loader", methodName : "loadingHandler"});
 			}
 			if(this.get__isDebug()) {
-				haxe_Log.trace("length of complete files: " + this.completeArray.length,{ fileName : "Loader.hx", lineNumber : 142, className : "cc.tool.Loader", methodName : "loadingHandler"});
+				haxe_Log.trace("length of complete files: " + this.completeArray.length,{ fileName : "Loader.hx", lineNumber : 144, className : "cc.tool.Loader", methodName : "loadingHandler"});
 			}
 			if(Reflect.isFunction(this._onComplete)) {
 				this._onComplete.apply(this._onComplete,[this.completeArray]);
@@ -2460,82 +2835,96 @@ cc_tool_Loader.prototype = {
 			return;
 		}
 		var _l = this.get__loadingArray()[this._loadCounter];
-		if(_l.type == cc_tool_FileType.Img) {
-			var _img = new Image();
-			_img.crossOrigin = "Anonymous";
-			_img.src = _l.path;
-			_img.onload = function() {
-				if(_gthis.get__isDebug()) {
-					haxe_Log.trace("w: " + _img.width,{ fileName : "Loader.hx", lineNumber : 157, className : "cc.tool.Loader", methodName : "loadingHandler"});
-				}
-				if(_gthis.get__isDebug()) {
-					haxe_Log.trace("h: " + _img.height,{ fileName : "Loader.hx", lineNumber : 159, className : "cc.tool.Loader", methodName : "loadingHandler"});
-				}
-				if(_gthis.get__isDebug()) {
-					haxe_Log.trace(_gthis.completeArray.length,{ fileName : "Loader.hx", lineNumber : 161, className : "cc.tool.Loader", methodName : "loadingHandler"});
-				}
-				_l.image = _img;
-				_gthis.completeArray.push(_l);
-				if(_gthis.get__isDebug()) {
-					haxe_Log.trace(_gthis.completeArray,{ fileName : "Loader.hx", lineNumber : 165, className : "cc.tool.Loader", methodName : "loadingHandler"});
-				}
-				if(_gthis.get__isDebug()) {
-					haxe_Log.trace(_gthis.completeArray.length,{ fileName : "Loader.hx", lineNumber : 167, className : "cc.tool.Loader", methodName : "loadingHandler"});
-				}
-				if(Reflect.isFunction(_gthis._onUpdate)) {
-					_gthis._onUpdate.apply(_gthis._onUpdate,[_img]);
-				}
-				_gthis._loadCounter++;
-				_gthis.loadingHandler();
-			};
-			_img.onerror = function() {
-				if(Reflect.isFunction(_gthis._onError)) {
-					_gthis._onError.apply(_gthis._onError,[_img]);
-				}
-				_gthis._loadCounter++;
-				_gthis.loadingHandler();
-			};
-			_img.onprogress = function() {
-				if(Reflect.isFunction(_gthis._onProgress)) {
-					_gthis._onProgress.apply(_gthis._onProgress,[_img]);
-				}
-			};
-		} else {
-			var url = _l.path;
-			var req = new haxe_Http(url);
-			req.onData = function(data) {
-				try {
-					_l.str = data;
-					_l.json = JSON.parse(data);
-					_gthis.completeArray.push(_l);
-					if(Reflect.isFunction(_gthis._onUpdate)) {
-						_gthis._onUpdate.apply(_gthis._onUpdate,["_img"]);
-					}
-					_gthis._loadCounter++;
-					_gthis.loadingHandler();
-				} catch( e ) {
-					if (e instanceof js__$Boot_HaxeError) e = e.val;
-					if(_gthis.get__isDebug()) {
-						haxe_Log.trace(e,{ fileName : "Loader.hx", lineNumber : 204, className : "cc.tool.Loader", methodName : "loadingHandler"});
-					}
-					_gthis._loadCounter++;
-					_gthis.loadingHandler();
-				}
-			};
-			req.onError = function(error) {
-				if(_gthis.get__isDebug()) {
-					haxe_Log.trace("error: " + error,{ fileName : "Loader.hx", lineNumber : 212, className : "cc.tool.Loader", methodName : "loadingHandler"});
-				}
-				_gthis._loadCounter++;
-				_gthis.loadingHandler();
-			};
-			req.onStatus = function(status) {
-				if(_gthis.get__isDebug()) {
-					haxe_Log.trace("status: " + status,{ fileName : "Loader.hx", lineNumber : 218, className : "cc.tool.Loader", methodName : "loadingHandler"});
-				}
-			};
-			req.request(true);
+		var _g = _l.type;
+		switch(_g[1]) {
+		case 1:case 4:case 5:case 6:case 7:
+			this.imageLoader(_l);
+			break;
+		case 2:case 3:case 8:case 9:
+			this.textLoader(_l);
+			break;
+		default:
+			haxe_Log.trace("?????????",{ fileName : "Loader.hx", lineNumber : 159, className : "cc.tool.Loader", methodName : "loadingHandler"});
 		}
+	}
+	,imageLoader: function(_l) {
+		var _gthis = this;
+		var _img = new Image();
+		_img.crossOrigin = "Anonymous";
+		_img.src = _l.path;
+		_img.onload = function() {
+			if(_gthis.get__isDebug()) {
+				haxe_Log.trace("w: " + _img.width,{ fileName : "Loader.hx", lineNumber : 169, className : "cc.tool.Loader", methodName : "imageLoader"});
+			}
+			if(_gthis.get__isDebug()) {
+				haxe_Log.trace("h: " + _img.height,{ fileName : "Loader.hx", lineNumber : 171, className : "cc.tool.Loader", methodName : "imageLoader"});
+			}
+			if(_gthis.get__isDebug()) {
+				haxe_Log.trace(_gthis.completeArray.length,{ fileName : "Loader.hx", lineNumber : 173, className : "cc.tool.Loader", methodName : "imageLoader"});
+			}
+			_l.image = _img;
+			_gthis.completeArray.push(_l);
+			if(_gthis.get__isDebug()) {
+				haxe_Log.trace(_gthis.completeArray,{ fileName : "Loader.hx", lineNumber : 177, className : "cc.tool.Loader", methodName : "imageLoader"});
+			}
+			if(_gthis.get__isDebug()) {
+				haxe_Log.trace(_gthis.completeArray.length,{ fileName : "Loader.hx", lineNumber : 179, className : "cc.tool.Loader", methodName : "imageLoader"});
+			}
+			if(Reflect.isFunction(_gthis._onUpdate)) {
+				_gthis._onUpdate.apply(_gthis._onUpdate,[_img]);
+			}
+			_gthis._loadCounter++;
+			_gthis.loadingHandler();
+		};
+		_img.onerror = function() {
+			if(Reflect.isFunction(_gthis._onError)) {
+				_gthis._onError.apply(_gthis._onError,[_img]);
+			}
+			_gthis._loadCounter++;
+			_gthis.loadingHandler();
+		};
+		_img.onprogress = function() {
+			if(Reflect.isFunction(_gthis._onProgress)) {
+				_gthis._onProgress.apply(_gthis._onProgress,[_img]);
+			}
+		};
+	}
+	,textLoader: function(_l) {
+		var _gthis = this;
+		var url = _l.path;
+		var req = new haxe_Http(url);
+		req.onData = function(data) {
+			try {
+				_l.str = data;
+				_l.json = JSON.parse(data);
+				_gthis.completeArray.push(_l);
+				if(Reflect.isFunction(_gthis._onUpdate)) {
+					_gthis._onUpdate.apply(_gthis._onUpdate,["_img"]);
+				}
+				_gthis._loadCounter++;
+				_gthis.loadingHandler();
+			} catch( e ) {
+				if (e instanceof js__$Boot_HaxeError) e = e.val;
+				if(_gthis.get__isDebug()) {
+					haxe_Log.trace(e,{ fileName : "Loader.hx", lineNumber : 218, className : "cc.tool.Loader", methodName : "textLoader"});
+				}
+				_gthis._loadCounter++;
+				_gthis.loadingHandler();
+			}
+		};
+		req.onError = function(error) {
+			if(_gthis.get__isDebug()) {
+				haxe_Log.trace("error: " + error,{ fileName : "Loader.hx", lineNumber : 226, className : "cc.tool.Loader", methodName : "textLoader"});
+			}
+			_gthis._loadCounter++;
+			_gthis.loadingHandler();
+		};
+		req.onStatus = function(status) {
+			if(_gthis.get__isDebug()) {
+				haxe_Log.trace("status: " + status,{ fileName : "Loader.hx", lineNumber : 232, className : "cc.tool.Loader", methodName : "textLoader"});
+			}
+		};
+		req.request(true);
 	}
 	,get__id: function() {
 		return this._id;
@@ -2561,7 +2950,7 @@ cc_tool_Loader.prototype = {
 	,__class__: cc_tool_Loader
 	,__properties__: {set__isDebug:"set__isDebug",get__isDebug:"get__isDebug",set__loadingArray:"set__loadingArray",get__loadingArray:"get__loadingArray",set__id:"set__id",get__id:"get__id"}
 };
-var cc_tool_FileType = { __ename__ : true, __constructs__ : ["Unknown","Img","Txt","Json","Gif","JPEG","JPG","Xml","Svg"] };
+var cc_tool_FileType = { __ename__ : true, __constructs__ : ["Unknown","Img","Txt","Json","Gif","Png","JPEG","JPG","Xml","Svg"] };
 cc_tool_FileType.Unknown = ["Unknown",0];
 cc_tool_FileType.Unknown.__enum__ = cc_tool_FileType;
 cc_tool_FileType.Img = ["Img",1];
@@ -2572,13 +2961,15 @@ cc_tool_FileType.Json = ["Json",3];
 cc_tool_FileType.Json.__enum__ = cc_tool_FileType;
 cc_tool_FileType.Gif = ["Gif",4];
 cc_tool_FileType.Gif.__enum__ = cc_tool_FileType;
-cc_tool_FileType.JPEG = ["JPEG",5];
+cc_tool_FileType.Png = ["Png",5];
+cc_tool_FileType.Png.__enum__ = cc_tool_FileType;
+cc_tool_FileType.JPEG = ["JPEG",6];
 cc_tool_FileType.JPEG.__enum__ = cc_tool_FileType;
-cc_tool_FileType.JPG = ["JPG",6];
+cc_tool_FileType.JPG = ["JPG",7];
 cc_tool_FileType.JPG.__enum__ = cc_tool_FileType;
-cc_tool_FileType.Xml = ["Xml",7];
+cc_tool_FileType.Xml = ["Xml",8];
 cc_tool_FileType.Xml.__enum__ = cc_tool_FileType;
-cc_tool_FileType.Svg = ["Svg",8];
+cc_tool_FileType.Svg = ["Svg",9];
 cc_tool_FileType.Svg.__enum__ = cc_tool_FileType;
 var cc_tool_export_ExportNames = function() {
 };
@@ -2600,7 +2991,7 @@ cc_tool_export_ExportWrapperBase.prototype = {
 		this._onExportComplete = func;
 	}
 	,getMarkdown: function(obj) {
-		var md = "# " + this.toString() + "\n\n- Generated on: " + Std.string(new Date()) + "\n- total images: " + obj.imageStringArray.length + "\n- file name: `_" + obj.filename + "_" + obj.timestamp + ".zip`\n- delay: " + obj.delay + " frames (" + obj.delay / 60 + " sec)\n- record: " + obj.record + " frames (" + obj.record / 60 + " sec)\n\n## Instagram\n\n```\nsketch." + obj.filename + " :: " + obj.description + "\nobjcodeart #coding #creativecode #generative #generativeArt\n#minimalism #minimalist #minimal\n#haxe #javascript #js #nodejs\n#animation #illustration #graphicdesign\n```\n\n## convert\n\nopen terminal\n\n```\nsh convert.sh\n```\n\n## Folder structure\n\n```\n+ _" + obj.filename + "_" + obj.timestamp + ".zip\n+ _" + obj.filename + "\n\t- convert.sh\n\t- README.MD\n\t+ sequence\n\t\t- image_" + StringTools.lpad("0","0",4) + ".png\n\t\t- image_" + StringTools.lpad("1","0",4) + ".png\n\t\t- ...\n```\n";
+		var md = "# " + this.toString() + "\n\n- Generated on: " + Std.string(new Date()) + "\n- total images: " + obj.imageStringArray.length + "\n- calculated time: " + obj.imageStringArray.length / 60 + " sec\n- file name: `_" + obj.filename + "_" + obj.timestamp + ".zip`\n- delay: " + obj.delay + " frames (" + obj.delay / 60 + " sec)\n- record: " + obj.record + " frames (" + obj.record / 60 + " sec)\n\n## Instagram\n\n```\nsketch." + obj.filename + " :: " + obj.description + "\n\n#codeart #coding #creativecode #generative #generativeArt\n#minimalism #minimalist #minimal\n#haxe #javascript #js #nodejs\n#animation #illustration #graphicdesign\n```\n\n## convert\n\nopen terminal\n\n```\nsh convert.sh\n```\n\n## Folder structure\n\n```\n+ _" + obj.filename + "_" + obj.timestamp + ".zip\n+ _" + obj.filename + "\n\t- convert.sh\n\t- README.MD\n\t+ sequence\n\t\t- image_" + StringTools.lpad("0","0",4) + ".png\n\t\t- image_" + StringTools.lpad("1","0",4) + ".png\n\t\t- ...\n```\n";
 		return md;
 	}
 	,getBashConvert: function(obj) {
@@ -2846,8 +3237,8 @@ cc_tool_export_ExportWrapper.prototype = {
 		this._recordCounter = 0;
 		this.out("" + this.toString() + " - start export - 0ms");
 		if(this.get__isDebug()) {
-			haxe_Log.trace(this.toString() + " - start export - 0ms",{ fileName : "ExportWrapper.hx", lineNumber : 83, className : "cc.tool.export.ExportWrapper", methodName : "startExport"});
-			haxe_Log.trace(this.settings(),{ fileName : "ExportWrapper.hx", lineNumber : 84, className : "cc.tool.export.ExportWrapper", methodName : "startExport"});
+			haxe_Log.trace(this.toString() + " - start export - 0ms",{ fileName : "ExportWrapper.hx", lineNumber : 84, className : "cc.tool.export.ExportWrapper", methodName : "startExport"});
+			haxe_Log.trace(this.settings(),{ fileName : "ExportWrapper.hx", lineNumber : 85, className : "cc.tool.export.ExportWrapper", methodName : "startExport"});
 		}
 	}
 	,stopExport: function() {
@@ -2855,8 +3246,8 @@ cc_tool_export_ExportWrapper.prototype = {
 		this.isExportActive = false;
 		this.out(this.toString() + (" - stop export - " + (this._endT - this._startT) / 1000 + "sec"));
 		if(this.get__isDebug()) {
-			haxe_Log.trace(this.toString() + (" - stop export - " + (this._endT - this._startT) / 1000 + "sec"),{ fileName : "ExportWrapper.hx", lineNumber : 93, className : "cc.tool.export.ExportWrapper", methodName : "stopExport"});
-			haxe_Log.trace(this.settings(),{ fileName : "ExportWrapper.hx", lineNumber : 94, className : "cc.tool.export.ExportWrapper", methodName : "stopExport"});
+			haxe_Log.trace(this.toString() + (" - stop export - " + (this._endT - this._startT) / 1000 + "sec"),{ fileName : "ExportWrapper.hx", lineNumber : 94, className : "cc.tool.export.ExportWrapper", methodName : "stopExport"});
+			haxe_Log.trace(this.settings(),{ fileName : "ExportWrapper.hx", lineNumber : 95, className : "cc.tool.export.ExportWrapper", methodName : "stopExport"});
 		}
 		if(Reflect.isFunction(this._onComplete)) {
 			var arr = this._onCompleteParams != null ? this._onCompleteParams : [];
@@ -2867,7 +3258,7 @@ cc_tool_export_ExportWrapper.prototype = {
 			this._onRecordComplete.apply(this._onRecordComplete,arr1);
 		}
 		var timeStamp = this._endT;
-		haxe_Log.trace(this.exportType.toString(),{ fileName : "ExportWrapper.hx", lineNumber : 110, className : "cc.tool.export.ExportWrapper", methodName : "stopExport"});
+		haxe_Log.trace(this.exportType.toString(),{ fileName : "ExportWrapper.hx", lineNumber : 111, className : "cc.tool.export.ExportWrapper", methodName : "stopExport"});
 		this.exportType.progress($bind(this,this.progressGeneration));
 		this.exportType.complete(this._onExportComplete);
 		this.exportType.debug(this.get__isDebug());
@@ -3021,22 +3412,22 @@ cc_tool_export_ExportWrapper.prototype = {
 		var _g = input.value;
 		switch(_g) {
 		case "init recording":
-			haxe_Log.trace("init recording",{ fileName : "ExportWrapper.hx", lineNumber : 366, className : "cc.tool.export.ExportWrapper", methodName : "onClickHandler"});
+			haxe_Log.trace("init recording",{ fileName : "ExportWrapper.hx", lineNumber : 367, className : "cc.tool.export.ExportWrapper", methodName : "onClickHandler"});
 			this.setDelay(this.panel1.getValue("delay in seconds"));
 			this.setRecord(this.panel1.getValue("record in seconds"));
 			this.start();
-			haxe_Log.trace(JSON.parse(JSON.stringify(this)),{ fileName : "ExportWrapper.hx", lineNumber : 370, className : "cc.tool.export.ExportWrapper", methodName : "onClickHandler"});
+			haxe_Log.trace(JSON.parse(JSON.stringify(this)),{ fileName : "ExportWrapper.hx", lineNumber : 371, className : "cc.tool.export.ExportWrapper", methodName : "onClickHandler"});
 			break;
 		case "recording":
 			break;
 		case "start recording":
 			break;
 		case "stop recording":
-			haxe_Log.trace("stop recording",{ fileName : "ExportWrapper.hx", lineNumber : 372, className : "cc.tool.export.ExportWrapper", methodName : "onClickHandler"});
+			haxe_Log.trace("stop recording",{ fileName : "ExportWrapper.hx", lineNumber : 373, className : "cc.tool.export.ExportWrapper", methodName : "onClickHandler"});
 			this.stop();
 			break;
 		default:
-			haxe_Log.trace("case '" + input.value + "': trace ('" + input.value + "');",{ fileName : "ExportWrapper.hx", lineNumber : 375, className : "cc.tool.export.ExportWrapper", methodName : "onClickHandler"});
+			haxe_Log.trace("case '" + input.value + "': trace ('" + input.value + "');",{ fileName : "ExportWrapper.hx", lineNumber : 376, className : "cc.tool.export.ExportWrapper", methodName : "onClickHandler"});
 		}
 	}
 	,create_ProgressBar: function(percentage) {
@@ -4576,7 +4967,7 @@ Global.TWO_PI = Math.PI * 2;
 cc_lets_Go._tweens = [];
 cc_model_constants_App.NAME = "[cc-sketch]";
 cc_model_constants_App.PORT = "5000";
-cc_model_constants_App.BUILD = "2019-04-04 00:29:05";
+cc_model_constants_App.BUILD = "2019-04-07 14:36:14";
 cc_tool_export_ExportNames.SEND = "send";
 cc_tool_export_ExportNames.MESSAGE = "message";
 cc_tool_export_ExportNames.IMAGE = "image";
