@@ -10,6 +10,8 @@ import js.Browser.*;
  * version
  * 		1.0.6 - convert to js only
  * 		1.0.7 - wiggle
+ * 		1.0.8 - arc
+ *
  */
 class Go {
 	// private static var _trigger:Timer;
@@ -27,11 +29,13 @@ class Go {
 	private var _isFrom:Bool = false;
 	private var _isYoyo:Bool = false;
 	private var _isWiggle:Bool = false;
+	private var _isOrbit:Bool = false;
 	private var _isTimeBased:Bool = false; // default is frameBased
 	private var _isDelayDone:Bool = false; // default is frameBased
 	private var _initTime:Int = 0; // should work with time (miliseconds) and frames (FPS)
 	private var _delay:Int = 0;
 	private var _seconds:Float = 0;
+	private var _arc:Float = 0;
 	private var FRAME_RATE:Int = 60; // 60 frames per second (FPS)
 	private var DEBUG:Bool = false;
 	private var VERSION:String = '1.0.7';
@@ -122,7 +126,6 @@ class Go {
 	static inline public function wiggle(target:Dynamic, x:Float, y:Float, ?wiggleRoom:Float = 10):Go {
 		var _go = new Go(target, 1 + (Math.random()));
 		_go._isWiggle = true;
-		// Go._isYoyo = true;
 		var max = wiggleRoom;
 		var min = -wiggleRoom;
 		_go.prop('x', x + (Math.random() * (max - min)) + min);
@@ -131,6 +134,33 @@ class Go {
 		_go.onComplete(function() {
 			Go.wiggle(target, x, y, wiggleRoom);
 		});
+		return _go;
+	}
+
+	static inline public function orbit(target:Dynamic, x:Float, y:Float, radius:Int, speed:Float):Go {
+		var _go = new Go(target, 1 + (Math.random()));
+		_go._isOrbit = true;
+
+		_go.prop('x', x);
+		_go.prop('y', y);
+		_go.prop('cx', x);
+		_go.prop('cy', y);
+		_go.prop('radius', radius);
+		_go.prop('speed', speed);
+		_go.prop('angle', speed);
+
+		Reflect.setField(target, 'cx', x);
+		Reflect.setField(target, 'cy', y);
+		Reflect.setField(target, 'angle', 0);
+		Reflect.setField(target, 'speed', speed);
+		Reflect.setField(target, 'radius', radius);
+
+		// _go.prop('x', x + (Math.random() * (max - min)) + min);
+		// _go.prop('y', y + (Math.random() * (max - min)) + min);
+		// _go.ease(cc.lets.easing.Sine.easeInOut);
+		// _go.onComplete(function() {
+		// 	Go.wiggle(target, x, y, wiggleRoom);
+		// });
 		return _go;
 	}
 
@@ -276,6 +306,11 @@ class Go {
 	 */
 	inline public function yoyo():Go {
 		_isYoyo = true;
+		return this;
+	}
+
+	inline public function arc(?dir:Int):Go {
+		this._arc = 0;
 		return this;
 	}
 
@@ -486,8 +521,44 @@ class Go {
 			return;
 		for (n in _props.keys()) {
 			var range = _props.get(n);
-			// Reflect.setProperty(_target, n, _easing(time / _duration) * (range.to - range.from) + range.from);
-			Reflect.setProperty(_target, n, _easing.ease(time, range.from, (range.to - range.from), _duration));
+			if (_isOrbit) {
+				// trace('clever stuff $n ($_props) , $range');
+				var __cx:Range = _props.get('cx');
+				var __cy:Range = _props.get('cy');
+				var __angle:Range = _props.get('angle');
+				var __speed:Range = _props.get('speed');
+				var __rad:Range = _props.get('radius');
+
+				trace('cx: ${__cx.to},  cy: ${__cy.to} , ${__angle.to}, ${__speed.to}, ${__rad.to}');
+
+				// if (n == 'x') {
+				// 	var xx = __cx.to + Math.cos(radians(__angle.to)) * __rad.to;
+				// 	Reflect.setProperty(_target, n, xx);
+				// }
+				// if (n == 'y') {
+				// 	var yy = __cy.to + Math.sin(radians(__angle.to)) * __rad.to;
+				// 	Reflect.setProperty(_target, n, yy);
+				// }
+
+				trace('$n == "angle" : ' + (n == 'angle'));
+
+				trace(_target);
+
+				if (n == 'angle') {
+					var aa = __angle.to + __speed.to;
+					Reflect.setProperty(_target, n, aa);
+				}
+
+				// var radius = 50;
+				// var speed = 2;
+				// untyped sh.angle += speed;
+				// // plot the balls x to cos and y to sin
+				// sh.x = w / 2 + Math.cos(radians(untyped sh.angle)) * radius;
+				// sh.y = h / 2 + Math.sin(radians(untyped sh.angle)) * radius;
+			} else {
+				// Reflect.setProperty(_target, n, _easing(time / _duration) * (range.to - range.from) + range.from);
+				Reflect.setProperty(_target, n, _easing.ease(time, range.from, (range.to - range.from), _duration));
+			}
 		}
 		// else throw( "Property "+propertyName+" not found in target!" );
 	}
