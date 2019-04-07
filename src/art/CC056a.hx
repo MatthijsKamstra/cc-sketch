@@ -1,6 +1,6 @@
 package art;
 
-import cc.tool.export.Zip;
+// import cc.tool.export.Zip;
 
 /**
  * short description what this does
@@ -20,7 +20,8 @@ class CC056a extends CCBase implements ICCBase {
 	var panel1:QuickSettings;
 	//
 	var isFontLoaded:Bool = false;
-	var zip:Zip;
+
+	// var zip:Zip;
 
 	public function new(ctx:CanvasRenderingContext2D) {
 		description = 'Export Zip test, test features';
