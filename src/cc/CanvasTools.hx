@@ -311,10 +311,10 @@ class CanvasTools {
 
 	/**
 	 * quickly set color and blur for shadow
-	 * @param ctx
-	 * @param rgb
-	 * @param a
-	 * @param blur
+	 * @param ctx	canvas
+	 * @param rgb	RBG values for color
+	 * @param a		alpha (0 till 1)
+	 * @param blur	set blur, default 15
 	 */
 	static public function shadowSet(ctx:CanvasRenderingContext2D, rgb:cc.util.ColorUtil.RGB, ?a:Float = 1, ?blur:Int = 15) {
 		var c = ColorUtil.getColour(rgb.r, rgb.g, rgb.b, a);
