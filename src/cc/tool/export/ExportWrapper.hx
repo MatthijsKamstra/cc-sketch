@@ -12,8 +12,7 @@ import js.html.*;
 
 using StringTools;
 
-class ExportWrapper //  implements IExportWrapper
-{
+class ExportWrapper implements IExportWrapper {
 	var fps:Int = 60;
 	var panel1:QuickSettings;
 	var isExportActive:Bool = false;
@@ -88,6 +87,8 @@ class ExportWrapper //  implements IExportWrapper
 
 	function stopExport() {
 		_endT = Date.now().getTime();
+		// recordInSeconds((_endT - _startT) / 1000); // calculate the time... might be not the best idea... but
+		record(imageStringArray.length);
 		isExportActive = false;
 		out(toString() + ' - stop export - ${(_endT - _startT) / 1000}sec');
 		if (_isDebug) {
@@ -135,7 +136,8 @@ class ExportWrapper //  implements IExportWrapper
 	 * reset _delay
 	 */
 	public function start() {
-		_delay = 0; // start now, so reset everthing
+		delay(0); // start now, so use no delay everthing
+		recordInSeconds(60); // for now instagram max of 60 seconds
 		init();
 	}
 

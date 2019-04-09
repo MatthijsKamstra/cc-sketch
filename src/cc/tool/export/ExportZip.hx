@@ -21,7 +21,14 @@ class ExportZip extends ExportWrapperBase implements IExport {
 		// trace(getMarkdown(obj));
 		// trace(getBashConvert(obj));
 		// trace(getBashConvertPng(obj));
+
 		var startT = Date.now().getTime();
+
+		if (obj.imageStringArray.length == 0) {
+			trace('NO images created / use start() - ${(Date.now().getTime() - startT) / 1000}sec');
+			return;
+		}
+
 		trace('Start creation zip file - ${(Date.now().getTime() - startT) / 1000}sec');
 		var zip = new JSZip();
 		zip.file('_${obj.filename}/README.MD', getMarkdown(obj));

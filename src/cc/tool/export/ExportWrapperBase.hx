@@ -42,7 +42,8 @@ sketch.${obj.filename} :: ${obj.description}
 #codeart #coding #creativecode #generative #generativeArt
 #minimalism #minimalist #minimal
 #haxe #javascript #js #nodejs
-#animation #illustration #graphicdesign
+#illustration #graphicdesign #graphic
+#animation #motion #motiondesign #motiongraphics
 ```
 
 ## convert

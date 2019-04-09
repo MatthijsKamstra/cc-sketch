@@ -1,11 +1,9 @@
 package cc.tool.export;
 
 class ExportNone extends ExportWrapperBase implements IExport {
-	// var _onProgressHandler:Float->Void;
-	// var _onExportComplete:Dynamic;
 	public function new() {
 		super();
-		trace(toString());
+		// trace(toString());
 	}
 
 	// ____________________________________ public functions ____________________________________
