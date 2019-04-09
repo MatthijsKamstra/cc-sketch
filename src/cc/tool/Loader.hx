@@ -57,11 +57,12 @@ class Loader {
 		return this;
 	}
 
-	inline public function add(path:String, ?type:FileType):Loader {
+	inline public function add(path:String, ?func:LoaderObj->Void, ?type:FileType):Loader {
 		var _type = (type == null) ? fileType(path) : type;
 		var _obj:LoaderObj = {
 			path: path,
-			type: _type
+			type: _type,
+			func: func
 		};
 		if (_isDebug)
 			trace(_obj);
@@ -178,6 +179,8 @@ class Loader {
 			if (_isDebug)
 				trace(completeArray.length);
 
+			if (Reflect.isFunction(_l.func))
+				Reflect.callMethod(_l.func, _l.func, [_l]);
 			if (Reflect.isFunction(_onUpdate))
 				Reflect.callMethod(_onUpdate, _onUpdate, [_img]);
 			_loadCounter++;
@@ -207,6 +210,9 @@ class Loader {
 				_l.str = data;
 				_l.json = haxe.Json.parse(data);
 				completeArray.push(_l);
+
+				if (Reflect.isFunction(_l.func))
+					Reflect.callMethod(_l.func, _l.func, [_l]);
 
 				if (Reflect.isFunction(_onUpdate))
 					Reflect.callMethod(_onUpdate, _onUpdate, ['_img']);
@@ -270,14 +276,21 @@ class Loader {
 enum FileType {
 	Unknown;
 	Img;
+	IMG;
 	Txt;
+	TXT;
 	Json;
+	JSON;
 	Gif;
+	GIF;
 	Png;
+	PNG;
 	JPEG;
 	JPG;
 	Xml;
+	XML;
 	Svg;
+	SVG;
 }
 
 typedef LoaderObj = {
@@ -287,4 +300,5 @@ typedef LoaderObj = {
 	@:optional var image:js.html.Image;
 	@:optional var str:String;
 	@:optional var json:Dynamic;
+	@:optional var func:Dynamic;
 };
