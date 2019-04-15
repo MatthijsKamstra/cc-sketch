@@ -79,9 +79,13 @@ class ExportZip extends ExportWrapperBase implements IExport {
 	 * @param callbackArray
 	 */
 	public function embedScripts(?callback:Dynamic, ?callbackArray:String->Void) {
-		Embed.script('jszip', 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.2.0/jszip.min.js', onLoadComplete, ['jszip', callback, callbackArray]);
-		Embed.script('jsfilesaver', 'https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js', onLoadComplete,
-			['jsfilesaver', callback, callbackArray]);
+		if (!Embed.check('jszip')) {
+			Embed.script('jszip', 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.2.0/jszip.min.js', onLoadComplete, ['jszip', callback, callbackArray]);
+		}
+		if (!Embed.check('jsfilesaver')) {
+			Embed.script('jsfilesaver', 'https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js', onLoadComplete,
+				['jsfilesaver', callback, callbackArray]);
+		}
 	}
 
 	function onLoadComplete(str:String, ?callback:Dynamic, ?callbackArray:Array<Dynamic>) {

@@ -57,7 +57,9 @@ class ExportWrapper implements IExportWrapper {
 	 * @param fileName
 	 */
 	public function new(ctx:CanvasRenderingContext2D, ?fileName:String) {
-		createQuickSettings();
+		trace('constructor ${toString()}');
+
+		createQuicktoExportObj();
 		create_ProgressBar();
 
 		if (ctx == null) {
@@ -78,10 +80,11 @@ class ExportWrapper implements IExportWrapper {
 		imageStringArray = [];
 		_delayCounter = 0;
 		_recordCounter = 0;
+		type(_type); // make sure its set in the correct export class
 		out('${toString()} - start export - 0ms');
 		if (_isDebug) {
 			trace(toString() + ' - start export - 0ms');
-			trace(settings());
+			trace(toExportObj());
 		}
 	}
 
@@ -93,7 +96,7 @@ class ExportWrapper implements IExportWrapper {
 		out(toString() + ' - stop export - ${(_endT - _startT) / 1000}sec');
 		if (_isDebug) {
 			trace(toString() + ' - stop export - ${(_endT - _startT) / 1000}sec');
-			trace(settings());
+			trace(toExportObj());
 		}
 
 		if (Reflect.isFunction(_onComplete)) {
@@ -113,32 +116,49 @@ class ExportWrapper implements IExportWrapper {
 		exportType.progress(progressGeneration);
 		exportType.complete(_onExportComplete);
 		exportType.debug(_isDebug);
-		exportType.export(settings());
+		exportType.export(toExportObj());
 	}
 
 	// ____________________________________ properties ____________________________________
 
 	/**
-	 * init project,
-	 * use delay in frames
-	 * use recording frames
+	 * init project, but don't start yet
+	 * set the settings
 	 */
 	public function init() {
+		trace('${toString()}.init : ${toExportObj()}');
 		if (pulse == null) {
 			console.warn('no pulse detected, hook into the animation');
 			return;
 		}
+	}
+
+	/**
+	 * Start recording now,  without changing the settings
+	 */
+	public function start() {
 		startExport();
 	}
 
 	/**
-	 * Start recording now
-	 * reset _delay
+	 * short code to start recording without
+	 * delay or record time
+	 * default delay = 0
+	 * default record = 60 * 60; (60seconds)
 	 */
-	public function start() {
+	public function startNow() {
+		startRecording();
+	}
+
+	/**
+	 * short code to start recording without
+	 * delay or record time
+	 */
+	public function startRecording() {
 		delay(0); // start now, so use no delay everthing
 		recordInSeconds(60); // for now instagram max of 60 seconds
 		init();
+		startExport();
 	}
 
 	/**
@@ -208,7 +228,17 @@ class ExportWrapper implements IExportWrapper {
 		}
 	}
 
+	/**
+	 * type or export, it will only change when the
+	 * @param type
+	 */
 	public function type(type:ExportType) {
+		// trace('type, typeof: ' + Type.typeof(exportType));
+
+		if (this._type == type) {
+			trace('${this._type} == ${type}');
+			return;
+		}
 		this._type = type;
 		switch (this._type) {
 			case ZIP:
@@ -220,6 +250,8 @@ class ExportWrapper implements IExportWrapper {
 			case _:
 				exportType = new ExportNone();
 		}
+		trace('ExportWrapper.type: ' + Type.typeof(exportType));
+		trace('ExportWrapper.obj: ' + toExportObj());
 	}
 
 	/**
@@ -269,9 +301,27 @@ class ExportWrapper implements IExportWrapper {
 	}
 
 	/**
+	 * setting is quicker way record specific times (you know:)
+	 * 		- delay in frames
+	 * 		- recording time in frames
+	 * 		- export type (ZIP / NODE)
+	 * @param obj
+	 */
+	public function setting(obj:ExportSettings) {
+		trace('settings: ${obj}');
+		this._type = null;
+		this.exportType = null;
+		this._record = obj.record;
+		this._delay = (obj.delay == null) ? 0 : obj.delay;
+		this._isDebug = (obj.isDebug == null) ? false : obj.isDebug;
+		type(obj.type);
+		init();
+	}
+
+	/**
 	 * get some basic feedback on the settings used with this wrapper
 	 */
-	public function settings() {
+	public function toExportObj() {
 		var obj:ExportWrapperObj = {
 			filename: _filename,
 			export_type: _type,
@@ -330,7 +380,7 @@ class ExportWrapper implements IExportWrapper {
 
 	// ____________________________________ settings stuff ____________________________________
 
-	function createQuickSettings() {
+	function createQuicktoExportObj() {
 		panel1 = QuickSettings.create(10, 10, "ExportWrapper settings")
 			.addRange('delay in seconds', 0.0, 5.0, 2.0, 0.5, function(e) setDelay(e))
 			.addRange('record in seconds', 0.0, 60.0, 2.0, 0.5, function(e) setRecord(e))
@@ -479,9 +529,16 @@ enum ExportType {
 	TEST;
 }
 
+typedef ExportSettings = {
+	var type:ExportType;
+	var record:Int;
+	@:optional var delay:Int; // default 0
+	@:optional var isDebug:Bool; // default false
+};
+
 typedef ExportWrapperObj = {
 	// @:optional var _id : Int;
-	var filename:String;
+	var filename:String; // filename is for zip the foldername where the files in exported are
 	var export_type:ExportType;
 	var delay:Int;
 	var record:Int;

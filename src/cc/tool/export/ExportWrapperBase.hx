@@ -77,7 +77,10 @@ sh convert.sh
 echo \'Start convertions png sequence to mp4\'
 
 ffmpeg -y -r 30 -i sequence/image_%04d.png -c:v libx264 -strict -2 -pix_fmt yuv420p -shortest -filter:v "setpts=0.5*PTS"  ${obj.filename}_output_30fps.mp4
+# eh?
 # ffmpeg -y -r 30 -i sequence/image_%04d.png -c:v libx264 -strict -2 -pix_fmt yuv420p -shortest -filter:v "setpts=0.5*PTS"  sequence/_output_30fps.mp4
+# rendercan fix
+# ffmpeg -y -r 30 -i framescemage_%09d.png -c:v libx264 -strict -2 -pix_fmt yuv420p -shortest -filter:v "setpts=0.5*PTS"  sequence/_output_30fps.mp4
 
 echo \'End convertions png sequence to mp4\'
 

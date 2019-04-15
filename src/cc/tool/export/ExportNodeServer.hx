@@ -22,10 +22,13 @@ class ExportNodeServer extends ExportWrapperBase implements IExport {
 	var _exportCounter = 0;
 	var _exportArray:Array<String>;
 	// default export settings
-	var _name:String = 'frame'; // default file name
+	var _name:String = 'image'; // default file name
 	var _folder:String = 'sequence'; // default folder name in the export folder
+	var _isEmbeded:Bool = false;
+	var _exportObj:ExportWrapper.ExportWrapperObj;
 
 	public function new() {
+		trace('constructor ${toString()}');
 		super();
 		// might not be bullit proof!!!
 		embedScripts(onEmbedComplete);
@@ -36,8 +39,11 @@ class ExportNodeServer extends ExportWrapperBase implements IExport {
 	public function export(obj:ExportWrapper.ExportWrapperObj):Void {
 		if (_isDebug)
 			trace('${toString()} - export');
-		_exportArray = obj.imageStringArray;
-		_exportCounter = 0;
+
+		this._exportObj = obj;
+		this._folder = obj.filename;
+		this._exportArray = obj.imageStringArray;
+		this._exportCounter = 0;
 		deleteFolder(); // first delete then, via socket start export
 		// startExport();
 	}
@@ -65,7 +71,7 @@ class ExportNodeServer extends ExportWrapperBase implements IExport {
 		var data:AST.EXPORT_IMAGE = {
 			_id: id,
 			file: _exportArray[_exportCounter],
-			name: '${_name}-${Std.string(_exportCounter).lpad('0', 4)}',
+			name: '${_name}_${Std.string(_exportCounter).lpad('0', 4)}',
 			folder: '${_folder}',
 		}
 
@@ -86,11 +92,25 @@ class ExportNodeServer extends ExportWrapperBase implements IExport {
 	function convertExport() {
 		var data:AST.EXPORT_CONVERT_VIDEO = {
 			name: '${_name}',
-			clear: _isClear,
 			folder: '${_folder}',
+			clear: _isClear,
 			description: 'export this file '
 		};
 		_socket.emit(COMBINE, data);
+		var data:AST.EXPORT_FILE = {
+			name: '${_name}',
+			folder: '${_folder}',
+			content: getMarkdown(_exportObj)
+		};
+		Reflect.setField(data, 'name', 'README.MD');
+		Reflect.setField(data, 'content', getMarkdown(_exportObj));
+		_socket.emit('export.file', data);
+		Reflect.setField(data, 'name', 'convert.sh');
+		Reflect.setField(data, 'content', getBashConvert(_exportObj));
+		_socket.emit('export.file', data);
+		Reflect.setField(data, 'name', 'png.sh');
+		Reflect.setField(data, 'content', getBashConvertPng(_exportObj));
+		_socket.emit('export.file', data);
 	}
 
 	function deleteFolder() {
@@ -99,15 +119,27 @@ class ExportNodeServer extends ExportWrapperBase implements IExport {
 			clear: _isClear,
 			folder: '${_folder}',
 		};
-		_socket.emit(RENDER_CLEAR, data);
+		this._socket.emit(RENDER_CLEAR, data);
 	}
 
 	// ____________________________________ init socket (script is embedded) ____________________________________
 
 	function initSocket() {
-		if (_isDebug)
-			trace('${toString()} Init Socket');
-		_socket = untyped io();
+		// if (_isDebug)
+		trace('${toString()} Init Socket');
+
+		if (!_isEmbeded) {
+			trace('_isEmbeded : ${_isEmbeded}');
+			return;
+		}
+
+		trace(_host, _port);
+		_socket = untyped io('http://localhost:5000');
+
+		// _socket = untyped io();
+
+		// trace(this._socket);
+
 		// _socket = untyped __js__('io.connect({0},{upgradeTimeout: 30000});', '${_host}:${_port}');
 		// check possible ways to make sure the server is acitve
 		_socket.on('connect_error', function(err) {
@@ -145,31 +177,31 @@ class ExportNodeServer extends ExportWrapperBase implements IExport {
 		// _socket.emit('message', 'checkin');
 		_socket.on('message', function(data) {
 			if (data.message != null) {
-				trace('${toString()} message: ' + data.message);
+				console.log('${toString()} message: ' + data.message);
 			} else {
-				trace('${toString()} There is a problem: ' + data);
+				console.log('${toString()} There is a problem: ' + data);
 			}
 		});
 		_socket.emit(CHECKIN);
 		_socket.on(SERVER_CHECKIN, function(data) {
 			if (data.checkin != null && data.checkin == true) {
 				_isExportServerReady = true;
-				trace('${toString()} data:  + $data, & _isExportServerReady: $_isExportServerReady');
+				console.log('${toString()} data:  + $data, & _isExportServerReady: $_isExportServerReady');
 			} else {
-				trace('${toString()} There is a problem: ' + data);
+				console.log('${toString()} There is a problem: ' + data);
 			}
 		});
 		_socket.on(RENDER_DONE, function(data) {
-			trace(data);
+			console.log(data);
 		});
 		_socket.on(RENDER_CLEAR_DONE, function(data) {
 			if (_isDebug)
-				trace(data.message);
+				console.log(data.message);
 			startExport();
 		});
 		_socket.on(SEQUENCE_NEXT, function(data) {
 			if (_isDebug)
-				trace('SEQUENCE_NEXT: ' + data.message);
+				console.log('SEQUENCE_NEXT: ' + data.message);
 			_exportCounter++;
 			startExport();
 		});
@@ -180,7 +212,13 @@ class ExportNodeServer extends ExportWrapperBase implements IExport {
 	function onEmbedComplete(?value:String) {
 		if (_isDebug)
 			console.log('${toString()} ${value}');
-		initSocket();
+
+		// console.warn('$value = Embedded');
+
+		this._isEmbeded = true;
+		haxe.Timer.delay(function() {
+			initSocket();
+		}, 1);
 	}
 
 	/**
@@ -190,8 +228,17 @@ class ExportNodeServer extends ExportWrapperBase implements IExport {
 	 * @param callbackArray
 	 */
 	public function embedScripts(?callback:Dynamic, ?callbackArray:String->Void) {
-		Embed.script('embedSocketIO', 'https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js', onEmbedComplete,
-			['socket.io is embedded and loaded']);
+		var id = 'embedSocketIO';
+		trace('Check if "${id}" is embedded');
+
+		if (!Embed.check(id)) {
+			console.warn('$id = not Embedded');
+			this._isEmbeded = false;
+			Embed.script(id, 'https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js', onEmbedComplete, ['socket.io is embedded and loaded']);
+		} else {
+			console.warn('$id = already embeded');
+			// onEmbedComplete();
+		}
 	}
 
 	// ____________________________________ toString() ____________________________________
