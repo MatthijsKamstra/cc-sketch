@@ -208,6 +208,14 @@ typedef EXPORT_MD = {
 	@:optional var exportFolder:String;
 };
 
+typedef EXPORT_FILE = {
+	> Base,
+	var name:String;
+	var content:String;
+	@:optional var folder:String;
+	@:optional var exportFolder:String;
+};
+
 typedef EXPORT_CONVERT_VIDEO = {
 	> Base,
 	var name:String;
