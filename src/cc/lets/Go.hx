@@ -114,6 +114,19 @@ class Go {
 	}
 
 	/**
+	 * Use Go.frames to create a time/delay to a functoin
+	 *
+	 * @example		Go.frames(1).onComplete(onCompleteHandler);
+	 *
+	 * @param frames 	frames to wait
+	 * @return Go
+	 */
+	static inline public function frames(frames:Int):Go {
+		var Go = new Go({}, (frames * 60));
+		return Go;
+	}
+
+	/**
 	 * continues wiggling of an object in random x and y dir
 	 *
 	 * @example		Go.wiggle(foobarMc, 10, 10, 10);
