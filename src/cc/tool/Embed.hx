@@ -7,6 +7,14 @@ class Embed {
 		// your code
 	}
 
+	public static function check(id:String):Bool {
+		if (document.getElementById(id) != null) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	/**
 	 * [Description]
 	 * @param id
