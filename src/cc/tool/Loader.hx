@@ -57,6 +57,14 @@ class Loader {
 		return this;
 	}
 
+	/**
+	 * add a file to the loading queue
+	 *
+	 * @param path 	to the file
+	 * @param func	oncomplete function when this file is loaded
+	 * @param type	if you need this ...
+	 * @return Loader
+	 */
 	inline public function add(path:String, ?func:LoaderObj->Void, ?type:FileType):Loader {
 		var _type = (type == null) ? fileType(path) : type;
 		var _obj:LoaderObj = {
@@ -70,6 +78,20 @@ class Loader {
 		return this;
 	}
 
+	/**
+	 * when all files are loaded call this function
+	 *
+	 * @example:
+	 * 		var load = Loader.create().isDebug(true).add('smoelenboek.csv').onComplete(onCompleteHandler).load();
+	 *
+	 * 		function onCompleteHandler(completeArray:Array<LoaderObj>) {
+	 *			trace('onCompleteHandler: ' + completeArray.length);
+	 *		}
+	 *
+	 * @param func		oncomplete function
+	 * @param arr		oncomplete extra parameters
+	 * @return Loader
+	 */
 	inline public function onComplete(func:Array<LoaderObj>->Void, ?arr:Array<Dynamic>):Loader {
 		this._onComplete = func;
 		this._onCompleteParams = arr;
@@ -128,6 +150,8 @@ class Loader {
 				type = Xml;
 			case 'txt':
 				type = Txt;
+			case 'csv':
+				type = Csv;
 			case _:
 				type = Unknown;
 		}
@@ -154,10 +178,10 @@ class Loader {
 		switch (_l.type) {
 			case JPEG, JPG, Png, Gif, Img:
 				imageLoader(_l);
-			case Json, Txt, Xml, Svg:
+			case Json, Txt, Xml, Svg, Csv:
 				textLoader(_l);
 			case _:
-				trace('?????????');
+				trace('not sure what this type is?: "${_l.path}"');
 		}
 	}
 
@@ -166,18 +190,19 @@ class Loader {
 		_img.crossOrigin = "Anonymous";
 		_img.src = _l.path;
 		_img.onload = function() {
+			if (_isDebug) {
+				trace('image source: ' + _img.src);
+				trace('image width: ' + _img.width);
+				trace('image height: ' + _img.height);
+			}
 			if (_isDebug)
-				trace('w: ' + _img.width);
-			if (_isDebug)
-				trace('h: ' + _img.height);
-			if (_isDebug)
-				trace(completeArray.length);
+				trace('complete array length: ' + completeArray.length);
 			_l.image = _img;
 			completeArray.push(_l);
 			if (_isDebug)
-				trace(completeArray);
+				trace('complete array: ' + completeArray);
 			if (_isDebug)
-				trace(completeArray.length);
+				trace('complete array length: ' + completeArray.length);
 
 			if (Reflect.isFunction(_l.func))
 				Reflect.callMethod(_l.func, _l.func, [_l]);
@@ -208,7 +233,11 @@ class Loader {
 		req.onData = function(data:String) {
 			try {
 				_l.str = data;
-				_l.json = haxe.Json.parse(data);
+				if (_l.type == Json) {
+					_l.json = haxe.Json.parse(data);
+				} else {
+					_l.json = '';
+				}
 				completeArray.push(_l);
 
 				if (Reflect.isFunction(_l.func))
@@ -291,6 +320,8 @@ enum FileType {
 	XML;
 	Svg;
 	SVG;
+	Csv;
+	CSV;
 }
 
 typedef LoaderObj = {
