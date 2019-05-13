@@ -118,6 +118,7 @@ class Sketch {
 			w = Sketch.option.width;
 			h = Sketch.option.height;
 		}
+
 		for (i in 0...c.length) {
 			var _c = c[i];
 			if (Sketch.option.scale) {
