@@ -25,6 +25,8 @@ class ExportNone extends ExportWrapperBase implements IExport {
 		}, 1000);
 	}
 
+	public function exportLite(fileName:String, imageStringArray:Array<String>):Void {}
+
 	// ____________________________________ calls ____________________________________
 
 	function _progress(value:Float) {

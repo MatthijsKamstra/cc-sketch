@@ -48,6 +48,8 @@ class ExportNodeServer extends ExportWrapperBase implements IExport {
 		// startExport();
 	}
 
+	public function exportLite(fileName:String, imageStringArray:Array<String>):Void {}
+
 	// ____________________________________ private functions ____________________________________
 
 	function startExport() {

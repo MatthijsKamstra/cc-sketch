@@ -70,6 +70,48 @@ class ExportZip extends ExportWrapperBase implements IExport {
 		});
 	}
 
+	public function exportLite(filename:String, imageStringArray:Array<String>):Void {
+		var startT = Date.now().getTime();
+
+		if (imageStringArray.length == 0) {
+			trace('NO images created / use start() - ${(Date.now().getTime() - startT) / 1000}sec');
+			return;
+		}
+
+		trace('Start creation zip file - ${(Date.now().getTime() - startT) / 1000}sec');
+		var zip = new JSZip();
+		// zip.file('_${filename}/README.MD', getMarkdown(obj));
+
+		for (i in 0...imageStringArray.length) {
+			if (_isDebug)
+				trace('/${imageStringArray.length}. add image to file');
+			var img = imageStringArray[i];
+			zip.file('_${filename}/sequence/image_${Std.string(i).lpad('0', 4)}.png', img, {base64: true});
+		}
+		trace('Generate zip file - ${(Date.now().getTime() - startT) / 1000}sec');
+
+		zip.generateAsync({type: "blob"}, function updateCallback(metadata) {
+			if (_isDebug)
+				console.log("progression: " + metadata.percent.toFixed(2) + " %");
+			if (Reflect.isFunction(_onProgressHandler)) {
+				Reflect.callMethod(_onProgressHandler, _onProgressHandler, [Std.parseFloat(metadata.percent.toFixed(2))]);
+			}
+		}).then(function(blob) { // 1) generate the zip file
+			console.log('Save zip file complete - ${(Date.now().getTime() - startT) / 1000}sec');
+			// out('zip is downloaded');
+			untyped saveAs(blob, '_${filename}_${startT}.zip'); // 2) trigger the download
+
+			if (Reflect.isFunction(_onExportComplete)) {
+				// trace('xxxx');
+				Reflect.callMethod(_onExportComplete, _onExportComplete, []);
+			}
+
+			// trace(settings());
+		}, function(err) {
+			console.log(err);
+		});
+	}
+
 	// ____________________________________ inject script into page ____________________________________
 
 	/**
