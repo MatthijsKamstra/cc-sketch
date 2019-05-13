@@ -42,7 +42,7 @@ class ExportFile {
 
 	/**
 	 * Start file download.
-	 * ExportUtil.downloadTextFile("This is the content of my file :)", "hello.txt");
+	 * cc.tool.ExportFile.downloadTextFile("This is the content of my file :)", "hello.txt");
 	 *
 	 * @param text
 	 * @param fileName
