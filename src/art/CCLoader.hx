@@ -31,6 +31,13 @@ class CCLoader extends SketchBase {
 			.add('img/miguel-ibanez-643801-unsplash.jpg')
 			.add('img/nathan-dumlao-526295-unsplash.jpg')
 			.add('img/foobar.jpg')
+
+			// .add('dummy/file.xml')
+			// .add('dummy/file.csv')
+			// .add('dummy/file.css')
+			// .add('dummy/file.txt')
+			// .add('dummy/file.json')
+
 			.onComplete(onCompleteHandler)
 			.onUpdate(onUpdateHandler)
 			.onProgress(onProgressHandler)
