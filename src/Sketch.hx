@@ -631,9 +631,23 @@ class SketchBase {
 
 	// ____________________________________ compensate value with dpi (usefull if you need to have dpi bigger then 72) ____________________________________
 
+	/**
+	 * default dpi is 72, but CC-sketch can compensate values with this class
+	 *
+	 * @param value 	normal 72 dpi value
+	 * @return Float
+	 */
 	public function scaled(value:Float) : Float{
 		return value * dpiScale;
 	}
+
+	/**
+	 * default dpi is 72, but CC-sketch can compensate values with this class
+	 * use when you expect a bigger Int value
+	 *
+	 * @param value 	normal 72 dpi value
+	 * @return Int
+	 */
 	public function scaledInt(value:Float) : Int{
 		return Std.int(value * dpiScale);
 	}
