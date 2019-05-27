@@ -629,6 +629,15 @@ class SketchBase {
 		// }
 	}
 
+	// ____________________________________ compensate value with dpi (usefull if you need to have dpi bigger then 72) ____________________________________
+
+	public function scaled(value:Float) : Float{
+		return value * dpiScale;
+	}
+	public function scaledInt(value:Float) : Int{
+		return Std.int(value * dpiScale);
+	}
+
 	// setup
 	// update
 	// draw
