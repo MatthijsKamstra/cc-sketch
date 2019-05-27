@@ -26,6 +26,9 @@ class Text {
 	@:isVar public var _size(get, set):Int;
 
 	private var _font:String = 'Arial'; // italic small-caps bold 12px aria
+	// css specific
+	private var _css:String = ''; // italic small-caps bold 12px aria
+	private var _fontWeight:String = ''; // normal|bold|bolder|lighter|100|200|300|400|500|600|700|800|900
 	// https://www.w3schools.com/tags/canvas_textalign.asp
 	private var _textAlign:String = 'left'; // center|end|left|right|start"
 	// https://www.w3schools.com/tags/canvas_textbaseline.asp
@@ -79,10 +82,43 @@ class Text {
 		return this;
 	}
 
+	/**
+	 * font to use with text
+	 * some simple checks to make sure it works
+	 * 		- no `;` (pershaps when using google fonts)
+	 * 		- replace `+` to `space`
+	 * @param font	font name use in code
+	 * @return Text
+	 */
 	inline public function font(font:String):Text {
 		this._font = font.replace(';', '').replace('+', ' ');
 		return this;
 	}
+
+
+	/**
+	 * @see https://www.w3schools.com/tags/canvas_font.asp
+	 *
+	 * inject styling, use with care
+	 *
+	 * @param css
+	 * @return Text
+	 */
+	inline public function css(css:String):Text {
+		this._css = css;
+		return this;
+	}
+
+	/**
+	 * TODO create a enum for this
+	 * @param css
+	 * @return Text
+	 */
+	inline public function fontWeight(weight:String):Text {
+		this._fontWeight = weight;
+		return this;
+	}
+
 
 	inline public function size(px:Int):Text {
 		this._size = px;
@@ -162,12 +198,22 @@ class Text {
 		return this;
 	}
 
+	/**
+	 * change alpha of the text, 0 > 1 (100% color)
+	 * @param alpha		value between 0 and 1
+	 * @return Text
+	 */
 	inline public function alpha(alpha:Float):Text {
 		this._alpha = clamp(alpha, 0, 1); // a value r should be between 0 and 1
 		// this._alpha = alpha; // a value r should be between 0 and 1
 		return this;
 	}
 
+	/**
+	 * short hand for alpha 1 or 0 (hidden)
+	 * @param isVisible
+	 * @return Text
+	 */
 	inline public function visible(isVisible:Bool):Text {
 		if (isVisible) {
 			alpha(1);
@@ -194,7 +240,8 @@ class Text {
 		} else {
 			_ctx.fillColourRGB(cc.util.ColorUtil.hex2RGB(previousColor), this._alpha);
 		}
-		_ctx.font = '${_size}px ${_font}';
+		// _ctx.font = '${_size}px ${_font}';
+		_ctx.font = '${_css} ${_size}px ${_font}'.ltrim();
 		_ctx.textAlign = _textAlign;
 		_ctx.textBaseline = _textBaseline;
 
@@ -268,6 +315,13 @@ class Text {
 		ctx.fillText(text, x, y);
 
 		// trace( text, x, y, css, size);
+	}
+
+	public static function hackCenterFillText(ctx:CanvasRenderingContext2D, text:String, x:Float, y:Float, css:String) {
+		ctx.font = '${css.replace(';', '')}';
+		// seems to break something if css has `;`
+		ctx.textAlign = "center";
+		ctx.fillText(text, x, y);
 	}
 
 	/**
