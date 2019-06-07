@@ -4,7 +4,6 @@ import js.html.CanvasRenderingContext2D;
 import js.html.*;
 import js.Browser.document;
 import js.Browser.window;
-
 // import cc.Global.*;
 import cc.util.ColorUtil.RGB;
 import cc.util.MathUtil.*;
@@ -16,10 +15,8 @@ using StringTools;
  * create a chaining rectangle, a test
  */
 class Rectangle {
-
 	// are always set
 	private var _ctx:CanvasRenderingContext2D;
-	private var _text:String;
 
 	// defaults
 	@:isVar public var _x(get, set):Float = 100;
@@ -27,17 +24,16 @@ class Rectangle {
 	@:isVar public var _radius(get, set):Float = 100;
 	@:isVar public var _alpha(get, set):Float = 1; // 0 -> 1
 	@:isVar public var _rotate(get, set):Int = 0; // weird for circles ???
-
-	// may be wrong
-	private var _font:String = 'Arial'; // italic small-caps bold 12px aria
-	// https://www.w3schools.com/tags/canvas_textalign.asp
-	private var _textAlign:String = 'left'; // center|end|left|right|start"
-	// https://www.w3schools.com/tags/canvas_textbaseline.asp
-	private var _textBaseline:String = 'alphabetic'; // alphabetic|top|hanging|middle|ideographic|bottom
+	@:isVar public var _width(get, set):Float = 100;
+	@:isVar public var _height(get, set):Float = 100;
 
 	// Color
-	private var _color:RGB;
-	private var _colorstoke:RGB;
+	private var _color:RGB = cc.util.ColorUtil.GRAY;
+	private var _colorstoke:RGB = cc.util.ColorUtil.BLACK;
+	// dashed line
+	private var _line:Int;
+	private var _gap:Int;
+	private var _isDashed:Bool = false;
 
 	@:isVar public var _gradient(get, set):js.html.CanvasGradient;
 
@@ -53,120 +49,122 @@ class Rectangle {
 	 * @return Rectangle
 	 */
 	static inline public function create(ctx:CanvasRenderingContext2D):Rectangle {
-		var rectangle = new Rectangle(ctx, text);
-		return Rectangle;
+		var rectangle = new Rectangle(ctx);
+		return rectangle;
 	}
 
 	// ____________________________________ properties ____________________________________
 
-	inline public function text(text:String):Rectangle {
-		this._text = text;
-		return this;
-	}
 	inline public function x(x:Float):Rectangle {
 		this._x = x;
 		return this;
 	}
+
 	inline public function y(y:Float):Rectangle {
 		this._y = y;
 		return this;
 	}
-	inline public function pos(x:Float,y:Float):Rectangle {
+
+	inline public function width(w:Float):Rectangle {
+		this._width = w;
+		return this;
+	}
+
+	inline public function height(h:Float):Rectangle {
+		this._height = h;
+		return this;
+	}
+
+	inline public function pos(x:Float, y:Float):Rectangle {
 		this._x = x;
 		this._y = y;
 		return this;
 	}
-	// inline public function font(font:String):Rectangle {
-	// 	this._font = font;
-	// 	return this;
-	// }
-	inline public function size(px:Int):Rectangle {
-		this._size = px;
-		return this;
-	}
-	inline public function textAlign(pos:String):Rectangle {
-		this._textAlign = pos; // left/right/center
-		return this;
-	}
+
 	inline public function leftAlign():Rectangle {
-		this._textAlign = 'left'; // left/right/center
+		// this._textAlign = 'left'; // left/right/center
 		return this;
 	}
+
 	inline public function rightAlign():Rectangle {
-		this._textAlign = 'right'; // left/right/center
+		// this._textAlign = 'right'; // left/right/center
 		return this;
 	}
+
 	inline public function centerAlign():Rectangle {
-		this._textAlign = 'center'; // left/right/center
+		// this._textAlign = 'center'; // left/right/center
 		return this;
 	}
-	inline public function topBaseline():Rectangle {
-		this._textBaseline = 'top'; // top/middle/bottom
-		return this;
-	}
-	inline public function middleBaseline():Rectangle {
-		this._textBaseline = 'middle'; // top/middle/bottom
-		return this;
-	}
-	inline public function bottomBaseline():Rectangle {
-		this._textBaseline = 'bottom'; // top/middle/bottom
-		return this;
-	}
-	inline public function textBaseline(pos:String):Rectangle {
-		this._textBaseline = pos; // top/middle/bottom
-		return this;
-	}
+
 	inline public function rotate(degree:Int):Rectangle {
 		this._rotate = degree;
 		return this;
 	}
+
 	inline public function rotateLeft():Rectangle {
 		this._rotate = -90;
 		return this;
 	}
+
 	inline public function rotateRight():Rectangle {
 		this._rotate = 90;
 		return this;
 	}
+
 	inline public function rotateDown():Rectangle {
 		this._rotate = 180;
 		return this;
 	}
+
 	inline public function color(value:RGB):Rectangle {
 		this._color = value;
 		return this;
 	}
+
 	inline public function stroke(value:RGB):Rectangle {
-		this._stroke = value;
+		this._colorstoke = value;
 		return this;
 	}
+
+	inline public function dotted(line:Int, ?gap:Int):Rectangle {
+		this._line = line;
+		if (gap == null)
+			gap = line;
+		this._gap = gap;
+		this._isDashed = true;
+		return this;
+	}
+
 	inline public function draw():Rectangle {
-		// draw to convast
-		_ctx.save(); // save current state
+		// // draw to convast
+		// _ctx.save(); // save current state
 
-		var previousColor = _ctx.fillStyle;
-		// check if color is set
-		if(_color != null){
-			_ctx.fillColourRGB(_color);
+		// var previousColor = _ctx.fillStyle;
+		// // check if color is set
+		// if(_color != null){
+		// 	_ctx.fillColourRGB(_color);
+		// }
+
+		// // restore canvas to previous position
+		// _ctx.restore();
+
+		// // restore previous color?
+		// _ctx.fillStyle = previousColor;
+		if (_isDashed) {
+			_ctx.setLineDash([_line, _gap]);
 		}
-		_ctx.font = '${_size}px ${_font}';
-		_ctx.textAlign = _textAlign;
-		_ctx.textBaseline = _textBaseline;
+		_ctx.fillColourRGB(_color);
+		_ctx.strokeColourRGB(_colorstoke);
+		_ctx.rectangleFillStroke(_x, _y, _width, _height);
 
-		// move canvas and rotate
-		_ctx.translate(_x, _y);
-		_ctx.rotate(radians(_rotate) );
-		// print text
-		_ctx.fillText(_text, 0, 0);
-
-		// restore canvas to previous position
-		_ctx.restore();
-
-		// restore previous color?
-		_ctx.fillStyle = previousColor;
+		// reset values
+		if (_isDashed) {
+			_ctx.setLineDash([]);
+		}
 
 		return this;
 	}
+
 	// ____________________________________ getter/setter ____________________________________
 
 	function get__x():Float {
@@ -183,6 +181,22 @@ class Rectangle {
 
 	function set__y(value:Float):Float {
 		return _y = value;
+	}
+
+	function get__width():Float {
+		return _width;
+	}
+
+	function set__width(value:Float):Float {
+		return _width = value;
+	}
+
+	function get__height():Float {
+		return _height;
+	}
+
+	function set__height(value:Float):Float {
+		return _height = value;
 	}
 
 	function get__radius():Float {
@@ -228,6 +242,8 @@ class Rectangle {
 	@:isVar public var _alpha(get, set):Float = 1; // 0 -> 1
 
 		// may be wrong@:is
-	Var public var _rotate(get, set):Int = 0; // weird for circles ???e: ' + haxe.Json.parse(haxe.Json.stringify(this)));
+	Var public var _rotate(get, set):Int = 0; // weird for circles ???e: '
+
+			+ haxe.Json.parse(haxe.Json.stringify(this)));
 	}
 }
