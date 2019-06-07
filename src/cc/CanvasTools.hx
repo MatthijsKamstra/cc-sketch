@@ -31,6 +31,13 @@ class CanvasTools {
 		ctx.strokeRect(x - width / 2, y - height / 2, width, height);
 	};
 
+	static public function rectangleFillStroke(ctx:CanvasRenderingContext2D, x:Float, y:Float, width:Float, ?height:Float) {
+		if (height == null)
+			height = width;
+		ctx.strokeRect(x, y, width, height);
+		ctx.fillRect(x, y, width, height);
+	};
+
 	// static public function centreFillStrokeRect(ctx:CanvasRenderingContext2D, x:Float, y:Float, width:Float, ?height:Float) {
 	// 	if (height == null)
 	// 		height = width;
@@ -116,6 +123,13 @@ class CanvasTools {
 	static public function circleStroke(ctx:CanvasRenderingContext2D, x:Float, y:Float, radius:Float)
 		strokeCircle(ctx, x, y, radius);
 
+	/**
+	 * [Description]
+	 * @param ctx
+	 * @param x
+	 * @param y
+	 * @param radius
+	 */
 	static public function strokeCircle(ctx:CanvasRenderingContext2D, x:Float, y:Float, radius:Float) {
 		makeCircle(ctx, x, y, radius);
 		ctx.stroke();
@@ -130,6 +144,14 @@ class CanvasTools {
 		ctx.stroke();
 	}
 
+	/**
+	 * [Description]
+	 * @param ctx
+	 * @param x
+	 * @param y
+	 * @param sides
+	 * @param size
+	 */
 	static public function fillPolygon(ctx:CanvasRenderingContext2D, x:Float, y:Float, sides, size) {
 		polygon(ctx, x, y, sides, size);
 		ctx.fill();
