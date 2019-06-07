@@ -32,13 +32,17 @@
 - [x] https://github.com/andyli/hxColorToolkit
 - [x] https://github.com/fponticelli/thx.color
 - [x] check svg classes for color classes
+- [x] record state canvas,
+- [x] "hidden" menu
+- [x] <http://www.tysoncadenhead.com/blog/exporting-canvas-animation-to-mov/> export video via socket and node/ffmpeg
+- [x] different canvas size for exporting video
+- [x] add noise
+- [x] https://github.com/madhoe/noisehx  or <https://github.com/memilian/libnoise/> or <https://github.com/whuop/hxNoise>
 - [ ] choose color vs colour
 - [ ] add controle settings (quick settings)
 - [ ] get scaling canvas image (A4 -> A0)  from `gen-js-art`
 - [ ] loading music
-- [ ] record state canvas,
 - [ ] website state
-- [ ] "hidden" menu
 - [ ] branding
 - [ ] `esc`-button to return to normal
 - [ ] check for usefull stuff: https://github.com/soulwire/sketch.js/wiki/API
@@ -47,10 +51,6 @@
 - [ ] check `fonk-onepressforhappines` for usefull classes
 - [ ] check `web-drawnumbers` for usefull classes
 - [ ] check `project-monofonts` for usefull classes
-- [ ] <http://www.tysoncadenhead.com/blog/exporting-canvas-animation-to-mov/> export video via socket and node/ffmpeg
-- [ ] different canvas size for exporting video
-- [ ] add noise
-- [ ] https://github.com/madhoe/noisehx  or <https://github.com/memilian/libnoise/> or <https://github.com/whuop/hxNoise>
 - [ ] trottle the framerate
 - [ ] create a `log` function that will hide when isDebug is false
 
