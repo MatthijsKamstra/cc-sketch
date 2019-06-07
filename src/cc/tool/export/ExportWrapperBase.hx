@@ -24,6 +24,33 @@ class ExportWrapperBase {
 
 	// ____________________________________ get export files ____________________________________
 
+	public function getMarkdownLite():String {
+	var md = '# ${toString()}
+
+- Generated on: ${Date.now()}
+
+## Instagram
+
+```
+#codeart #coding #creativecode #generative #generativeArt
+#minimalism #minimalist #minimal
+#haxe #javascript #js #nodejs
+#illustration #graphicdesign #graphic
+#animation #motion #motiondesign #motiongraphics
+```
+
+## convert
+
+open terminal
+
+```
+sh convert.sh
+```
+
+';
+		return md;
+	}
+
 	public function getMarkdown(obj:ExportWrapper.ExportWrapperObj):String {
 		var md = '# ${toString()}
 
@@ -77,8 +104,10 @@ sh convert.sh
 echo \'Start convertions png sequence to mp4\'
 
 ffmpeg -y -r 30 -i sequence/image_%04d.png -c:v libx264 -strict -2 -pix_fmt yuv420p -shortest -filter:v "setpts=0.5*PTS"  ${obj.filename}_output_30fps.mp4
-# eh?
-# ffmpeg -y -r 30 -i sequence/image_%04d.png -c:v libx264 -strict -2 -pix_fmt yuv420p -shortest -filter:v "setpts=0.5*PTS"  sequence/_output_30fps.mp4
+
+# convert a short sequence to a mp4, one frame per second
+# ffmpeg -y -r 1 -i sequence/image_%04d.png -c:v libx264 -strict -2 -pix_fmt yuv420p -shortest -filter:v "setpts=0.5*PTS"  ${obj.filename}_output_1fps.mp4
+
 # rendercan fix
 # ffmpeg -y -r 30 -i framescemage_%09d.png -c:v libx264 -strict -2 -pix_fmt yuv420p -shortest -filter:v "setpts=0.5*PTS"  sequence/_output_30fps.mp4
 

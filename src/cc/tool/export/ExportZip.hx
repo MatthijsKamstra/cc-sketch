@@ -73,6 +73,18 @@ class ExportZip extends ExportWrapperBase implements IExport {
 	public function exportLite(filename:String, imageStringArray:Array<String>):Void {
 		var startT = Date.now().getTime();
 
+		var obj : ExportWrapper.ExportWrapperObj = {
+			imageStringArray: imageStringArray,
+			filename: filename,
+			timestamp: startT,
+			delay:0,
+			record:0,
+			description:'',
+			record_in_seconds: 0,
+			export_type: ExportWrapper.ExportType.ZIP,
+			delay_in_seconds:0
+		};
+
 		if (imageStringArray.length == 0) {
 			trace('NO images created / use start() - ${(Date.now().getTime() - startT) / 1000}sec');
 			return;
@@ -80,7 +92,9 @@ class ExportZip extends ExportWrapperBase implements IExport {
 
 		trace('Start creation zip file - ${(Date.now().getTime() - startT) / 1000}sec');
 		var zip = new JSZip();
-		// zip.file('_${filename}/README.MD', getMarkdown(obj));
+		zip.file('_${filename}/README.MD', getMarkdownLite());
+		zip.file('_${filename}/convert.sh', getBashConvert(obj));
+		zip.file('_${filename}/png.sh', getBashConvertPng(obj));
 
 		for (i in 0...imageStringArray.length) {
 			if (_isDebug)
