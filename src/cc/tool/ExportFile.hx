@@ -127,21 +127,32 @@ class ExportFile {
 		ctx.fillRect(0, 0, w, h);
 
 		// get the image data from the canvas
-		// var imageData = canvas.toDataURL("image/png");
+		var imageData = canvas.toDataURL("image/png");
 
-		// // clear the canvas
-		// ctx.clearRect(0, 0, w, h);
+		// clear the canvas
+		ctx.clearRect(0, 0, w, h);
 
-		// // restore it with original / cached ImageData
-		// ctx.putImageData(data, 0, 0);
+		// restore it with original / cached ImageData
+		ctx.putImageData(data, 0, 0);
 
-		// // reset the globalCompositeOperation to what it was
-		// ctx.globalCompositeOperation = compositeOperation;
+		// reset the globalCompositeOperation to what it was
+		ctx.globalCompositeOperation = compositeOperation;
 
 		var link = document.createAnchorElement();
-		link.href = ctx.canvas.toDataURL((isJpg) ? 'image/jpeg' : '', 1);
 		link.download = fileName;
-		link.click();
+		// not sure how to do this in Haxe, so untyped to the resque
+		if (!untyped HTMLCanvasElement.prototype.toBlob) {
+			// trace('There is no blob');
+			link.href = ctx.canvas.toDataURL((isJpg) ? 'image/jpeg' : '', 1);
+			link.click();
+		} else {
+			// https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob
+			// trace('Attack of the blob');
+			ctx.canvas.toBlob(function(blob) {
+				link.href = js.html.URL.createObjectURL(blob);
+				link.click();
+			}, (isJpg) ? 'image/jpeg' : '', 1);
+		}
 	}
 
 	// ____________________________________ toString() ____________________________________
