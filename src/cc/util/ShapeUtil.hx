@@ -40,6 +40,17 @@ class ShapeUtil {
 		// trace('xxx');
 	}
 
+	static public function colorRegisterPoint(ctx:CanvasRenderingContext2D, x:Float, y:Float, ?rgb:cc.util.ColorUtil.RGB) {
+		if (rgb == null)
+			rgb = PINK;
+		var _w = 10;
+		var _h = 10;
+		var _d = 2;
+		ctx.colourRGB(rgb, 1);
+		ctx.fillRect(x - _w / 2, y - (_d / 2), _w, _d);
+		ctx.fillRect(x - (_d / 2), y - _h / 2, _d, _h);
+	}
+
 	/**
 	 * centered x-shape
 	 *
@@ -70,6 +81,7 @@ class ShapeUtil {
 			registerPoint(ctx, point.x, point.y);
 		}
 	}
+
 	public static function gridRegisters(ctx:CanvasRenderingContext2D, grid:GridUtil) {
 		for (i in 0...grid.array.length) {
 			var point:Point = grid.array[i];
