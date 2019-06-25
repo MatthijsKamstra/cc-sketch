@@ -5,7 +5,7 @@ class CurveUtil {
 	/**
 	 * Calculating coordinates along a cubic bézier curve in JavaScript
 	 *
-	 * @example 	var coord = getBezierXY(0.5, 0, 0, 60, 80, 40, 20, 100, 100);
+	 * @example 	var coord = CurveUtil.getBezierXY(0.5, 0, 0, 60, 80, 40, 20, 100, 100);
 	 *
 	 * @param t		The t symbol, meanwhile, goes from 0 to 1 and determines how far we are along the curve. For t=0, B will be the start coordinate, for t=1, B will be the end coordinate, and for t=0.5, B will be the coordinate exactly halfway the curve.
 	 * @param sx	start x
@@ -19,7 +19,7 @@ class CurveUtil {
 	 *
 	 * @return 	cc.AST.Point : {x, y}
 	 */
-	function getBezierXY(t, sx, sy, cp1x, cp1y, cp2x, cp2y, ex, ey):cc.AST.Point {
+	public static function getBezierXY(t:Float, sx:Float, sy:Float, cp1x:Float, cp1y:Float, cp2x:Float, cp2y:Float, ex:Float, ey:Float):cc.AST.Point {
 		return {x: Math.pow(1 - t, 3) * sx + 3 * t * Math.pow(1 - t, 2) * cp1x + 3 * t * t * (1 - t) * cp2x + t * t * t * ex,
 			y: Math.pow(1 - t, 3) * sy
 			+ 3 * t * Math.pow(1 - t, 2) * cp1y
@@ -30,7 +30,7 @@ class CurveUtil {
 	/**
 	 * Calculating coordinates along a cubic bézier curve in JavaScript
 	 *
-	 * @example		var coord = getQuadraticXY(0.5, 0, 0, 60, 80, 100, 100);
+	 * @example		var coord = CurveUtil.getQuadraticXY(0.5, 0, 0, 60, 80, 100, 100);
 	 *
 	 * @param t		The t symbol, meanwhile, goes from 0 to 1 and determines how far we are along the curve. For t=0, B will be the start coordinate, for t=1, B will be the end coordinate, and for t=0.5, B will be the coordinate exactly halfway the curve.
 	 * @param sx	start x
@@ -42,7 +42,7 @@ class CurveUtil {
 	 *
 	 * @return 	cc.AST.Point : {x, y}
 	 */
-	function getQuadraticXY(t, sx, sy, cp1x, cp1y, ex, ey):cc.AST.Point {
+	public static function getQuadraticXY(t, sx, sy, cp1x, cp1y, ex, ey):cc.AST.Point {
 		return {
 			x: (1 - t) * (1 - t) * sx + 2 * (1 - t) * t * cp1x + t * t * ex,
 			y: (1 - t) * (1 - t) * sy + 2 * (1 - t) * t * cp1y + t * t * ey
@@ -51,6 +51,8 @@ class CurveUtil {
 
 	/**
 	 * Calculating the curve angle anywhere along a cubic bézier curve
+	 *
+	 * @example		var angleInRadians = CurveUtil.getBezierAngle(0.5, 0, 0, 60, 80, 40, 20, 100, 100);
 	 *
 	 * @param t		The t symbol, meanwhile, goes from 0 to 1 and determines how far we are along the curve. For t=0, B will be the start coordinate, for t=1, B will be the end coordinate, and for t=0.5, B will be the coordinate exactly halfway the curve.
 	 * @param sx	start x
@@ -64,7 +66,7 @@ class CurveUtil {
 	 *
 	 * @return		the angle (in radians) between the bézier curve and the horizontal x-axis at point t.
 	 */
-	function getBezierAngle(t, sx, sy, cp1x, cp1y, cp2x, cp2y, ex, ey):Float {
+	public static function getBezierAngle(t, sx, sy, cp1x, cp1y, cp2x, cp2y, ex, ey):Float {
 		var dx = Math.pow(1 - t, 2) * (cp1x - sx) + 2 * t * (1 - t) * (cp2x - cp1x) + t * t * (ex - cp2x);
 		var dy = Math.pow(1 - t, 2) * (cp1y - sy) + 2 * t * (1 - t) * (cp2y - cp1y) + t * t * (ey - cp2y);
 		return -Math.atan2(dx, dy) + 0.5 * Math.PI;
@@ -72,6 +74,8 @@ class CurveUtil {
 
 	/**
 	 * Calculating the curve angle anywhere along a quadratic bézier curve
+	 *
+	 * @example		var angleInRadians = CurveUtil.getQuadraticAngle(0.5, 0, 0, 60, 80, 100, 100);
 	 *
 	 * @param t		The t symbol, meanwhile, goes from 0 to 1 and determines how far we are along the curve. For t=0, B will be the start coordinate, for t=1, B will be the end coordinate, and for t=0.5, B will be the coordinate exactly halfway the curve.
 	 * @param sx	start x
@@ -83,7 +87,7 @@ class CurveUtil {
 	 *
 	 * @return		the angle (in radians) between the bézier curve and the horizontal x-axis at point t.
 	 */
-	function getQuadraticAngle(t, sx, sy, cp1x, cp1y, ex, ey):Float {
+	public static function getQuadraticAngle(t, sx, sy, cp1x, cp1y, ex, ey):Float {
 		var dx = 2 * (1 - t) * (cp1x - sx) + 2 * t * (ex - cp1x);
 		var dy = 2 * (1 - t) * (cp1y - sy) + 2 * t * (ey - cp1y);
 		return -Math.atan2(dx, dy) + 0.5 * Math.PI;
