@@ -1,8 +1,8 @@
 package art;
 
 import js.JSZip;
-import cc.tool.export.Zip;
 
+// import cc.tool.export.Zip;
 using StringTools;
 
 /**
