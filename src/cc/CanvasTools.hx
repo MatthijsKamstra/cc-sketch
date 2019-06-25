@@ -326,6 +326,11 @@ class CanvasTools {
 		ctx.fillStyle = c;
 	};
 
+	static public function colourRGB(ctx:CanvasRenderingContext2D, rgb:cc.util.ColorUtil.RGB, ?a:Float) {
+		var c = ColorUtil.getColour(rgb.r, rgb.g, rgb.b, a);
+		ctx.fillStyle = c;
+	};
+
 	static public function shadowColorRGB(ctx:CanvasRenderingContext2D, rgb:cc.util.ColorUtil.RGB, ?a:Float) {
 		var c = ColorUtil.getColour(rgb.r, rgb.g, rgb.b, a);
 		ctx.shadowColor = c;
