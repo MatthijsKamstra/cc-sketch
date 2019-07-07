@@ -73,7 +73,7 @@ class ExportFile {
 		var win = 'Ctrl+C';
 		var mac = 'Cmd+C';
 		var copyCombo = win;
-		var userAgent = js.Browser.navigator.userAgent;
+		var userAgent = untyped js.Browser.navigator.userAgent;
 		var ereg = new EReg("iPhone|iPod|iPad|Android|BlackBerry", "i");
 		var ismac = ereg.match(userAgent);
 		if (ismac)
