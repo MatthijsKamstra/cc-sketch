@@ -47,12 +47,14 @@ typedef Rotation = {
 
 // point
 typedef Point = {
+	@:optional var type:String;
 	var x:Float;
 	var y:Float;
 };
 
 // point
 typedef PointInt = {
+	@:optional var type:String;
 	var x:Int;
 	var y:Int;
 };
