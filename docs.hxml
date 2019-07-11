@@ -1,0 +1,16 @@
+-cmd echo 'generate dox files for cc-sketch project'
+
+# get js doc files
+-cp src
+-D doc-gen
+--macro include('pack')
+--no-output
+-xml bin/doc.xml
+-js bin/doc.js
+
+--next
+
+# create doxs
+-cmd echo 'START - haxelib'
+-cmd haxelib run dox -i bin/doc.xml -o docs/pages
+-cmd echo 'END - haxelib'
