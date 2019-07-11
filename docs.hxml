@@ -3,8 +3,9 @@
 # get js doc files
 -cp src
 -D doc-gen
---macro include('pack')
+--macro include('Sketch')
 --no-output
+-main Dox
 -xml bin/doc.xml
 -js bin/doc.js
 
