@@ -40,7 +40,7 @@ class TestExport extends ExportBase {
 		export.type(NODE);
 		// export.type(TEST);
 		export.isDebug(false);
-		trace(export.settings()); // get the settings
+		// trace(export.settings()); // get the settings
 		export.start(); // you always need to set this
 
 		// create a dot
