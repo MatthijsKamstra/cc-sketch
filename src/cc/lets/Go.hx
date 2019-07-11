@@ -8,10 +8,9 @@ import js.Browser.*;
 
 /**
  * version
- * 		1.0.6 - convert to js only
- * 		1.0.7 - wiggle
  * 		1.0.8 - arc
- *
+ * 		1.0.7 - wiggle
+ * 		1.0.6 - convert to js only
  */
 class Go {
 	// private static var _trigger:Timer;
@@ -38,7 +37,7 @@ class Go {
 	private var _arc:Float = 0;
 	private var FRAME_RATE:Int = 60; // 60 frames per second (FPS)
 	private var DEBUG:Bool = false;
-	private var VERSION:String = '1.0.7';
+	private var VERSION:String = '1.0.8';
 
 	/**
 	 * Animate an object to another state (like position, scale, rotation, alpha)
