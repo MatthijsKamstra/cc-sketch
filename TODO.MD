@@ -38,8 +38,8 @@
 - [x] different canvas size for exporting video
 - [x] add noise
 - [x] https://github.com/madhoe/noisehx  or <https://github.com/memilian/libnoise/> or <https://github.com/whuop/hxNoise>
+- [x] add controle settings (quick settings)
 - [ ] choose color vs colour
-- [ ] add controle settings (quick settings)
 - [ ] get scaling canvas image (A4 -> A0)  from `gen-js-art`
 - [ ] loading music
 - [ ] website state
@@ -53,6 +53,8 @@
 - [ ] check `project-monofonts` for usefull classes
 - [ ] trottle the framerate
 - [ ] create a `log` function that will hide when isDebug is false
+- [ ] dox documentation
+- [ ] quicksetting replace with dat.GUI
 
 ### Miso Regular  replacement
 
