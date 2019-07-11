@@ -1,4 +1,5 @@
 -lib hxquicksettings
+# -lib embed-js
 # -lib thx.color
 # -lib hxColorToolkit
 # -lib msignal
@@ -12,4 +13,5 @@
 -debug
 # -dce full
 # -dce no
+# --macro embed.Js.from('http://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react.js')
 
