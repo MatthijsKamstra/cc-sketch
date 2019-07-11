@@ -42,7 +42,7 @@ class CurveUtil {
 	 *
 	 * @return 	cc.AST.Point : {x, y}
 	 */
-	public static function getQuadraticXY(t, sx, sy, cp1x, cp1y, ex, ey):cc.AST.Point {
+	public static function getQuadraticXY(t:Float, sx:Float, sy:Float, cp1x:Float, cp1y:Float, ex:Float, ey:Float):cc.AST.Point {
 		return {
 			x: (1 - t) * (1 - t) * sx + 2 * (1 - t) * t * cp1x + t * t * ex,
 			y: (1 - t) * (1 - t) * sy + 2 * (1 - t) * t * cp1y + t * t * ey
