@@ -156,7 +156,7 @@ class ColorUtil {
 	 * 	- 'rgba(0, 200, 255, 1)' // but rgba doesntwork
 	 *
 	 * @param value
-	 * @return RGB
+	 * @return RGBA
 	 */
 	public static inline function assumption(value:String):RGBA {
 		var _r:Int = 0;
