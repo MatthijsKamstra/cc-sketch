@@ -149,6 +149,45 @@ class ColorUtil {
 	}
 
 	/**
+	 * all different options that html colors can be converted to.
+	 *
+	 * this is only tested with
+	 * 	- 'rgb(0, 200, 255)'
+	 * 	- 'rgba(0, 200, 255, 1)' // but rgba doesntwork
+	 *
+	 * @param value
+	 * @return RGB
+	 */
+	public static inline function assumption(value:String):RGBA {
+		var _r:Int = 0;
+		var _g:Int = 0;
+		var _b:Int = 0;
+		var _a:Float = 1;
+		value = value.replace(' ', ''); // remove spaces
+
+		if (value.indexOf('rgba') != -1) {
+			value = value.replace('rgba(', '').replace(')', '');
+			var arr = value.split(',');
+			_r = cast arr[0];
+			_g = cast arr[1];
+			_b = cast arr[2];
+			_a = cast arr[3];
+		} else if (value.indexOf('rgb') != -1) {
+			value = value.replace('rgb(', '').replace(')', '');
+			var arr = value.split(',');
+			_r = cast arr[0];
+			_g = cast arr[1];
+			_b = cast arr[2];
+		}
+		return {
+			r: _r,
+			g: _g,
+			b: _b,
+			a: _a,
+		}
+	}
+
+	/**
 	 * convert a hex value to a RGB type
 	 *
 	 * @example 	var rgb:RBG = ColorUtil.hex2RGB('#ff3333'); //  {r:255, g:0, b:0};
