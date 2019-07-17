@@ -178,6 +178,12 @@ class ColorUtil {
 			_r = cast arr[0];
 			_g = cast arr[1];
 			_b = cast arr[2];
+		} else if (value.indexOf('#') != -1) {
+			// value = value.replace('#', '');
+			var rgb = hex2RGB(value);
+			_r = rgb.r;
+			_g = rgb.g;
+			_b = rgb.b;
 		}
 		return {
 			r: _r,
