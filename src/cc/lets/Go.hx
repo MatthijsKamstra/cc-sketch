@@ -396,7 +396,11 @@ class Go {
 	/**
 	 * on update of the animation call a function with param(s)
 	 *
-	 * @param  func         	function to call when animition is updated
+	 * ```
+	 * Go.to(rect, 1.5).x(600).onUpdate(onUpdateHandler, [rect]).onComplete(onAnimateHandler, []);
+	 * ```
+	 *
+	 * @param  func         	function to call when animation is updated
 	 * @param  arr<Dynamic> 	params send to function
 	 * @return              Go
 	 */
