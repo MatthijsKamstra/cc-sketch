@@ -387,7 +387,7 @@ class Go {
 	 * @param  arr<Dynamic> 	params send to function
 	 * @return              Go
 	 */
-	inline public function onAnimationStart(func:Dynamic, ?arr:Array<Dynamic>):Go {
+	inline public function onAnimationStart(func:haxe.Constraints.Function, ?arr:Array<Dynamic>):Go {
 		_options.onAnimationStart = func;
 		_options.onAnimationStartParams = arr;
 		return this;
@@ -490,8 +490,8 @@ class Go {
 				trace('should trigger only once: ${_id}');
 			if (Reflect.isFunction(_options.onAnimationStart)) {
 				var func = _options.onAnimationStart;
-				var arr = (_options.onAnimationStartParams != null) ? _options.onAnimationStartParams : [];
-				Reflect.callMethod(func, func, arr);
+				var arr:Array<Dynamic> = (_options.onAnimationStartParams != null) ? _options.onAnimationStartParams : [];
+				Reflect.callMethod(func, func, [arr]);
 			}
 		}
 		_isDelayDone = true;
@@ -530,7 +530,7 @@ class Go {
 		if (Reflect.isFunction(_options.onUpdate)) {
 			var func = _options.onUpdate;
 			var arr = (_options.onUpdateParams != null) ? _options.onUpdateParams : [];
-			Reflect.callMethod(func, func, arr);
+			Reflect.callMethod(func, func, [arr]);
 		}
 		// [mck] for some reason this can be null
 		if (_props == null)
@@ -609,7 +609,7 @@ class Go {
 		destroy();
 
 		if (Reflect.isFunction(func))
-			Reflect.callMethod(func, func, arr);
+			Reflect.callMethod(func, func, [arr]);
 	}
 
 	/**
