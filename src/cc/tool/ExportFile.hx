@@ -139,20 +139,22 @@ class ExportFile {
 		ctx.globalCompositeOperation = compositeOperation;
 
 		var link = document.createAnchorElement();
+		link.style.cssText = "display:none";
 		link.download = fileName;
 		// not sure how to do this in Haxe, so untyped to the resque
 		if (!untyped HTMLCanvasElement.prototype.toBlob) {
-			// trace('There is no blob');
+			trace('There is no blob');
 			link.href = ctx.canvas.toDataURL((isJpg) ? 'image/jpeg' : '', 1);
 			link.click();
 		} else {
 			// https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob
-			// trace('Attack of the blob');
+			trace('Attack of the blob');
 			ctx.canvas.toBlob(function(blob) {
 				link.href = js.html.URL.createObjectURL(blob);
 				link.click();
 			}, (isJpg) ? 'image/jpeg' : '', 1);
 		}
+		document.body.appendChild(link);
 	}
 
 	// ____________________________________ toString() ____________________________________
