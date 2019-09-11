@@ -102,6 +102,12 @@ class Paper {
 		return rectangle;
 	}
 
+	/**
+	 * convert mm 2 pixels
+	 *
+	 * @param value
+	 * @return Float
+	 */
 	public static function mm2pixel(value:Float):Float {
 		var dpi = 72;
 

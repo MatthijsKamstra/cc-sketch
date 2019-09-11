@@ -206,11 +206,18 @@ class MathUtil {
 	};
 
 	/**
-	 * get an orbit value
+	 * get an orbit value: use a centerpoint and radius to create points around this centerpoint
+	 *
+	 *	@example
+	 *		import cc.MathUtil;
+	 *		var point = MathUtil.orbit (100,100,20, 360/4);
+	 *		trace('${point.x} , ${point.y}');
+	 *
+	 *
 	 * @param xpos center point x
 	 * @param ypos center point y
 	 * @param angle in degree (360)
-	 * @param radius radous of circle
+	 * @param radius the radius of circle
 	 * @return AST.Point
 	 */
 	static public function orbit(xpos:Float, ypos:Float, angle:Float, radius:Float):AST.Point {
