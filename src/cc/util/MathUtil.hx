@@ -45,10 +45,12 @@ class MathUtil {
 
 	/**
 	 * calculate distance between two point (x,y)
-	 * @param x1
-	 * @param y1
-	 * @param x2
-	 * @param y2
+	 * @param x1	point 1, xpos
+	 * @param y1	point 1, ypos
+	 * @param x2	point 2, xpos
+	 * @param y2	point 2, ypos
+	 *
+	 * @return  	distance between two points
 	 */
 	static public function distance(x1:Float, y1:Float, x2:Float, y2:Float):Float {
 		return dist(x1, y1, x2, y2);
@@ -209,7 +211,7 @@ class MathUtil {
 	 * get an orbit value: use a centerpoint and radius to create points around this centerpoint
 	 *
 	 *	@example
-	 *		import cc.MathUtil;
+	 *		import cc.util.MathUtil;
 	 *		var point = MathUtil.orbit (100,100,20, 360/4);
 	 *		trace('${point.x} , ${point.y}');
 	 *
@@ -265,6 +267,7 @@ class MathUtil {
 	static public function clamp(value, min, max) {
 		return Math.min(Math.max(value, Math.min(min, max)), Math.max(min, max));
 	}
+
 	/**
 		function xyz(px, py, pz, pitch, roll, yaw) {
 
