@@ -98,19 +98,35 @@ class MathUtil {
 	 * 	@example
 	 * 		MathUtil.circumferenceCircle(10); // 62.83185307179586
 	 *
-	 * @param radius 	radius of circel
-	 * @return Float	circumference
+	 * @param radius 			radius of circel
+	 * @return Float			circumference
 	 */
 	static public function circumferenceCircle(radius:Float):Float {
 		return Math.PI * radius * 2;
 	}
 
 	/**
-		Oppervlakte = 1/4 * pi * diameter2 = pi * straal2
-			 * 	@example
-			 * 		MathUtil.areaCircle(10); // 62.83185307179586
-			 * @param radius
-			 * @return Float
+	 * calculate the circumference of a circle (omtrek)
+	 * 	Omtrek = pi * diameter = 2 * pi * straal
+	 *
+	 * 	@example
+	 * 		MathUtil.circumference2RadiusCircle(62.83185307179586); // 10
+	 *
+	 * @param circumference 	circumference of cicle
+	 * @return Float			radius circle
+	 */
+	static public function circumference2RadiusCircle(circumference:Float):Float {
+		return circumference / (Math.PI * 2);
+	}
+
+	/**
+	 * Oppervlakte = 1/4 * pi * diameter2 = pi * straal2
+	 *
+	 * 	@example
+	 * 		MathUtil.areaCircle(10); // 62.83185307179586
+	 *
+	 * @param radius
+	 * @return Float
 	 */
 	static public function areaCircle(radius:Float):Float {
 		return Math.PI * Math.sqrt(radius);
