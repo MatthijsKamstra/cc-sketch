@@ -4,6 +4,8 @@ import js.html.CanvasRenderingContext2D;
 import cc.util.MathUtil;
 import cc.util.MathUtil.*;
 
+using StringTools;
+
 class TextUtil {
 	public function new() {
 		// your code
@@ -25,6 +27,8 @@ class TextUtil {
 	 */
 	public static function getLines(ctx:CanvasRenderingContext2D, text:String, maxWidth:Float):Array<String> {
 		// trace('$text, $maxWidth');
+		// [mck] make sure that all lines are with \n included
+		text = text.replace('\n', " \n ").replace("  ", " "); // make sure `\n` is seperated from the rest of the words
 		var words:Array<String> = text.split(" ");
 		var lines:Array<String> = [];
 		var currentLine = words[0];
@@ -32,15 +36,25 @@ class TextUtil {
 		for (i in 1...words.length) {
 			// for (var i = 1; i < words.length; i++) {
 			var word = words[i];
+			if (word == "\n") {
+				lines.push(currentLine.trim()); // Removes leading and trailing space characters
+				currentLine = "";
+				continue;
+			}
 			var width = ctx.measureText(currentLine + " " + word).width;
 			if (width < maxWidth) {
 				currentLine += " " + word;
 			} else {
-				lines.push(currentLine);
-				currentLine = word;
+				lines.push(currentLine.trim()); // Removes leading and trailing space characters
+				if(word == " "){
+					currentLine = "";
+				} else {
+					currentLine = word;
+				}
+
 			}
 		}
-		lines.push(currentLine);
+		lines.push(currentLine.trim());
 		return lines;
 	}
 
