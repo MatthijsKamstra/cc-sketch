@@ -140,7 +140,7 @@ class ExportFile {
 
 		var link = document.createAnchorElement();
 		link.style.cssText = "display:none";
-		link.download = fileName;
+		link.download = fileName + ".jpg";
 		// not sure how to do this in Haxe, so untyped to the resque
 		if (!untyped HTMLCanvasElement.prototype.toBlob) {
 			trace('There is no blob');
@@ -152,6 +152,7 @@ class ExportFile {
 			ctx.canvas.toBlob(function(blob) {
 				link.href = js.html.URL.createObjectURL(blob);
 				link.click();
+				// link.remove();
 			}, (isJpg) ? 'image/jpeg' : '', 1);
 		}
 		document.body.appendChild(link);
