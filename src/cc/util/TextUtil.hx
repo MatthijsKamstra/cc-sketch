@@ -21,6 +21,13 @@ class TextUtil {
 	 *
 	 * @source	 https://stackoverflow.com/questions/2936112/text-wrap-in-a-canvas-element
 	 *
+	 * @example
+	 *
+	 * 		var lines:Array<String> = TextUtil.getLines(ctx, text, square - (2 * _padding));
+	 * 		for (i in 0...lines.length) {
+	 * 			var line = lines[i];
+	 * 		}
+	 *
 	 * @param ctx
 	 * @param text
 	 * @param maxWidth
