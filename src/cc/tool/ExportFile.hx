@@ -86,12 +86,13 @@ class ExportFile {
 	 *
 	 * just change the background to white... it really doesn't matter, when exporting a jpg
 	 *
-	 * @param ctx
-	 * @param isJpg
-	 * @param fileName
+	 * @param ctx		canvas
+	 * @param isJpg		is this a jpg or png
+	 * @param fileName 	name of file without extension (example: `foobar`)
 	 */
 	public static function downloadImageBg(ctx:CanvasRenderingContext2D, ?isJpg:Bool = false, ?fileName:String) {
 		var canvas = ctx.canvas;
+		var ext = (isJpg) ? 'jpg' : 'png';
 
 		if (fileName == null) {
 			var hash = js.Browser.location.hash;
@@ -140,19 +141,22 @@ class ExportFile {
 
 		var link = document.createAnchorElement();
 		link.style.cssText = "display:none";
-		link.download = fileName + ".jpg";
+		link.download = fileName + '.${ext}';
+
+		// trace(link.download);
 		// not sure how to do this in Haxe, so untyped to the resque
 		if (!untyped HTMLCanvasElement.prototype.toBlob) {
 			trace('There is no blob');
 			link.href = ctx.canvas.toDataURL((isJpg) ? 'image/jpeg' : '', 1);
 			link.click();
+			link.remove();
 		} else {
 			// https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob
 			trace('Attack of the blob');
 			ctx.canvas.toBlob(function(blob) {
 				link.href = js.html.URL.createObjectURL(blob);
 				link.click();
-				// link.remove();
+				link.remove();
 			}, (isJpg) ? 'image/jpeg' : '', 1);
 		}
 		document.body.appendChild(link);
