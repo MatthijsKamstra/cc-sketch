@@ -9,7 +9,7 @@ package cc.util;
  * @example
  * ```
  * import cc.util.MathUtil;
- * Mathcc.util.random (10);
+ * MathUtil.random (10);
  *
  * // or
  *
@@ -243,6 +243,18 @@ class MathUtil {
 		var _xpos = xpos + Math.cos(radians(angle)) * radius;
 		var _ypos = ypos + Math.sin(radians(angle)) * radius;
 		return {x: _xpos, y: _ypos};
+	}
+
+	static public function orbitX(origin:Float, angle:Float, radius:Float):Float {
+		return origin + Math.cos(radians(angle)) * radius;
+	}
+
+	static public function orbitY(origin:Float, angle:Float, radius:Float):Float {
+		return origin + Math.sin(radians(angle)) * radius;
+	}
+
+	static public function orbitZ(origin:Float, angle:Float, radius:Float):Float {
+		return origin + Math.cos(radians(angle)) * radius;
 	}
 
 	/**
