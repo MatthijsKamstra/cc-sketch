@@ -340,6 +340,10 @@ class ColorUtil {
 		["#F9BF76", "#8EB2C5", "#E5625C", "#D1313D", "#615375"], ["#EEE9E5", "#FFE181", "#FAD3B2", "#FFBA7F", "#FF9C97"],
 		["#AAFF00", "#FFAA00", "#00AAFF", "#FF00AA", "#AA00FF"], ["#D1AA34", "#A7A844", "#A46583", "#C2412D", "#5A1E4A"],
 		["#F8F3BF", "#DCE4F7", "#BFCFF7", "#75616B", "#D34017"]];
+
+	/**
+	 * 		var colorArray = ColorUtil.niceColor100SortedInt[randomInt(ColorUtil.niceColor100SortedInt.length - 1)];
+	 */
 	public static var niceColor100SortedInt:Array<Array<Int>> = [
 		[14738636, 11000792, 6935271, 15959600, 16410880], [16371117, 13158569, 16555418, 8630171, 16663397],
 		[15519864, 14244675, 5470074, 12593474, 5514295], [13104228, 5164484, 16739179, 12864856, 5595760], [15525326, 15848623, 12968156, 14716537, 7819064],
