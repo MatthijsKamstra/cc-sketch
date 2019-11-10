@@ -1,5 +1,6 @@
 package cc.tool;
 
+import js.html.CanvasElement;
 import js.html.CanvasRenderingContext2D;
 import js.Browser.*;
 import js.Browser.window;
@@ -8,6 +9,38 @@ import cc.util.MathUtil;
 using StringTools;
 
 class ExportFile {
+	/**
+	 * probably only for webgl
+	 * @param domElement
+	 * @param isJpg
+	 * @param fileName
+	 */
+	public static function downloadWebGLImage(domElement:CanvasElement, ?isJpg:Bool = false, ?fileName:String = "test") {
+		var imgData:String;
+		var ext = (isJpg) ? 'jpg' : 'png';
+		try {
+			// imgData = domElement.toDataURL();
+			var strDownloadMime = "image/octet-stream";
+			var strMime = "image/jpeg";
+			imgData = domElement.toDataURL(strMime);
+			console.log(imgData);
+
+			ExportFile.saveFile(imgData.replace(strMime, strDownloadMime), fileName + '.${ext}');
+		} catch (e:Dynamic) {
+			console.log("Browser does not support taking screenshot of 3d context");
+			return;
+		}
+	}
+
+	public static function saveFile(strData:String, fileName:String) {
+		var link = document.createAnchorElement();
+		document.body.appendChild(link); // Firefox requires the link to be in the body
+		link.href = strData;
+		link.download = fileName;
+		link.click();
+		document.body.removeChild(link); // remove the link when done
+	}
+
 	/**
 	 * [Description]
 	 * @param ctx
