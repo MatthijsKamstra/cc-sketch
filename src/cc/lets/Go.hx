@@ -8,6 +8,8 @@ import js.Browser.*;
 
 /**
  * version
+ * 		1.1.0 - 3D additions (z-dir)
+ * 		1.0.9 - Haxe 4 update
  * 		1.0.8 - arc
  * 		1.0.7 - wiggle
  * 		1.0.6 - convert to js only
@@ -37,7 +39,7 @@ class Go {
 	private var _arc:Float = 0;
 	private var FRAME_RATE:Int = 60; // 60 frames per second (FPS)
 	private var DEBUG:Bool = false;
-	private var VERSION:String = '1.0.8';
+	private var VERSION:String = '1.1.0';
 
 	/**
 	 * Animate an object to another state (like position, scale, rotation, alpha)
@@ -130,6 +132,7 @@ class Go {
 	 *
 	 * @example		Go.wiggle(foobarMc, 10, 10, 10);
 	 *
+	 * @param target   		object to animate
 	 * @param x				centerpoint x
 	 * @param y				centerpoint y
 	 * @param wiggleRoom	offset from x and y
@@ -145,6 +148,30 @@ class Go {
 		_go.ease(cc.lets.easing.Sine.easeInOut);
 		_go.onComplete(function() {
 			Go.wiggle(target, x, y, wiggleRoom);
+		});
+		return _go;
+	}
+
+	/**
+	 * continues wiggling of an object in random dir
+	 *
+	 * @example		Go.wiggleProp(foobarMc.position, 'z', 0, 20);
+	 *
+	 * @param target   		object contains the data to animate
+	 * @param prop			value you want to animate
+	 * @param value			starting point value
+	 * @param wiggleRoom	offset from starting point, max min
+	 * @return Go
+	 */
+	static inline public function wiggleProp(target:Dynamic, prop:String, value:Float, ?wiggleRoom:Float = 10):Go {
+		var _go = new Go(target, 1 + (Math.random()));
+		_go._isWiggle = true;
+		var max = wiggleRoom;
+		var min = -wiggleRoom;
+		_go.prop(prop, value + (Math.random() * (max - min)) + min);
+		_go.ease(cc.lets.easing.Sine.easeInOut);
+		_go.onComplete(function() {
+			Go.wiggleProp(target, prop, value, wiggleRoom);
 		});
 		return _go;
 	}
@@ -217,7 +244,7 @@ class Go {
 	/**
 	 * change the x value of an object
 	 *
-	  	 * @example		Go.to(foobarMc, 1.5).x(10);
+	 * @example		Go.to(foobarMc, 1.5).x(10);
 	 *
 	 * @param  value 	x-position
 	 * @return       Go
@@ -230,7 +257,7 @@ class Go {
 	/**
 	 * change the y value of an object
 	 *
-	  	 * @example		Go.to(foobarMc, 1.5).y(10);
+	 * @example		Go.to(foobarMc, 1.5).y(10);
 	 *
 	 * @param  value 	y-position
 	 * @return       Go
@@ -241,17 +268,34 @@ class Go {
 	}
 
 	/**
+	 * change the z value of an object
+	 * 3D z added
+	 *
+	 * @example		Go.to(foobarMc, 1.5).z(10);
+	 *
+	 * @param value
+	 * @return Go
+	 */
+	inline public function z(value:Float):Go {
+		prop('z', value);
+		return this;
+	}
+
+	/**
 	 * change the y value of an object
 	 *
 	 * @example		Go.to(foobarMc, 1.5).pos(10,20);
 	 *
 	 * @param  x 	x-position
 	 * @param  y 	y-position
+	 * @param  z 	(optinal) z-position
 	 * @return       Go
 	 */
-	inline public function pos(x:Float, y:Float):Go {
+	inline public function pos(x:Float, y:Float, ?z:Float):Go {
 		prop('x', x);
 		prop('y', y);
+		if (z != null)
+			prop('z', z);
 		return this;
 	}
 
@@ -283,7 +327,7 @@ class Go {
 	/**
 	 * change the alpha value of an object
 	 *
-	  	 * @example		Go.to(foobarMc, 1.5).alpha(.1);
+	 * @example		Go.to(foobarMc, 1.5).alpha(.1);
 	 *
 	 * @param  value 	transparanty value (maximum value 1)
 	 * @return       Go
@@ -296,7 +340,7 @@ class Go {
 	/**
 	 * change the scale of an object
 	 *
-	  	 * @example		Go.to(foobarMc, 1.5).scale(2);
+	 * @example		Go.to(foobarMc, 1.5).scale(2);
 	 *
 	 * @param  value 	scale (1 is 100% (original scale), 0.5 is 50%, 2 is 200%)
 	 * @return       Go
@@ -354,8 +398,6 @@ class Go {
 		if (Reflect.hasField(_target, key)) {
 			objValue = Reflect.getProperty(_target, key);
 		}
-
-		// trace()
 
 		var _range = {key: key, from: (_isFrom) ? value : objValue, to: (!_isFrom) ? value : objValue};
 		_props.set(key, _range);
@@ -464,7 +506,7 @@ class Go {
 			} else {
 				// trace('kill $_requestId');
 				window.cancelAnimationFrame(_requestId);
-				return null;
+				return;
 			}
 		} else
 			for (i in 0..._tweens.length) {
@@ -483,7 +525,7 @@ class Go {
 			trace('FIXME this doesn\'t work yet');
 		if (_delay > 0) {
 			_delay--;
-			return null;
+			return;
 		}
 		if (!_isDelayDone) {
 			if (DEBUG)
@@ -600,7 +642,7 @@ class Go {
 				this._initTime = _duration;
 			}
 			_isYoyo = false;
-			return null;
+			return;
 		}
 
 		var func = _options.onComplete;
