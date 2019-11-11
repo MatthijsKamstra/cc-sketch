@@ -308,7 +308,7 @@ class Sketch {
 
 // https://github.com/soulwire/sketch.js/wiki/API#options
 class SketchOption {
-	public var width(get_width, set_width):Int;
+	public var width(get, set):Int;
 
 	private var _width:Int;
 
@@ -323,7 +323,7 @@ class SketchOption {
 		return _width = value;
 	}
 
-	public var height(get_height, set_height):Int;
+	public var height(get, set):Int;
 
 	private var _height:Int;
 
@@ -343,7 +343,7 @@ class SketchOption {
 	 *
 	 * default true, when width or height is set, this will be automaticly false
 	 */
-	public var fullscreen(get_fullscreen, set_fullscreen):Bool;
+	public var fullscreen(get, set):Bool;
 
 	private var _fullscreen:Bool = true;
 
@@ -360,7 +360,7 @@ class SketchOption {
 	/**
 	 * TODO: [mck] doesn't work yet
 	 */
-	public var autoclear(get_autoclear, set_autoclear):Bool;
+	public var autoclear(get, set):Bool;
 
 	private var _autoclear:Bool = true;
 
@@ -377,7 +377,7 @@ class SketchOption {
 	/**
 	 * TODO: [mck] doesn't work yet
 	 */
-	public var autostart(get_autostart, set_autostart):Bool;
+	public var autostart(get, set):Bool;
 
 	private var _autostart:Bool = true;
 
@@ -395,7 +395,7 @@ class SketchOption {
 	/**
 	 * TODO: [mck] doesn't work yet
 	 */
-	public var autopause(get_autopause, set_autopause):Bool;
+	public var autopause(get, set):Bool;
 
 	private var _autopause:Bool = true;
 
@@ -412,7 +412,7 @@ class SketchOption {
 	/**
 	 * TODO: [mck] doesn't work yet
 	 */
-	public var container(get_container, set_container):js.html.Element;
+	public var container(get, set):js.html.Element;
 
 	private var _container:js.html.Element = document.body;
 
@@ -429,7 +429,7 @@ class SketchOption {
 	/**
 	 *
 	 */
-	public var type(get_type, set_type):SketchType;
+	public var type(get, set):SketchType;
 
 	private var _type:SketchType = SketchType.CANVAS;
 
@@ -442,7 +442,7 @@ class SketchOption {
 	}
 
 	// scale the canvas so you can see it without using the scrollbar
-	public var scale(get_scale, set_scale):Bool;
+	public var scale(get, set):Bool;
 
 	private var _scale:Bool = false;
 
@@ -455,7 +455,7 @@ class SketchOption {
 	}
 
 	// scaling will use padding so you will see what you are doing
-	public var padding(get_padding, set_padding):Int;
+	public var padding(get, set):Int;
 
 	private var _padding:Int = 20;
 
@@ -477,7 +477,7 @@ class SketchOption {
 	 * 150 (home printers)
 	 * 300 (books printing)
 	 */
-	public var dpi(get_dpi, set_dpi):Int;
+	public var dpi(get, set):Int;
 
 	private var _dpi:Int = 72; // default 72
 
@@ -509,7 +509,7 @@ class SketchBase {
 	 * constructor
 	 * @param ctx
 	 */
-	public function new(ctx:CanvasRenderingContext2D) {
+	public function new(?ctx:CanvasRenderingContext2D) {
 		if (isDebug)
 			trace('START :: ${toString()}');
 		if (ctx == null) {
@@ -529,6 +529,7 @@ class SketchBase {
 		 * you will be just fine
 		 */
 		dpiScale = Sketch.option.dpi / 72;
+
 		this.ctx = ctx;
 		window.addEventListener(RESIZE, _reset, false);
 		window.addEventListener(KEY_DOWN, _keyDown, false);
@@ -637,7 +638,7 @@ class SketchBase {
 	 * @param value 	normal 72 dpi value
 	 * @return Float
 	 */
-	public function scaled(value:Float) : Float{
+	public function scaled(value:Float):Float {
 		return value * dpiScale;
 	}
 
@@ -648,7 +649,7 @@ class SketchBase {
 	 * @param value 	normal 72 dpi value
 	 * @return Int
 	 */
-	public function scaledInt(value:Float) : Int{
+	public function scaledInt(value:Float):Int {
 		return Std.int(value * dpiScale);
 	}
 
