@@ -10,7 +10,7 @@ import js.Promise;
 
 // import js.node.Buffer;
 // typedef DataType = EitherType<String, EitherType<ArrayBuffer, EitherType<Uint8Array, Buffer>>>;
-typedef DataType = EitherType<String, EitherType<ArrayBuffer, EitherType<js.html.ImageData, Uint8Array>>>;
+typedef DataType = EitherType<String, EitherType<js.lib.ArrayBuffer, EitherType<js.html.ImageData, js.lib.Uint8Array>>>;
 
 @:native("JSZip")
 extern class JSZip {
