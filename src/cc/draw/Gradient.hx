@@ -191,7 +191,7 @@ class Gradient {
 	}
 
 	// ____________________________________ getter setters ____________________________________
-	public var width(get_width, set_width):Float;
+	public var width(get, set):Float;
 
 	function get_width():Float {
 		return _width;
@@ -201,7 +201,7 @@ class Gradient {
 		return _width = value;
 	}
 
-	public var height(get_height, set_height):Float;
+	public var height(get, set):Float;
 
 	function get_height():Float {
 		return _height;
@@ -211,7 +211,7 @@ class Gradient {
 		return _height = value;
 	}
 
-	public var get(get_get, null):js.html.CanvasGradient;
+	public var get(get, null):js.html.CanvasGradient;
 
 	function get_get():js.html.CanvasGradient {
 		_get = _ctx.createLinearGradient(_startPoint.x, _startPoint.y, _endPoint.x, _endPoint.y);
@@ -226,13 +226,13 @@ class Gradient {
 		return _get;
 	}
 
-	public var xpos(get_xpos, null):Float;
+	public var xpos(get, null):Float;
 
 	function get_xpos():Float {
 		return _x;
 	}
 
-	public var ypos(get_ypos, null):Float;
+	public var ypos(get, null):Float;
 
 	function get_ypos():Float {
 		return _y;

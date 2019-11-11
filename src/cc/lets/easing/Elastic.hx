@@ -3,12 +3,13 @@
  * @author Philippe / http://philippe.elsass.me
  * @author Robert Penner / http://www.robertpenner.com/easing_terms_of_use.html
  */
+
 package cc.lets.easing;
 
 class Elastic {
-	static public var easeIn(get_easeIn, never):IEasing;
-	static public var easeInOut(get_easeInOut, never):IEasing;
-	static public var easeOut(get_easeOut, never):IEasing;
+	static public var easeIn(get, never):IEasing;
+	static public var easeInOut(get, never):IEasing;
+	static public var easeOut(get, never):IEasing;
 
 	private static function get_easeIn():IEasing {
 		return new ElasticEaseIn(0.1, 0.4);
