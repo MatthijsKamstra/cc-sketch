@@ -27,9 +27,9 @@ extern class JSZip {
 	function load(data:DataType):Void;
 	@:overload(function(name:String, data:DataType, options:FileOptions):JSZip {})
 	@:overload(function(name:String, data:DataType):JSZip {})
-	@:overload(function(ereg:js.RegExp):Array<ZipObject> {})
+	@:overload(function(ereg:js.lib.RegExp):Array<ZipObject> {})
 	function file(name:String):Null<ZipObject>;
-	@:overload(function(ereg:js.RegExp):Array<ZipObject> {})
+	@:overload(function(ereg:js.lib.RegExp):Array<ZipObject> {})
 	function folder(name:String):JSZip;
 	function filter(predicate:String->ZipObject->Bool):Array<ZipObject>;
 	/*
@@ -41,6 +41,6 @@ extern class JSZip {
 	 */
 	function generate(options:GenerateOptions):DataType;
 	//
-	@:overload(function(obj:Dynamic, updateCallback:Function):Promise<Dynamic> {})
-	function generateAsync(obj:Dynamic):Promise<Dynamic>;
+	@:overload(function(obj:Dynamic, updateCallback:Function):js.lib.Promise<Dynamic> {})
+	function generateAsync(obj:Dynamic):js.lib.Promise<Dynamic>;
 }

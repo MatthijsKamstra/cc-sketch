@@ -39,7 +39,7 @@ extern class ZipObject {
 		the content as binary string.
 	 */
 	function asBinary():String;
-	function asArrayBuffer():js.html.ArrayBuffer;
-	function asUint8Array():js.html.Uint8Array;
+	function asArrayBuffer():js.lib.ArrayBuffer;
+	function asUint8Array():js.lib.Uint8Array;
 	// function asNodeBuffer():js.node.Buffer;
 }
