@@ -184,8 +184,19 @@ class MathUtil {
 		return (Math.random() * (max - min)) + min;
 	};
 
-	static public function chance(value) {
-		return (random(value) > value - 1);
+	/**
+	 * not sure how this will work..
+	 *
+	 * what I want is chance(80) or chance(0.8)
+	 * and get a 80% change for a true, otherwise false
+	 * chance
+	 * @param value a value between 0 and 1
+	 */
+	static public function chance(value:Float):Bool {
+		if (value > 1)
+			value /= 100;
+		// return (random(value) > value - 1);
+		return Math.random() < value;
 	}
 
 	/**
@@ -193,6 +204,16 @@ class MathUtil {
 	 */
 	static public function posNeg() {
 		return randomInt(0, 1) * 2 - 1;
+	}
+
+	/**
+	 * its either yes or no (true or false)
+	 *
+	 * @exampe 		trace(MathUtil.flip());
+	 * @return Bool
+	 */
+	static public function flip():Bool {
+		return Math.random() < 0.5;
 	}
 
 	/**
