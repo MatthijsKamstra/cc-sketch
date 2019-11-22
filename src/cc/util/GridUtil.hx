@@ -69,8 +69,25 @@ class GridUtil {
 	 */
 	public var cellHeight:Float = null;
 
+	/**
+	 * number of horizontal items in the array
+	 */
 	public var numHor:Float = null;
+
+	/**
+	 * same as numHor, but a easier name to remember
+	 */
+	public var totalRow:Int = null;
+
+	/**
+	 * number of vertical items in the array
+	 */
 	public var numVer:Float = null;
+
+	/**
+	 * same as numVer, but a easier name to remember
+	 */
+	public var totalColumn:Int = null;
 
 	var _isCellSize:Bool = false;
 	var _isNumbered:Bool = false;
@@ -286,6 +303,43 @@ class GridUtil {
 		calculate();
 	}
 
+	/**
+	 * in which row is this value
+	 *
+	 * @param sh
+	 * @return Int
+	 */
+	public function row(sh:Point):Int {
+		return getTablePosition(sh).row;
+	}
+
+	/**
+	 * in which column is this value
+	 * @param sh
+	 * @return Int
+	 */
+	public function column(sh:Point):Int {
+		return getTablePosition(sh).column;
+	}
+
+	public function getTablePosition(sh:Point):Dynamic {
+		var index = array.indexOf(sh);
+		var _row = Math.floor(index / numHor);
+		var _column = index - (_row * numHor);
+		return {"row": _row, "column": _column};
+	}
+
+	/**
+	 * convert rows and column into a value in that table/grid
+	 *
+	 * @param row
+	 * @param column
+	 * @return Point
+	 */
+	public function getTablePoint(row:Int, column:Int):Point {
+		return array[Math.round((row * numHor) + (column))];
+	}
+
 	public function reset() {
 		array = []; // reset array
 	}
@@ -476,6 +530,9 @@ class GridUtil {
 			console.table(array);
 			console.groupEnd();
 		}
+
+		totalRow = Math.round(numVer);
+		totalColumn = Math.round(numHor);
 	}
 
 	/**
