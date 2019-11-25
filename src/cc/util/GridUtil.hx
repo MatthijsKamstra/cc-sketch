@@ -332,11 +332,28 @@ class GridUtil {
 	/**
 	 * convert rows and column into a value in that table/grid
 	 *
-	 * @param row
-	 * @param column
+	 * @param row		if de grid would be a table, which row do you want
+	 * @param column	if de grid would be a table, which column do you want
 	 * @return Point
 	 */
 	public function getTablePoint(row:Int, column:Int):Point {
+		// [mck] lets build in some clever messages
+		if (row >= totalRow) {
+			console.warn('looks like the row is outside the grid ($row >= $totalRow)');
+			return null;
+		}
+		if (column >= totalColumn) {
+			console.warn('looks like the column is outside the grid ($column >= $totalColumn)');
+			return null;
+		}
+		if (row < 0) {
+			console.warn('looks like the row is outside the grid ($row < 0)');
+			return null;
+		}
+		if (column < 0) {
+			console.warn('looks like the column is outside the grid ($column < 0)');
+			return null;
+		}
 		return array[Math.round((row * numHor) + (column))];
 	}
 
