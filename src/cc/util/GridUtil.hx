@@ -322,11 +322,28 @@ class GridUtil {
 		return getTablePosition(sh).column;
 	}
 
+	/**
+	 * get the row and column data of a point
+	 * @param sh
+	 * @return Dynamic
+	 */
 	public function getTablePosition(sh:Point):Dynamic {
 		var index = array.indexOf(sh);
 		var _row = Math.floor(index / numHor);
 		var _column = index - (_row * numHor);
 		return {"row": _row, "column": _column};
+	}
+
+	/**
+	 * get the index of (no safety yet)
+	 * @param point
+	 * @return Int
+	 */
+	public function getIndex(point:Point):Int {
+		var index = array.indexOf(point);
+		if (index == -1)
+			console.warn('Looks like this point (${point.x}, ${point.y}) is not in array');
+		return index;
 	}
 
 	/**
