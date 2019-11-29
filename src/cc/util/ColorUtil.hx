@@ -24,6 +24,16 @@ typedef RGBA = {
 class ColorUtil {
 	public function new() {}
 
+	/**
+	 * convert an rgb and alpha to RGB or RBGA string value
+	 * value checks are done in rgb and rbga function
+	 *
+	 * @param r		red value (min 0, max 255)
+	 * @param g		green value between 0 and 255
+	 * @param b		blue value between 0 and 255
+	 * @param a 	alpha used for this color (rbga), value is between 0 and 1, if is null rgba is not used
+	 * @return String
+	 */
 	static public function getColour(r:Int, ?g:Int, ?b:Int, ?a:Float):String {
 		var c;
 		if (g == null) {
@@ -38,6 +48,13 @@ class ColorUtil {
 		return (c);
 	};
 
+	/**
+	 * use the typedef RGB to convert to rgb or rgba string
+	 *
+	 * @param rgb 		typedef RGB used, for type checking
+	 * @param a 		alpha used for this color (rbga), value is between 0 and 1, if is null rgba is not used
+	 * @return String
+	 */
 	static public function getColourObj(rgb:RGB, ?a:Float):String {
 		return getColour(rgb.r, rgb.g, rgb.b, a);
 	}
