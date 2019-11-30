@@ -19,10 +19,22 @@ package cc.util;
  *
  */
 class MathUtil {
+	/**
+	 * convert degree to radians
+	 *
+	 * @param deg
+	 * @return Float
+	 */
 	static public function radians(deg:Float):Float {
 		return deg * Math.PI / 180;
 	};
 
+	/**
+	 * convert radians to degree
+	 *
+	 * @param rad
+	 * @return Float
+	 */
 	static public function degrees(rad:Float):Float {
 		return rad * 180 / Math.PI;
 	};
@@ -45,6 +57,8 @@ class MathUtil {
 
 	/**
 	 * calculate distance between two point (x,y)
+	 * easier to remember
+	 *
 	 * @param x1	point 1, xpos
 	 * @param y1	point 1, ypos
 	 * @param x2	point 2, xpos
@@ -56,6 +70,17 @@ class MathUtil {
 		return dist(x1, y1, x2, y2);
 	}
 
+	/**
+	 * calculate distance between two point (x,y)
+	 * easier to remember
+	 *
+	 * @param x1	point 1, xpos
+	 * @param y1	point 1, ypos
+	 * @param x2	point 2, xpos
+	 * @param y2	point 2, ypos
+	 *
+	 * @return  	distance between two points
+	 */
 	static public function dist(x1:Float, y1:Float, x2:Float, y2:Float) {
 		x2 -= x1;
 		y2 -= y1;
@@ -187,6 +212,8 @@ class MathUtil {
 	/**
 	 * not sure how this will work..
 	 *
+	 * @example 	MathUtil.chance(80); // 80% chance for true
+	 *
 	 * what I want is chance(80) or chance(0.8)
 	 * and get a 80% change for a true, otherwise false
 	 * chance
@@ -201,6 +228,8 @@ class MathUtil {
 
 	/**
 	 * get value 1 or -1
+	 * sort of like the yes/no version (`MathUtil.flip()`)
+	 * usefull for direction change
 	 */
 	static public function posNeg() {
 		return randomInt(0, 1) * 2 - 1;
@@ -209,7 +238,7 @@ class MathUtil {
 	/**
 	 * its either yes or no (true or false)
 	 *
-	 * @exampe 		trace(MathUtil.flip());
+	 * @example 		trace(MathUtil.flip());
 	 * @return Bool
 	 */
 	static public function flip():Bool {
