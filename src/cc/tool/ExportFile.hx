@@ -119,11 +119,14 @@ class ExportFile {
 	 *
 	 * just change the background to white... it really doesn't matter, when exporting a jpg
 	 *
-	 * @param ctx		canvas
-	 * @param isJpg		is this a jpg or png
-	 * @param fileName 	name of file without extension (example: `foobar`)
+	 * @param ctx				canvas
+	 * @param isJpg				is this a jpg or png
+	 * @param fileName 			name of file without extension (example: `foobar`)
+	 * @param isTransparant		only usefull for png
 	 */
-	public static function downloadImageBg(ctx:CanvasRenderingContext2D, ?isJpg:Bool = false, ?fileName:String) {
+	public static function downloadImageBg(ctx:CanvasRenderingContext2D, ?isJpg:Bool = false, ?fileName:String, ?isTransparant:Bool = false) {
+		trace(ctx, isJpg, fileName, isTransparant);
+
 		var canvas = ctx.canvas;
 		var ext = (isJpg) ? 'jpg' : 'png';
 
@@ -140,7 +143,7 @@ class ExportFile {
 		var w = canvas.width;
 		var h = canvas.height;
 
-		// var ctx = canvas.getctx2d();
+		// // var ctx = canvas.getctx2d();
 
 		var data;
 		var compositeOperation:String;
@@ -148,29 +151,31 @@ class ExportFile {
 		// get the current ImageData for the canvas.
 		data = ctx.getImageData(0, 0, w, h);
 
-		// store the current globalCompositeOperation
-		compositeOperation = ctx.globalCompositeOperation;
+		if (!isTransparant) {
+			// store the current globalCompositeOperation
+			compositeOperation = ctx.globalCompositeOperation;
 
-		// set to draw behind current content
-		ctx.globalCompositeOperation = "destination-over";
+			// set to draw behind current content
+			ctx.globalCompositeOperation = "destination-over";
 
-		// set background color
-		ctx.fillStyle = '#ffffff';
+			// set background color
+			ctx.fillStyle = '#ffffff';
 
-		// draw background / rect on entire canvas
-		ctx.fillRect(0, 0, w, h);
+			// draw background / rect on entire canvas
+			ctx.fillRect(0, 0, w, h);
 
-		// get the image data from the canvas
-		var imageData = canvas.toDataURL("image/png");
+			// get the image data from the canvas
+			var imageData = canvas.toDataURL("image/png");
 
-		// clear the canvas
-		ctx.clearRect(0, 0, w, h);
+			// clear the canvas
+			ctx.clearRect(0, 0, w, h);
 
-		// restore it with original / cached ImageData
-		ctx.putImageData(data, 0, 0);
+			// restore it with original / cached ImageData
+			ctx.putImageData(data, 0, 0);
 
-		// reset the globalCompositeOperation to what it was
-		ctx.globalCompositeOperation = compositeOperation;
+			// reset the globalCompositeOperation to what it was
+			ctx.globalCompositeOperation = compositeOperation;
+		}
 
 		var link = document.createAnchorElement();
 		link.style.cssText = "display:none";
