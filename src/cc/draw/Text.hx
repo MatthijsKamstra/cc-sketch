@@ -13,7 +13,8 @@ using StringTools;
 
 class Text {
 	// are always set
-	private var _ctx:CanvasRenderingContext2D;
+	private var _ctx:CanvasRenderingContext2D; // canvas
+	private var _sketcher:Sketcher; // svg
 	private var _text:String;
 
 	// defaults
@@ -41,9 +42,15 @@ class Text {
 	@:isVar public var _gradient(get, set):js.html.CanvasGradient;
 	@:isVar public var _leading(get, set):Int;
 
+	@:isVar public var _id(get, set):String;
+
 	// ____________________________________ constructor ____________________________________
-	public function new(ctx:CanvasRenderingContext2D, text:String) {
-		this._ctx = ctx;
+	public function new(o:Dynamic, text:String) {
+		if (Std.is(o, CanvasRenderingContext2D)) {
+			this._ctx = o;
+		} else {
+			this._sketcher = o;
+		}
 		this._text = text;
 	}
 
@@ -54,8 +61,8 @@ class Text {
 	 * @param text
 	 * @return Text
 	 */
-	static inline public function create(ctx:CanvasRenderingContext2D, text:String):Text {
-		var Text = new Text(ctx, text);
+	static inline public function create(o:Dynamic, text:String):Text {
+		var Text = new Text(o, text);
 		return Text;
 	}
 
@@ -63,6 +70,11 @@ class Text {
 
 	inline public function text(text:String):Text {
 		this._text = text;
+		return this;
+	}
+
+	inline public function id(id:String):Text {
+		this._id = id;
 		return this;
 	}
 
@@ -95,7 +107,6 @@ class Text {
 		return this;
 	}
 
-
 	/**
 	 * @see https://www.w3schools.com/tags/canvas_font.asp
 	 *
@@ -118,7 +129,6 @@ class Text {
 		this._fontWeight = weight;
 		return this;
 	}
-
 
 	inline public function size(px:Int):Text {
 		this._size = px;
@@ -224,6 +234,15 @@ class Text {
 	}
 
 	inline public function draw():Text {
+		if (this._ctx != null) {
+			drawCanvas();
+		} else {
+			drawSvg();
+		}
+		return this;
+	}
+
+	inline public function drawCanvas() {
 		var isLines = false;
 		// draw to convast
 		_ctx.save(); // save current state
@@ -262,8 +281,55 @@ class Text {
 
 		// restore previous color?
 		_ctx.fillStyle = previousColor;
+	}
 
-		return this;
+	function splitLines():Bool {
+		// split in lines
+		if (_text.indexOf('\n') != -1) {
+			_lineArray = _text.split('\n');
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public var _hackText:draw.Text;
+
+	inline public function drawSvg() {
+		var isLines:Bool = splitLines();
+
+		var text = this._sketcher.makeText(this._text, this._x, this._y); // draw to svg
+
+		if (this._id != null)
+			text.id = this._id;
+
+		// check if color is set
+		if (_color != null) {
+			text.fill = cc.util.ColorUtil.getColourObj(_color, this._alpha);
+		}
+		// _ctx.font = '${_size}px ${_font}';
+		text.fontSize = '${_size}px';
+		text.fontFamily = '${_font}';
+		text._textAlign = _textAlign;
+		text._textBaseline = _textBaseline;
+
+		if (fontWeight != null)
+			text.fontWeight = '${this._fontWeight}';
+
+		// // move canvas and rotate
+		// _ctx.translate(_x, _y);
+		// _ctx.rotate(radians(_rotate));
+		// if (!isLines) {
+		// 	// print text
+		// 	_ctx.fillText(_text, 0, 0);
+		// } else {
+		// 	for (i in 0..._lineArray.length) {
+		// 		var line = _lineArray[i];
+		// 		_ctx.fillText(line, 0, i * _leading);
+		// 	}
+		// }
+
+		_hackText = text;
 	}
 
 	// public static function text(, x:Float, y:Float, css:String, ?size:Int = 20) {
@@ -421,6 +487,14 @@ class Text {
 
 	function set__leading(value:Int):Int {
 		return _leading = value;
+	}
+
+	function get__id():String {
+		return _id;
+	}
+
+	function set__id(value:String):String {
+		return _id = value;
 	}
 
 	// ____________________________________ tostring ____________________________________
