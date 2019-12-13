@@ -73,16 +73,16 @@ class ExportZip extends ExportWrapperBase implements IExport {
 	public function exportLite(filename:String, imageStringArray:Array<String>):Void {
 		var startT = Date.now().getTime();
 
-		var obj : ExportWrapper.ExportWrapperObj = {
+		var obj:ExportWrapper.ExportWrapperObj = {
 			imageStringArray: imageStringArray,
 			filename: filename,
 			timestamp: startT,
-			delay:0,
-			record:0,
-			description:'',
+			delay: 0,
+			record: 0,
+			description: '',
 			record_in_seconds: 0,
 			export_type: ExportWrapper.ExportType.ZIP,
-			delay_in_seconds:0
+			delay_in_seconds: 0
 		};
 
 		if (imageStringArray.length == 0) {
@@ -100,7 +100,12 @@ class ExportZip extends ExportWrapperBase implements IExport {
 			if (_isDebug)
 				trace('/${imageStringArray.length}. add image to file');
 			var img = imageStringArray[i];
-			zip.file('_${filename}/sequence/image_${Std.string(i).lpad('0', 4)}.png', img, {base64: true});
+			var isSvg = img.indexOf('<svg ') != -1;
+			if (isSvg) {
+				zip.file('_${filename}/sequence/svg_${Std.string(i).lpad('0', 4)}.svg', img);
+			} else {
+				zip.file('_${filename}/sequence/image_${Std.string(i).lpad('0', 4)}.png', img, {base64: true});
+			}
 		}
 		trace('Generate zip file - ${(Date.now().getTime() - startT) / 1000}sec');
 
