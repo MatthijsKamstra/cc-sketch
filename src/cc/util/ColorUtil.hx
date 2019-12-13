@@ -51,6 +51,8 @@ class ColorUtil {
 	/**
 	 * use the typedef RGB to convert to rgb or rgba string
 	 *
+	 * @example		cc.util.ColorUtil.getColourObj(BLACK);
+	 *
 	 * @param rgb 		typedef RGB used, for type checking
 	 * @param a 		alpha used for this color (rbga), value is between 0 and 1, if is null rgba is not used
 	 * @return String
