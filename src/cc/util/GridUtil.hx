@@ -7,20 +7,39 @@ import js.html.CanvasRenderingContext2D;
 import cc.util.ColorUtil.RGB;
 
 /**
- * var grid:GridUtil = new GridUtil();
- * grid.setNumbered(3,3); // 3 horizontal, 3 vertical
- * // grid.setCellSize(_cellsize); // use a cellsize (width/height)
- * grid.setIsCenterPoint(true); // default true, but can be set if needed
  *
- * // quick generate grid
- * if (isDebug) {
- * 		ShapeUtil.gridField(ctx, grid);
- * }
+ * |-------------------------------|
+ * |             row               |
+ * |-------------------------------|
  *
- * // use grid to generate totale amount of shapes/etc
- * for (i in 0...grid.array.length) {
- * 		shapeArray.push(createShape(i, grid.array[i]));
- * }
+ *
+ * |--------|
+ * |        |
+ * |        |
+ * |        |
+ * | colomn |
+ * |        |
+ * |        |
+ * |        |
+ * |--------|
+ *
+ *
+ * @example
+ * 			var grid:GridUtil = new GridUtil();
+ * 			grid.setNumbered(3,3); // 3 horizontal, 3 vertical
+ * 			// grid.setCellSize(_cellsize); // use a cellsize (width/height)
+ * 			grid.setIsCenterPoint(true); // default true, but can be set if needed
+ *
+ * 			// quick generate grid
+ * 			if (isDebug) {
+ * 				ShapeUtil.gridField(ctx, grid);
+ * 				// util.TestUtil.gridDots(sketch, grid);
+ * 			}
+ *
+ * 			// use grid to generate totale amount of shapes/etc
+ * 			for (i in 0...grid.array.length) {
+ * 				shapeArray.push(createShape(i, grid.array[i]));
+ * 			}
  */
 class GridUtil {
 	public var array:Array<Point> = [];
@@ -96,7 +115,7 @@ class GridUtil {
 	var _isDebug:Bool = false; // fix ugly grid bugs
 
 	// ____________________________________ chaining ____________________________________
-	// are always set
+	// not alway needed, can be used for svg
 	private var _ctx:CanvasRenderingContext2D;
 
 	// new private vars
@@ -119,7 +138,7 @@ class GridUtil {
 	}
 
 	/**
-	 * var grid = GridUtil.create (ctx).draw();
+	 * var grid = GridUtil.create(ctx).draw();
 	 *
 	 * @param ctx
 	 * @param text
@@ -134,66 +153,124 @@ class GridUtil {
 
 	/**
 	 * [mck] prefer to have this x, and y
+	 *
+	 * set the x position of the grid
+	 *
+	 * @param x 	start grid at ypos
+	 * @return GridUtil
 	 */
 	inline public function xpos(x:Float):GridUtil {
 		this._x = x;
 		return this;
 	}
 
+	/**
+	 * set the y position of the grid
+	 * @param y 	start grid at ypos
+	 * @return GridUtil
+	 */
 	inline public function ypos(y:Float):GridUtil {
 		this._y = y;
 		return this;
 	}
 
+	/**
+	 * start position x and y
+	 * @param x 	start grid at xpos
+	 * @param y 	start grid at ypos
+	 * @return GridUtil
+	 */
 	inline public function pos(x:Float, y:Float):GridUtil {
 		this._x = x;
 		this._y = y;
 		return this;
 	}
 
+	/**
+	 * use specific size of the grid
+	 * @param w 	width in pixels
+	 * @param h 	height in pixels
+	 * @return GridUtil
+	 */
 	inline public function dimension(w:Float, h:Float):GridUtil {
 		this._w = w;
 		this._h = h;
 		return this;
 	}
 
+	/**
+	 * grid with horizontal (column) and vertical (rows)
+	 * @param hor
+	 * @param ver
+	 * @return GridUtil
+	 */
 	inline public function grid(hor:Int, ver:Int):GridUtil {
 		this._hor = hor;
 		this._ver = ver;
 		return this;
 	}
 
+	/**
+	 * set the cell size of the grid
+	 * @param w 	width of the cell
+	 * @param h 	height of the cell
+	 * @return GridUtil
+	 */
 	inline public function size(w:Float, h:Float):GridUtil {
 		this._cellw = w;
 		this._cellh = h;
 		return this;
 	}
 
+	/**
+	 * use a centered grid
+	 * @return GridUtil
+	 */
 	inline public function centered():GridUtil {
 		this._center = true;
 		return this;
 	}
 
+	/**
+	 * use to debug this class
+	 * @return GridUtil
+	 */
 	inline public function debug():GridUtil {
 		this._debug = true;
 		return this;
 	}
 
+	/**
+	 * doesn't work yet
+	 * @return GridUtil
+	 */
 	inline public function fullscreen():GridUtil {
 		this._fullscreen = true;
 		return this;
 	}
 
+	/**
+	 * doesn't work yet and no idea why?
+	 * @return GridUtil
+	 */
 	inline public function color(value:RGB):GridUtil {
 		this._color = value;
 		return this;
 	}
 
+	/**
+	 * doesn't work yet and no idea why?
+	 * @return GridUtil
+	 */
 	inline public function calc():GridUtil {
 		trace('WIP');
 		return this;
 	}
 
+	/**
+	 * not sure what it does, does it work?
+	 * @return GridUtil
+	 */
 	inline public function draw(?isDebug:Bool = false):GridUtil {
 		// draw on canvas
 		if (isDebug) {
@@ -203,9 +280,9 @@ class GridUtil {
 	}
 
 	/**
-	 * [Description]
-	 * @param x			start position x
-	 * @param y			start postion y
+	 * start position x and y
+	 * @param x 	start grid at xpos
+	 * @param y 	start grid at ypos
 	 */
 	public function setPosition(x, y) {
 		if (_isDebug)
@@ -270,9 +347,9 @@ class GridUtil {
 	}
 
 	/**
-	 * create
-	 * @param numHor	number of items horizontal
-	 * @param numVer	number of itmes vertical
+	 * create grid based upon horizontal and vertical blocks
+	 * @param numHor	number of items horizontal (colums)
+	 * @param numVer	number of items vertical (rows)
 	 */
 	public function setNumbered(numHor:Float, numVer:Float) {
 		if (_isDebug)
@@ -324,6 +401,13 @@ class GridUtil {
 
 	/**
 	 * get the row and column data of a point
+	 *
+	 * @example
+	 * 			for (i in 0...grid.array.length) {
+	 *				var sh = grid.array[i];
+	 *				trace(grid.getTablePosition(sh).row);
+	 *			}
+	 *
 	 * @param sh
 	 * @return Dynamic
 	 */
