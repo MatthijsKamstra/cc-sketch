@@ -648,10 +648,13 @@ class Go {
 		var func = _options.onComplete;
 		var arr = (_options.onCompleteParams != null) ? _options.onCompleteParams : [];
 
+		// trace(arr);
+
 		destroy();
 
 		if (Reflect.isFunction(func))
-			Reflect.callMethod(func, func, [arr]);
+			Reflect.callMethod(func, func, arr);
+		// Reflect.callMethod(func, func, [arr]);
 	}
 
 	/**
