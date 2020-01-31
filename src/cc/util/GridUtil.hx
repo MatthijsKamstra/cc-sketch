@@ -32,8 +32,8 @@ import cc.util.ColorUtil.RGB;
  *
  * 			// quick generate grid
  * 			if (isDebug) {
- * 				ShapeUtil.gridField(ctx, grid);
- * 				// util.TestUtil.gridDots(sketch, grid);
+ * 				ShapeUtil.gridField(ctx, grid); // canvas
+ * 				// util.TestUtil.gridDots(sketch, grid); // svg
  * 			}
  *
  * 			// use grid to generate totale amount of shapes/etc
