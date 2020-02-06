@@ -1,7 +1,7 @@
 package cc.draw;
 
-import draw.Text.TextAnchorType;
-import draw.Text.DominantBaselineType;
+import sketcher.draw.Text.TextAnchorType;
+import sketcher.draw.Text.DominantBaselineType;
 import js.html.CanvasRenderingContext2D;
 import js.html.*;
 import js.Browser.document;
@@ -295,7 +295,7 @@ class Text {
 		}
 	}
 
-	public var _hackText:draw.Text;
+	public var _hackText:sketcher.draw.Text;
 
 	inline public function drawSvg() {
 		var isLines:Bool = splitLines();
