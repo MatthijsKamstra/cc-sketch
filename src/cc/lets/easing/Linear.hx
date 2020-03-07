@@ -3,10 +3,11 @@
  * @author Philippe / http://philippe.elsass.me
  * @author Robert Penner / http://www.robertpenner.com/easing_terms_of_use.html
  */
+
 package cc.lets.easing;
 
 class Linear {
-	static public var easeNone(get_easeNone, never):IEasing;
+	static public var easeNone(get, never):IEasing;
 
 	private static function get_easeNone():IEasing {
 		return new LinearEaseNone();
