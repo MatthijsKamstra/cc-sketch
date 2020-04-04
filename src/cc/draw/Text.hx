@@ -1,7 +1,5 @@
 package cc.draw;
 
-import sketcher.draw.Text.TextAnchorType;
-import sketcher.draw.Text.DominantBaselineType;
 import js.html.CanvasRenderingContext2D;
 import js.html.*;
 import js.Browser.document;
@@ -16,7 +14,7 @@ using StringTools;
 class Text {
 	// are always set
 	private var _ctx:CanvasRenderingContext2D; // canvas
-	private var _sketcher:Sketcher; // svg
+	private var _sketcher:Sketch; // svg
 	private var _text:String;
 
 	// defaults
@@ -33,9 +31,9 @@ class Text {
 	private var _css:String = ''; // italic small-caps bold 12px aria
 	private var _fontWeight:String = ''; // normal|bold|bolder|lighter|100|200|300|400|500|600|700|800|900
 	// https://www.w3schools.com/tags/canvas_textalign.asp
-	private var _textAlign:TextAnchorType = TextAnchorType.Left; // center|end|left|right|start"
+	private var _textAlign:String = 'left'; // center|end|left|right|start"
 	// https://www.w3schools.com/tags/canvas_textbaseline.asp
-	private var _textBaseline:DominantBaselineType = DominantBaselineType.Alphabetic; // 'alphabetic'; // alphabetic|top|hanging|middle|ideographic|bottom
+	private var _textBaseline:String = 'alphabetic'; // alphabetic|top|hanging|middle|ideographic|bottom
 	// Color
 	private var _color:RGB;
 	private var _colorstoke:RGB;
@@ -144,42 +142,42 @@ class Text {
 		return this;
 	}
 
-	inline public function textAlign(textAnchorType:TextAnchorType):Text {
-		this._textAlign = textAnchorType; // left/right/center
+	inline public function textAlign(pos:String):Text {
+		this._textAlign = pos; // left/right/center
 		return this;
 	}
 
 	inline public function leftAlign():Text {
-		this._textAlign = TextAnchorType.Left; // 'left'; // left/right/center
+		this._textAlign = 'left'; // left/right/center
 		return this;
 	}
 
 	inline public function rightAlign():Text {
-		this._textAlign = TextAnchorType.Right; // 'right'; // left/right/center
+		this._textAlign = 'right'; // left/right/center
 		return this;
 	}
 
 	inline public function centerAlign():Text {
-		this._textAlign = TextAnchorType.Center; //  'center'; // left/right/center
+		this._textAlign = 'center'; // left/right/center
 		return this;
 	}
 
 	inline public function topBaseline():Text {
-		this._textBaseline = DominantBaselineType.Baseline; // 'top'; // top/middle/bottom
+		this._textBaseline = 'top'; // top/middle/bottom
 		return this;
 	}
 
 	inline public function middleBaseline():Text {
-		this._textBaseline = DominantBaselineType.Middle; // 'middle'; // top/middle/bottom
+		this._textBaseline = 'middle'; // top/middle/bottom
 		return this;
 	}
 
 	inline public function bottomBaseline():Text {
-		this._textBaseline = DominantBaselineType.Hanging; // 'bottom'; // top/middle/bottom
+		this._textBaseline = 'bottom'; // top/middle/bottom
 		return this;
 	}
 
-	inline public function textBaseline(pos:DominantBaselineType):Text {
+	inline public function textBaseline(pos:String):Text {
 		this._textBaseline = pos; // top/middle/bottom
 		return this;
 	}
@@ -239,7 +237,7 @@ class Text {
 		if (this._ctx != null) {
 			drawCanvas();
 		} else {
-			drawSvg();
+			// drawSvg();
 		}
 		return this;
 	}
@@ -263,8 +261,8 @@ class Text {
 		}
 		// _ctx.font = '${_size}px ${_font}';
 		_ctx.font = '${_css} ${_size}px ${_font}'.ltrim();
-		_ctx.textAlign = cast _textAlign;
-		_ctx.textBaseline = cast _textBaseline;
+		_ctx.textAlign = _textAlign;
+		_ctx.textBaseline = _textBaseline;
 
 		// move canvas and rotate
 		_ctx.translate(_x, _y);
@@ -295,46 +293,38 @@ class Text {
 		}
 	}
 
-	public var _hackText:sketcher.draw.Text;
+	public var _hackText:cc.draw.Text;
 
-	inline public function drawSvg() {
-		var isLines:Bool = splitLines();
-
-		var text = this._sketcher.makeText(this._text, this._x, this._y); // draw to svg
-
-		if (this._id != null)
-			text.id = this._id;
-
-		// check if color is set
-		if (_color != null) {
-			text.fill = cc.util.ColorUtil.getColourObj(_color, this._alpha);
-		}
-		// _ctx.font = '${_size}px ${_font}';
-		text.fontSize = '${_size}px';
-		text.fontFamily = '${_font}';
-
-		text.textAnchor = _textAlign;
-		text.dominantBaseline = _textBaseline;
-
-		if (fontWeight != null)
-			text.fontWeight = '${this._fontWeight}';
-
-		// // move canvas and rotate
-		// _ctx.translate(_x, _y);
-		// _ctx.rotate(radians(_rotate));
-		// if (!isLines) {
-		// 	// print text
-		// 	_ctx.fillText(_text, 0, 0);
-		// } else {
-		// 	for (i in 0..._lineArray.length) {
-		// 		var line = _lineArray[i];
-		// 		_ctx.fillText(line, 0, i * _leading);
-		// 	}
-		// }
-
-		_hackText = text;
-	}
-
+	// inline public function drawSvg() {
+	// 	var isLines:Bool = splitLines();
+	// 	var text = this._sketcher.makeText(this._text, this._x, this._y); // draw to svg
+	// 	if (this._id != null)
+	// 		text.id = this._id;
+	// 	// check if color is set
+	// 	if (_color != null) {
+	// 		text.fill = cc.util.ColorUtil.getColourObj(_color, this._alpha);
+	// 	}
+	// 	// _ctx.font = '${_size}px ${_font}';
+	// 	text.fontSize = '${_size}px';
+	// 	text.fontFamily = '${_font}';
+	// 	text._textAlign = _textAlign;
+	// 	text._textBaseline = _textBaseline;
+	// 	if (fontWeight != null)
+	// 		text.fontWeight = '${this._fontWeight}';
+	// 	// // move canvas and rotate
+	// 	// _ctx.translate(_x, _y);
+	// 	// _ctx.rotate(radians(_rotate));
+	// 	// if (!isLines) {
+	// 	// 	// print text
+	// 	// 	_ctx.fillText(_text, 0, 0);
+	// 	// } else {
+	// 	// 	for (i in 0..._lineArray.length) {
+	// 	// 		var line = _lineArray[i];
+	// 	// 		_ctx.fillText(line, 0, i * _leading);
+	// 	// 	}
+	// 	// }
+	// 	_hackText = text;
+	// }
 	// public static function text(, x:Float, y:Float, css:String, ?size:Int = 20) {
 	// 	ctx.font = '${size}px ${css.replace(';', '')}';
 	// 	// seems to break something if css has `;`
