@@ -40,6 +40,7 @@ class Sketch {
 	}
 
 	// this enables me to have many canvases all positioned on top of eachother at 100% width and height of page
+
 	public function createCanvas(name:String):CanvasRenderingContext2D {
 		var body = document.querySelector('body');
 
@@ -237,11 +238,11 @@ class Sketch {
 		var elem = document.documentElement;
 		if (elem.requestFullscreen != null) {
 			elem.requestFullscreen();
-		} else if (untyped elem.mozRequestFullScreen) { /* Firefox */
+		} else if (untyped elem.mozRequestFullScreen) {/* Firefox */
 			untyped elem.mozRequestFullScreen();
-		} else if (untyped elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+		} else if (untyped elem.webkitRequestFullscreen) {/* Chrome, Safari and Opera */
 			untyped elem.webkitRequestFullscreen();
-		} else if (untyped elem.msRequestFullscreen) { /* IE/Edge */
+		} else if (untyped elem.msRequestFullscreen) {/* IE/Edge */
 			untyped elem.msRequestFullscreen();
 		}
 	}
@@ -250,11 +251,11 @@ class Sketch {
 	function closeFullscreen() {
 		if (document.exitFullscreen != null) {
 			document.exitFullscreen();
-		} else if (untyped document.mozCancelFullScreen) { /* Firefox */
+		} else if (untyped document.mozCancelFullScreen) {/* Firefox */
 			untyped document.mozCancelFullScreen();
-		} else if (untyped document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+		} else if (untyped document.webkitExitFullscreen) {/* Chrome, Safari and Opera */
 			untyped document.webkitExitFullscreen();
-		} else if (untyped document.msExitFullscreen) { /* IE/Edge */
+		} else if (untyped document.msExitFullscreen) {/* IE/Edge */
 			untyped document.msExitFullscreen();
 		}
 	}
