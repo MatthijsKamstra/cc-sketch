@@ -1,10 +1,10 @@
 package art;
 
-import js.Browser.*;
-import js.html.*;
 import Sketch;
 import cc.model.constants.App;
 import cc.tool.ExportFile;
+import js.Browser.*;
+import js.html.*;
 
 class CC100 extends SketchBase {
 	var shapeArray:Array<Circle> = [];

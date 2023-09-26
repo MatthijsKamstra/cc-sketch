@@ -22,9 +22,9 @@ class SketchSettings {
 	}
 
 	/**
-	  [add description]
-	  @param scope [description]
-	  @param vars  [description]
+		[add description]
+		@param scope [description]
+		@param vars  [description]
 	**/
 	public function add(scope:Dynamic, vars:Dynamic) {
 		this.scope = scope;

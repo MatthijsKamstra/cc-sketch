@@ -1,10 +1,10 @@
 package;
 
+import art.*;
+import cc.model.constants.App;
 import js.Browser.*;
 import js.Browser;
 import js.html.*;
-import cc.model.constants.App;
-import art.*;
 
 using StringTools;
 
