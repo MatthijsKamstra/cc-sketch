@@ -1,7 +1,7 @@
 package cc.tool.export;
 
-import js.Browser.*;
 import cc.tool.export.ExportNames.*;
+import js.Browser.*;
 
 using StringTools;
 
@@ -177,7 +177,7 @@ class ExportNodeServer extends ExportWrapperBase implements IExport {
 		});
 		// messages from the server back
 		// _socket.emit('message', 'checkin');
-		_socket.on('message', function(data) {
+		_socket.on('message', function(data:{message:Null<String>}) {
 			if (data.message != null) {
 				console.log('${toString()} message: ' + data.message);
 			} else {
@@ -185,7 +185,7 @@ class ExportNodeServer extends ExportWrapperBase implements IExport {
 			}
 		});
 		_socket.emit(CHECKIN);
-		_socket.on(SERVER_CHECKIN, function(data) {
+		_socket.on(SERVER_CHECKIN, function(data:{checkin:Null<Bool>}) {
 			if (data.checkin != null && data.checkin == true) {
 				_isExportServerReady = true;
 				console.log('${toString()} data:  + $data, & _isExportServerReady: $_isExportServerReady');

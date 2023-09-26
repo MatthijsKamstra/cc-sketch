@@ -37,10 +37,10 @@
 - [x] <http://www.tysoncadenhead.com/blog/exporting-canvas-animation-to-mov/> export video via socket and node/ffmpeg
 - [x] different canvas size for exporting video
 - [x] add noise
-- [x] https://github.com/madhoe/noisehx  or <https://github.com/memilian/libnoise/> or <https://github.com/whuop/hxNoise>
+- [x] https://github.com/madhoe/noisehx or <https://github.com/memilian/libnoise/> or <https://github.com/whuop/hxNoise>
 - [x] add controle settings (quick settings)
 - [ ] choose color vs colour
-- [ ] get scaling canvas image (A4 -> A0)  from `gen-js-art`
+- [ ] get scaling canvas image (A4 -> A0) from `gen-js-art`
 - [ ] loading music
 - [ ] website state
 - [ ] branding
@@ -56,8 +56,7 @@
 - [ ] dox documentation
 - [ ] quicksetting replace with dat.GUI
 
-### Miso Regular  replacement
-
+### Miso Regular replacement
 
 - Barlow Condensed
 - Dosis - Medium
@@ -67,20 +66,13 @@
 - `<link href="https://fonts.googleapis.com/css?family=Dosis:500" rel="stylesheet">`
 - `font-family: 'Dosis', sans-serif;`
 
-
-
 <link href="https://fonts.googleapis.com/css?family=Press+Start+2P|UnifrakturMaguntia" rel="stylesheet">
-
 
 font-family: 'UnifrakturMaguntia', cursive;
 font-family: 'Press Start 2P', cursive;
 
 'UnifrakturMaguntia' > old skool german
 'Press Start 2P' > pixel 8px or 16px
-
-
-
-
 
 test with fonts
 
@@ -94,8 +86,6 @@ test with fonts
 `<link href="https://fonts.googleapis.com/css?family=Nova+Mono" rel="stylesheet">`
 
 `font-family: 'Nova Mono', monospace;`
-
-
 
 ## Instagram
 
@@ -129,7 +119,6 @@ stuff I need to look into
 - The safest times to post are generally 10 a.m. to 5 p.m. Wednesday to Friday.
 - Sunday is the least engaged day of the week for tech.
 
-
 ## instagram images
 
 https://dustn.tv/instagram-sizes/
@@ -139,16 +128,12 @@ The standard square image on Instagram remains to be shown at a maximum of 600×
 https://colorlib.com/wp/size-of-the-instagram-picture/
 
 - Square Image: 1080px in width by 1080px in height
-- Vertical Image:  1080px in width by 1350px in height
+- Vertical Image: 1080px in width by 1350px in height
 - Horizontal Image: 1080px in width by 566px in height
-
 
 https://louisem.com/37587/whats-the-best-instagram-image-size
 
 The optimal sizes are 1080 pixels wide by 566 pixels to 1350 pixels high.
-
-
-
 
 ## instagram hash
 
@@ -159,8 +144,8 @@ sketch.cc0009 :: stars
 #haxe #javascript #js
 ```
 
-
 creative code
+
 ```
 #codeart #coding #creativecode #generative #generativeArt
 #minimalism #minimalist #minimal #blackandwhite

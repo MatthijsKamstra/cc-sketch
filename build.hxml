@@ -1,4 +1,4 @@
--lib hxquicksettings
+-lib quicksettings
 # -lib embed-js
 # -lib thx.color
 # -lib hxColorToolkit

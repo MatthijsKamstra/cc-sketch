@@ -1,11 +1,11 @@
 package;
 
 import Sketch.Global.*;
+import cc.tool.ExportFile;
 import js.Browser.*;
 import js.html.*;
-import js.html.MouseEvent;
 import js.html.CanvasElement;
-import cc.tool.ExportFile;
+import js.html.MouseEvent;
 
 /**
  * inspired by George Gally, which was inpired by Seb Lee
@@ -292,13 +292,13 @@ class Sketch {
 // WEBGL Enumeration for the WebGL type
 // DOM Enumeration for the DOM type
 // instances A list of all current Sketch instances
-@:enum abstract SketchType(String) {
+enum abstract SketchType(String) {
 	var CANVAS = 'canvas';
 	var WEBGL = 'webgl';
 	var DOM = 'dom';
 }
 
-@:enum abstract PaperSize(String) {
+enum abstract PaperSize(String) {
 	var A6 = 'A6';
 	var A5 = 'A5';
 	var A4 = 'A4';

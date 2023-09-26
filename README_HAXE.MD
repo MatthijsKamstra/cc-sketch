@@ -9,19 +9,19 @@
 
 Project info:
 
-- project target 	: js
-- project license 	: MIT
-- project author 	: Matthijs Kamstra aka [mck]
-- project website 	: 
-
+- project target : js
+- project license : MIT
+- project author : Matthijs Kamstra aka [mck]
+- project website :
 
 <a href="haxe"></a>
+
 ## Haxe
 
 This project is written in [Haxe](http://www.haxe.org) and transpiled to JavaScript.
 
 > **The Cross-platform Toolkit**
-Haxe is an open source toolkit based on a modern, high level, strictly typed programming language, a cross-compiler, a complete cross-platform standard library and ways to access each platform's native capabilities.
+> Haxe is an open source toolkit based on a modern, high level, strictly typed programming language, a cross-compiler, a complete cross-platform standard library and ways to access each platform's native capabilities.
 
 - Read more about [Haxe](http://www.haxe.org)?
 - Or perhaps you just need a quick install: <http://matthijskamstra.github.io/haxejs/haxe/quick-install.html>.
@@ -32,6 +32,7 @@ Confused? Go see a doctor!
 Confused about Haxe? Please don't hesitate to ask [Matthijs Kamstra](mailto:matthijs@fonk.amsterdam)!
 
 <a href="structure"></a>
+
 ## Structure
 
 This is the short explanation about the folder structure and files
@@ -60,8 +61,8 @@ Haxe transpiles the files in the `src`-folder to the `bin`-folder.
 Point your web-server (for example: [Mamp](https://www.mamp.info/) or similar tool) to the `bin` folder.
 And open <http://localhost/> (or whatever name you give it like: <http://foobar:8888/>).
 
-
 <a href="build"></a>
+
 ## Build
 
 You need to install [Haxe](http://www.haxe.org), I have written a [quick-install-guide](http://matthijskamstra.github.io/haxejs/haxe/quick-install.html).
@@ -95,7 +96,3 @@ If this is a node.js project, use the following code to install the node package
 cd /path/to/folder/
 npm install
 ```
-
-
-
-

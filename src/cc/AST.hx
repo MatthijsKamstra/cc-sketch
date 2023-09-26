@@ -5,7 +5,7 @@ import cc.util.ColorUtil;
 class AST {}
 
 // ____________________________________ extending typedef ____________________________________
-@:enum abstract ShapeType(String) {
+enum abstract ShapeType(String) {
 	var CIRCLE = 'circle';
 	var RECTANGLE = 'rectangle';
 	var SQUARE = 'square';
